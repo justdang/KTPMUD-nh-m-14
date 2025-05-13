@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Chi tiết lớp học - HlearnHub</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="assets/css/main.css" rel="stylesheet">
+
+  <style>
+    .course-details-container {
+      padding: 30px 0;
+    }
+    
+    .course-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+    
+    .tutor-profile {
+      display: flex;
+      align-items: center;
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+    
+    .tutor-profile img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 20px;
+    }
+    
+    .tutor-info h4 {
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    
+    .tutor-info p {
+      margin-bottom: 8px;
+      color: #6c757d;
+    }
+    
+    .rating {
+      color: #ffc107;
+      font-size: 20px;
+    }
+    
+    .rating .bi-star-fill, .rating .bi-star {
+      cursor: pointer;
+    }
+    
+    .class-schedule {
+      background-color: #e9f2fe;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .class-schedule h4 {
+      margin-bottom: 15px;
+      font-weight: 600;
+      color: #0d6efd;
+      display: flex;
+      align-items: center;
+    }
+    
+    .class-schedule h4 i {
+      margin-right: 10px;
+    }
+    
+    .schedule-item {
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      font-size: 1.05rem;
+    }
+    
+    .schedule-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .schedule-item i {
+      margin-right: 12px;
+      color: #0d6efd;
+      font-size: 1.2rem;
+    }
+    
+    .review-form {
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      padding: 25px;
+      margin-top: 30px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .review-form h5 {
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    
+    .course-info-card {
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 100px;
+    }
+    
+    .course-info-card h4 {
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #2c3e50;
+      text-align: center;
+    }
+    
+    .course-info {
+      padding: 10px 0;
+      border-bottom: 1px solid #dee2e6;
+    }
+    
+    .course-info:last-child {
+      border-bottom: none;
+    }
+    
+    .course-info h5 {
+      font-weight: 600;
+      color: #495057;
+      font-size: 1.05rem;
+      margin-bottom: 0;
+    }
+    
+    .course-info p {
+      margin-bottom: 0;
+      color: #0d6efd;
+      font-weight: 500;
+    }
+    
+    .course-info a {
+      color: #0d6efd;
+      text-decoration: none;
+    }
+    
+    .course-info a:hover {
+      text-decoration: underline;
+    }
+    
+    .btn-primary {
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+      padding: 10px 25px;
+      font-weight: 500;
+    }
+    
+    .btn-primary:hover {
+      background-color: #0b5ed7;
+      border-color: #0a58ca;
+    }
+    
+    .form-label {
+      font-weight: 500;
+      color: #495057;
+    }
+    
+    .form-control:focus {
+      border-color: #86b7fe;
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    
+    @media (max-width: 991px) {
+      .course-info-card {
+        position: static;
+        margin-top: 30px;
+      }
+    }
+  </style>
+</head>
+
+<body class="course-details-page">
+
+  <!-- Keep Header as is -->
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+      <a href="index-mentor (1).html" class="logo d-flex align-items-center me-auto">
+        <h1 class="sitename">HlearnHub</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="Index member.html">Trang chủ</a></li>
+          <li><a href="About member.html">Về chúng tôi</a></li>
+          <li><a href="Teaching Register.html">Đăng ký dạy</a></li>
+          <li><a href="Study register.html">Đăng ký học</a></li>
+          <li><a href="Schedule.html">Lịch cá nhân</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <a class="btn-getstarted" href="Profile User.html"><i class="bi bi-person-circle me-2"></i>Tài khoản User</a>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- Page Title -->
+    <div class="page-title" data-aos="fade">
+      <div class="heading">
+        <div class="container">
+          <div class="row d-flex justify-content-center text-center">
+            <div class="col-lg-8">
+              <h1>Chi tiết lớp học</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- End Page Title -->
+
+    <!-- Courses Course Details Section -->
+    <section id="courses-course-details" class="courses-course-details section">
+      <div class="container course-details-container" data-aos="fade-up">
+        <div class="row">
+          <!-- Main Content Area -->
+          <div class="col-lg-8">
+            <!-- Tutor Information -->
+            <div class="tutor-profile">
+              <img src="ava user.jpg" alt="Gia sư">
+              <div class="tutor-info">
+                <h4>Nguyễn Văn A</h4>
+                <p>Giảng viên (sinh viên) Khoa ... , Đại học Bách Khoa Hà Nội</p>
+                <div class="rating">
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-half"></i>
+                  <span class="text-muted ms-2">4.5 (36 đánh giá)</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Review Form -->
+            <div class="review-form">
+              <h5>Đánh giá gia sư</h5>
+              <form>
+                <div class="mb-3">
+                  <label for="rating" class="form-label">Xếp hạng</label>
+                  <div class="rating">
+                    <i class="bi bi-star" data-rating="1"></i>
+                    <i class="bi bi-star" data-rating="2"></i>
+                    <i class="bi bi-star" data-rating="3"></i>
+                    <i class="bi bi-star" data-rating="4"></i>
+                    <i class="bi bi-star" data-rating="5"></i>
+                  </div>
+                  <input type="hidden" id="rating-value" name="rating" value="0">
+                </div>
+                <div class="mb-3">
+                  <label for="review" class="form-label">Đánh giá của bạn (tối đa 100 chữ)</label>
+                  <textarea class="form-control" id="review" rows="3" maxlength="100" required></textarea>
+                  <div class="form-text"><span id="char-count">0</span>/100 chữ</div>
+                </div>
+                <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+              </form>
+            </div>
+          </div>
+          
+          <!-- Sidebar - Course Information Card -->
+          <div class="col-lg-4">
+            <div class="course-info-card">
+              <h4>Thông tin lớp học</h4>
+              
+              <div class="course-info d-flex justify-content-between align-items-center">
+                <h5>Gia sư</h5>
+                <p><a href="#">Nguyễn Văn A</a></p>
+              </div>
+
+              <div class="course-info d-flex justify-content-between align-items-center">
+                <h5>Môn học</h5>
+                <p>Giải tích 1 (MI1010)</p>
+              </div>
+
+              <div class="course-info d-flex justify-content-between align-items-center">
+                <h5>Thời gian học</h5>
+                <p>18:00 - 20:00</p>
+              </div>
+              
+              <div class="course-info d-flex justify-content-between align-items-center">
+                <h5>Ngày học</h5>
+                <p>Ngày ...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section><!-- End Course Details Section -->
+  </main>
+
+  <!-- Keep Footer as is -->
+  <footer id="footer" class="footer">
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-info">
+          <div class="footer-logo">Hlearn<span>Hub</span></div>
+          <p class="footer-subtitle">Giải pháp tìm kiếm gia sư trực tiếp dành riêng cho sinh viên HUST</p>
+          <div class="social-links d-flex mt-4">
+            <a href="#"><i class="bi bi-twitter-x"></i></a>
+            <a href="#"><i class="bi bi-facebook"></i></a>
+            <a href="#"><i class="bi bi-instagram"></i></a>
+            <a href="#"><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+        
+        <div class="col-lg-7 col-md-12">
+          <div class="row">
+            <div class="col-lg-4 col-6 footer-links">
+              <div class="footer-contact">
+                <p><i class="bi bi-geo-alt me-2"></i> Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội</p>
+                <p><i class="bi bi-telephone me-2"></i> +84 123 456 789</p>
+                <p><i class="bi bi-envelope me-2"></i> info@hlearnhub.com</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="container copyright text-center mt-4">
+      <p>&copy; <span>2025</span> <strong>HlearnHub</strong>. All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+
+  <!-- Main JS File -->
+  <script src="assets/js/main.js"></script>
+
+  <script>
+    // Script để xử lý đánh giá sao
+    document.addEventListener('DOMContentLoaded', function() {
+      const stars = document.querySelectorAll('.review-form .rating .bi');
+      const ratingInput = document.getElementById('rating-value');
+      
+      // Xử lý click vào sao
+      stars.forEach(star => {
+        star.addEventListener('click', function() {
+          const rating = parseInt(this.getAttribute('data-rating'));
+          ratingInput.value = rating;
+          
+          // Cập nhật hiển thị các ngôi sao
+          stars.forEach((s, index) => {
+            if (index < rating) {
+              s.classList.remove('bi-star');
+              s.classList.add('bi-star-fill');
+            } else {
+              s.classList.remove('bi-star-fill');
+              s.classList.add('bi-star');
+            }
+          });
+        });
+        
+        // Hiệu ứng hover
+        star.addEventListener('mouseover', function() {
+          const rating = parseInt(this.getAttribute('data-rating'));
+          
+          stars.forEach((s, index) => {
+            if (index < rating) {
+              s.classList.remove('bi-star');
+              s.classList.add('bi-star-fill');
+            } else {
+              s.classList.remove('bi-star-fill');
+              s.classList.add('bi-star');
+            }
+          });
+        });
+      });
+      
+      // Đếm ký tự trong phần đánh giá
+      const reviewTextarea = document.getElementById('review');
+      const charCount = document.getElementById('char-count');
+      
+      reviewTextarea.addEventListener('input', function() {
+        const currentLength = this.value.length;
+        charCount.textContent = currentLength;
+        
+        if (currentLength > 100) {
+          this.value = this.value.substring(0, 100);
+          charCount.textContent = 100;
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

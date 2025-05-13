@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>HlearnHub</title>
+  <meta name="description" content="HlearnHub student learning platform">
+  <meta name="keywords" content="education, tutoring, online learning">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  
+  <style>
+    :root {
+      --primary-color: #AA261B;
+      --secondary-color: #AA261B;
+      --accent-color: #AA261B;
+      --light-color: #fff;
+      --dark-color: #34495e;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+    }
+    
+    body {
+      font-family: 'Open Sans', sans-serif;
+      color: #444;
+      background-color: #d7d5d5c4;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 900;
+
+    }
+    
+    /* Header styling */
+    .header {
+      background-color: #fff;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+      padding: 15px 0;
+      transition: all 0.5s;
+    }
+    
+    .sitename {
+      color: var(--primary-color);
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-decoration: none !important;
+    }
+    
+    .sitename span {
+      color: var(--primary-color);
+    }
+    
+    .navmenu ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .navmenu li {
+      position: relative;
+      padding: 10px 20px;
+    }
+    
+    .navmenu a {
+      display: block;
+      position: relative;
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.3s;
+      font-size: 16px;
+    }
+    
+    .navmenu a:hover, .navmenu .active {
+      color: var(--secondary-color);
+    }
+    
+    .btn-getstarted {
+      background: var(--secondary-color);
+      color: white;
+      padding: 10px 25px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.3s;
+      margin-left: 30px;
+    }
+    
+    .btn-getstarted:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    /* Footer */
+    .footer {
+      background: #AA261B;
+      padding: 70px 0 30px;
+      font-size: 14px;
+      border-top: 1px solid #eee;
+      color: #fff;
+    }
+    
+    .footer-top {
+      margin-bottom: 30px;
+    }
+    
+    .footer-logo {
+      font-size: 40px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    
+    .footer-subtitle {
+      color: #fff;
+      margin-bottom: 25px;
+    }
+
+    .footer-contact {
+    text-align: right;
+    }
+    
+    .social-links a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      background: var(--primary-color);
+      color: white;
+      margin-right: 10px;
+      transition: 0.3s;
+    }
+    
+    .social-links a:hover {
+      background: var(--secondary-color);
+      transform: translateY(-3px);
+    }
+    
+    .copyright {
+      border-top: 1px solid #eee;
+      padding-top: 30px;
+    }
+
+    /* Form styling */
+    .schedule-form {
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+      padding: 40px;
+      margin: 40px 0;
+    }
+    
+    .form-title {
+      text-align: center;
+      margin-bottom: 40px;
+      color: var(--primary-color);
+      font-weight: 700;
+    }
+    
+    .form-control {
+      border-radius: 10px;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      margin-bottom: 20px;
+    }
+    
+    .form-control:focus {
+      box-shadow: 0 0 0 3px rgba(170, 38, 27, 0.2);
+      border-color: var(--primary-color);
+    }
+    
+    .submit-btn {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 50px;
+      border: none;
+      font-weight: 600;
+      font-size: 16px;
+      transition: all 0.3s;
+      margin-top: 20px;
+      width: 100%;
+    }
+    
+    .submit-btn:hover {
+      /*background-color: var(#a8a8a8);*/
+      transform: translateY(-3px);
+    }
+
+    
+    /* Responsive styles */
+    @media (max-width: 991px) {
+      .navmenu ul {
+        display: none;
+        flex-direction: column;
+        background: white;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+      }
+      
+      .navmenu.show ul {
+        display: flex;
+      }
+      
+      .navmenu li {
+        padding: 15px 20px;
+        border-bottom: 1px solid #eee;
+      }
+      
+      .mobile-nav-toggle {
+        display: block;
+        font-size: 24px;
+        cursor: pointer;
+      }
+      
+      .btn-getstarted {
+        margin-left: 15px;
+      }
+      
+      .schedule-form {
+        padding: 25px;
+      }
+    }
+    
+    /*@media (max-width: 767px) {
+      .footer-contact {
+        text-align: left;
+      }
+    }*/
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+      <a href="/" class="logo d-flex align-items-center">
+        <h1 class="sitename">HlearnHub</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="/" class="active">Trang chủ</a></li>
+          <li><a href="/about">Về chúng tôi</a></li>
+          <li><a href="/study_register">Đăng ký học</a></li>
+          <li><a href="/schedule">Lịch học</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <a class="btn-getstarted" href="#"><i class="bi bi-person-circle me-2"></i>Tài khoản học sinh</a>
+    </div>
+  </header>
+
+  <main class="main py-5">
+    <div class="container">
+      <!-- Schedule Form -->
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="schedule-form">
+            <h2 class="form-title">Đăng Ký Lịch Học</h2>
+            <form id="teaching-schedule-form">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="startTime" class="form-label">Giờ bắt đầu</label>
+                    <input type="time" class="form-control" id="startTime" name="startTime" required>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="endTime" class="form-label">Giờ kết thúc</label>
+                    <input type="time" class="form-control" id="endTime" name="endTime" required>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="teachingDate" class="form-label">Ngày học</label>
+                <input type="date" class="form-control" id="teachingDate" name="teachingDate" required>
+              </div>
+              
+              <div class="mb-4">
+                <label for="courseType" class="form-label">Loại môn học</label>
+                <select class="form-select" id="courseType" name="courseType" required onchange="updateSubjectDropdown()">
+                  <option value="" selected disabled>-- Chọn loại môn học --</option>
+                  <option value="general">Môn học đại cương</option>
+                  <option value="specialized">Môn chuyên ngành và cơ sở ngành</option>
+                </select>
+              </div>
+              
+              <div class="mb-4" id="generalSubjectContainer" style="display: none;">
+                <label for="generalSubject" class="form-label">Chọn môn đại cương</label>
+                <select class="form-select" id="generalSubject" name="generalSubject">
+                  <option value="" selected disabled>-- Chọn môn học --</option>
+                  <option value="math">Toán giải tích</option>
+                  <option value="physics">Vật lý đại cương</option>
+                  <option value="chemistry">Hóa học đại cương</option>
+                  <option value="english">Tiếng Anh cơ bản</option>
+                  <option value="philosophy">Triết học Mác-Lênin</option>
+                  <option value="economics">Kinh tế chính trị</option>
+                </select>
+              </div>
+              
+              <div class="mb-4" id="specializedSubjectContainer" style="display: none;">
+                <label for="specializedSubject" class="form-label">Chọn môn chuyên ngành</label>
+                <select class="form-select" id="specializedSubject" name="specializedSubject">
+                  <option value="" selected disabled>-- Chọn môn học --</option>
+                  <option value="cpp">Lập trình C++</option>
+                  <option value="database">Cơ sở dữ liệu</option>
+                  <option value="accounting">Kế toán tài chính</option>
+                  <option value="marketing">Marketing căn bản</option>
+                  <option value="econometrics">Kinh tế lượng</option>
+                  <option value="law">Luật thương mại</option>
+                </select>
+              </div>
+              
+              <div class="mb-3">
+                <label for="notes" class="form-label">Ghi chú</label>
+                <textarea class="form-control" id="notes" name="notes" rows="4" placeholder="Nhập các yêu cầu hoặc thông tin bổ sung nếu có..."></textarea>
+              </div>
+              
+              <button type="submit" class="submit-btn">Đăng Ký</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Original Footer Section -->
+<footer id="footer" class="footer">
+  <div class="container footer-top">
+    <div class="row gy-4">
+      <div class="col-lg-5 col-md-12 footer-info">
+        <div class="footer-logo">Hlearn<span>Hub</span></div>
+        <p class="footer-subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum at ligula felis.</p>
+        <div class="social-links d-flex mt-4">
+          <a href="#"><i class="bi bi-twitter-x"></i></a>
+          <a href="#"><i class="bi bi-facebook"></i></a>
+          <a href="#"><i class="bi bi-instagram"></i></a>
+          <a href="#"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+      
+      <!-- Fixed Contact Section -->
+      <div class="col-lg-7 col-md-12">
+        <div class="footer-contact text-end">
+          <p><i class="bi bi-geo-alt me-2"></i> 285 Đội Cấn, Ba Đình, Hà Nội</p>
+          <p><i class="bi bi-telephone me-2"></i> +84 123 456 789</p>
+          <p><i class="bi bi-envelope me-2"></i> info@hlearnhub.com</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="container copyright text-center mt-4">
+    <p>&copy; <span>2025</span> <strong>HlearnHub</strong>. All Rights Reserved</p>
+  </div>
+</footer>
+
+  <!-- Bootstrap and JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function updateSubjectDropdown() {
+      const courseType = document.getElementById('courseType').value;
+      const generalSubjectContainer = document.getElementById('generalSubjectContainer');
+      const specializedSubjectContainer = document.getElementById('specializedSubjectContainer');
+      
+      if (courseType === 'general') {
+        generalSubjectContainer.style.display = 'block';
+        specializedSubjectContainer.style.display = 'none';
+        document.getElementById('specializedSubject').value = '';
+      } else if (courseType === 'specialized') {
+        generalSubjectContainer.style.display = 'none';
+        specializedSubjectContainer.style.display = 'block';
+        document.getElementById('generalSubject').value = '';
+      }
+    }
+    
+    document.getElementById('teaching-schedule-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Đăng ký lịch dạy thành công!');
+      this.reset();
+      document.getElementById('generalSubjectContainer').style.display = 'none';
+      document.getElementById('specializedSubjectContainer').style.display = 'none';
+    });
+  </script>
+</body>
+</html>

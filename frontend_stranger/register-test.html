@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+</head>
+
+<body>
+<form id="register-form">
+  <input type="email" id="email" required placeholder="Nhập email">
+  <input type="password" id="password" required placeholder="Nhập mật khẩu">
+  <button type="submit">Đăng ký</button>
+  <div id="verify-message" style="display: none;">Vui lòng kiểm tra email và xác nhận trong 5 phút...</div>
+</form>
+</body>
+
+<script>
+const registerForm = document.getElementById("register-form");
+const verifyMsg = document.getElementById("verify-message");
+
+registerForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    // 1. Gửi request đăng ký
+    const res = await fetch("http://localhost:3000/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      const idToken = data.idToken;
+      verifyMsg.style.display = "block";
+      registerForm.style.display = "none";
+
+      // 2. Bắt đầu kiểm tra xác thực mỗi 5 giây, trong 5 phút
+      let totalTime = 300; // 5 phút = 300 giây
+      const interval = setInterval(async () => {
+        const check = await fetch("http://localhost:3000/api/check-verification", { //khả năng chưa build !!
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ idToken }),
+        });
+        const checkData = await check.json();
+
+        if (checkData.emailVerified) {
+          clearInterval(interval);
+          window.location.href = "success.html";
+        } else {
+          totalTime -= 5;
+          if (totalTime <= 0) {
+            clearInterval(interval);
+            alert("Xác thực thất bại. Vui lòng thử lại.");
+            window.location.href = "register.html";
+          }
+        }
+      }, 5000);
+    } else {
+      alert(data.error || "Lỗi không xác định.");
+    }
+  } catch (err) {
+    alert("Lỗi hệ thống: " + err.message);
+  }
+});
+</script>

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>HlearnHub - Find Your Perfect Tutor</title>
+  <meta name="description" content="HlearnHub connects students with qualified tutors for personalized learning experiences">
+  <meta name="keywords" content="tutoring, education, online learning, academic support">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="assets/css/main.css" rel="stylesheet">
+  
+  <!-- Additional Custom CSS -->
+  <style>
+    :root {
+      --primary-color: #AA261B; /*chỉnh lại màu cho phần hover và 1 số phần khác*/
+      --secondary-color: #444444;
+    }
+    
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      padding: 120px 0;
+    }
+    
+    .hero h1 {
+      font-size: 4rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .hero p {
+      font-size: 1.4rem;
+      max-width: 600px;
+      margin-bottom: 30px;
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.2));
+    }
+    
+    .hero-btn {
+      padding: 15px 35px;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 50px;
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .hero-btn:hover {
+      background: #4bb368;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    
+    .features-section {
+      padding: 100px 0;
+      background: #f8f9fa;
+    }
+    
+    .feature-card {
+      background: #fff;
+      border-radius: 15px;
+      padding: 40px 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      height: 100%;
+      transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    
+    .feature-icon {
+      font-size: 3.5rem;
+      margin-bottom: 25px;
+      color: var(--primary-color);
+    }
+    
+    .feature-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+    
+    .testimonial-section {
+      padding: 100px 0;
+    }
+    
+    .testimonial-card {
+      background: #fff;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      margin: 15px;
+    }
+    
+    .testimonial-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 20px;
+      border: 4px solid var(--primary-color);
+    }
+    
+    .client-name {
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    
+    .client-position {
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+    }
+    
+    .how-it-works {
+      padding: 100px 0;
+      background: #f8f9fa;
+    }
+    
+    .step-card {
+      text-align: center;
+      padding: 30px;
+      position: relative;
+    }
+    
+    .step-number {
+      width: 50px;
+      height: 50px;
+      background: var(--primary-color);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0 auto 20px;
+    }
+    
+    .step-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+    
+    .about-section {
+      padding: 100px 0;
+    }
+    
+    .about-img {
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    
+    .about-content h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: var(--secondary-color);
+    }
+    
+    .about-content p {
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+      color: #666;
+      line-height: 1.8;
+    }
+    
+    .about-list {
+      margin-top: 30px;
+    }
+    
+    .about-list li {
+      padding: 10px 0;
+      display: flex;
+      align-items: center;
+    }
+    
+    .about-list i {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+      margin-right: 15px;
+    }
+    
+    .cta-section {
+      padding: 80px 0;
+      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('assets/img/cta-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      text-align: center;
+      color: #fff;
+    }
+    
+    .cta-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+    
+    .cta-text {
+      font-size: 1.2rem;
+      max-width: 800px;
+      margin: 0 auto 30px;
+    }
+    
+    .swiper-testimonials {
+      padding-bottom: 50px;
+    }
+  </style>
+</head>
+
+<body class="index-page">
+
+  <!-- Keep the original header as requested -->
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+      <a href="/" class="logo d-flex align-items-center me-auto">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="assets/img/logo.png" alt=""> -->
+        <h1 class="sitename">HlearnHub</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="/" class="active">Trang chủ</a></li>
+          <li><a href="/about">Về chúng tôi</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <a class="btn-getstarted" href="/accreg">Đăng ký</a>
+
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Hero Section - Redesigned -->
+    <section id="hero" class="hero section dark-background">
+      <div class="hero-overlay"></div>
+      <img src="assets/img/hero-bg.jpg" alt="" data-aos="fade-in"> <!--chỉnh lại kích thước cho ngắn lại-->
+
+      <div class="container hero-content">
+        <div class="row">
+          <div class="col-lg-8" data-aos="fade-up" data-aos-delay="100">
+            <h1>Học tập hiệu quả với gia sư chất lượng</h1>
+            <p>Hệ thống kết nối trực tiếp gia sư và sinh viên, dành riêng cho sinh viên HUST</p>
+            <div class="d-flex mt-4">
+              <a href="/register" class="hero-btn">Tìm gia sư ngay</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section - New -->
+    <section class="features-section">
+      <div class="container">
+        <div class="row mb-5 text-center">
+          <div class="col-lg-8 mx-auto" data-aos="fade-up">
+            <h2 class="fs-1 fw-bold mb-3">Tại sao chọn HlearnHub?</h2>
+          </div>
+        </div>
+        
+        <div class="row g-4">
+          <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="feature-card">
+              <i class="bi bi-person-check feature-icon"></i>
+              <h3 class="feature-title">Vừa học, vừa dạy</h3>
+              <p>Cho phép các sinh viên vừa đăng ký học, vừa đăng ký dạy </p>
+            </div>
+          </div>
+          
+          <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="feature-card">
+              <i class="bi bi-calendar-check feature-icon"></i>
+              <h3 class="feature-title">Lịch học linh hoạt</h3>
+              <p>Dễ dàng sắp xếp lịch học phù hợp với thời gian của bạn, học mọi lúc mọi nơi.</p>
+            </div>
+          </div>
+          
+          <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="feature-card">
+              <i class="bi bi-graph-up-arrow feature-icon"></i>
+              <h3 class="feature-title">Kết quả thực tế</h3>
+              <p>Người dạy là các sinh viên khóa trên với điểm số tốt,đảm bảo sự gần gũi, phương pháp học thực tế, dễ tiếp cận</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section - Enhanced -->
+    <section id="about" class="about-section">
+      <div class="container">
+        <div class="row gy-4 align-items-center">
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="about-img">
+              <img src="assets/img/about.jpg" class="img-fluid" alt="About HlearnHub">
+            </div>
+          </div>
+
+          <div class="col-lg-6 about-content" data-aos="fade-up" data-aos-delay="200">
+            <h2>Giới thiệu về Hlearnhub</h2>
+            <p class="fst-italic">
+              HlearnHub là nền tảng kết nối gia sư chất lượng cao với học sinh đang tìm kiếm sự hỗ trợ trong việc học tập và phát triển kỹ năng.
+            </p>
+            <p>
+              Chúng tôi tin rằng mỗi học sinh đều có cách học riêng và tiềm năng vô hạn. Với đội ngũ gia sư giàu kinh nghiệm, chúng tôi mang đến phương pháp giảng dạy cá nhân hóa, giúp học sinh đạt được mục tiêu học tập của mình.
+            </p>
+            <ul class="about-list list-unstyled">
+              <li><i class="bi bi-check-circle"></i> <span>Phương pháp giảng dạy hiện đại, hiệu quả</span></li>
+              <li><i class="bi bi-check-circle"></i> <span>Gia sư chuyên nghiệp, tận tâm</span></li>
+              <li><i class="bi bi-check-circle"></i> <span>Linh hoạt về thời gian và địa điểm học tập</span></li>
+            </ul>
+            <a href="#" class="btn btn-outline-success rounded-pill px-4 py-2 mt-3"><span>Tìm hiểu thêm</span> <i class="bi bi-arrow-right ms-2"></i></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section - New 
+    <section class="testimonial-section">
+      <div class="container">
+        <div class="row mb-5 text-center">
+          <div class="col-lg-8 mx-auto" data-aos="fade-up">
+            <h2 class="fs-1 fw-bold mb-3">Học viên nói gì về chúng tôi</h2>
+            <p class="lead">Những câu chuyện thành công từ học viên đã sử dụng dịch vụ của HlearnHub</p>
+          </div>
+        </div>
+        
+        <div class="swiper swiper-testimonials" data-aos="fade-up">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="testimonial-card text-center">
+                <img src="assets/img/testimonials/testimonials-1.jpg" alt="Client" class="testimonial-img mx-auto">
+                <h4 class="client-name">Nguyễn Minh Anh</h4>
+                <p class="client-position">Học sinh lớp 12</p>
+                <div class="mb-3">
+                  <i class="bi bi-star-fill text-warning"></i>
+                  <i class="bi bi-star-fill text-warning"></i>
+                  <i class="bi bi-star-fill text-warning"></i>
+                  <i class="bi bi-star-fill text-warning"></i>
+                  <i class="bi bi-star-fill text-warning"></i>
+                </div>
+                <p>"Nhờ có gia sư từ HlearnHub, điểm số môn Toán của mình đã tăng đáng kể. Cách giảng dạy rõ ràng, dễ hiểu và phù hợp với trình độ của mình."</p>
+              </div>
+            </div>
+            
+            <div class="swiper-slide">
+              <div class="testimonial-card text-center">
+                <img src="assets/img/testimonials/testimonials-2.jpg" alt="Client" class="testimonial-img mx-auto">
+                <h4 class="client-name">Trần Hoàng Nam</h4>
+                <p class="client-position">Sinh viên năm nhất</p>
+                <div class="mb-3">
+                  <i class="bi bi-star-fill text-warning"></i>
+                  <i class="bi bi-star-fill text-warning"></i>
+                  <i class="bi bi-star-fill text-warning"></i>
+                  <i class="bi bi-star-fill text-warning"></i>
+                  <i class="bi bi-star-half text-warning"></i>
+                </div>
+                <p>"Gia sư của HlearnHub đã giúp mình vượt qua kỳ thi đại học với số điểm cao. Giờ đây, mình vẫn tiếp tục được hỗ trợ trong quá trình học đại học."</p>
+              </div>
+            </div>
+            
+            <div class="swiper-slide">
+              <div class="testimonial-card text-center">
+                <img src="assets/img/testimonials/testimonials-3.jpg" alt="Client" class="testimonial-img mx-auto">
+                <h4 class="client-name">Lê Thảo Vy</h4>
+                <p class="client-position">Phụ huynh học sinh</p>
+                <div class="mb-3">
+                  <i class="bi bi-star-fill text-warning"></i>
+                  <i class="bi bi-star-fill text-warning"></i>
+                  <i class="bi bi-star-fill text-warning"></i>
+                  <i class="bi bi-star-fill text-warning"></i>
+                  <i class="bi bi-star-fill text-warning"></i>
+                </div>
+                <p>"Con trai tôi từng rất sợ học tiếng Anh, nhưng gia sư từ HlearnHub đã giúp cháu yêu thích môn học này. Giờ đây cháu tự tin giao tiếp và đạt điểm cao."</p>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
+      </div>
+    </section>
+
+     Call to Action Section - New 
+    <section class="cta-section">
+      <div class="container text-center">
+        <h2 class="cta-title" data-aos="fade-up">Sẵn sàng nâng cao kết quả học tập?</h2>
+        <p class="cta-text" data-aos="fade-up" data-aos-delay="100">Đăng ký ngay hôm nay để kết nối với gia sư phù hợp và bắt đầu hành trình học tập hiệu quả</p>
+        <a href="courses.html" class="hero-btn" data-aos="fade-up" data-aos-delay="200">Đăng ký ngay</a>
+      </div>
+    </section> -->
+
+  </main>
+
+  <!-- Keep the original footer as requested -->
+  <footer id="footer" class="footer">
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-info">
+          <div class="footer-logo">Hlearn<span>Hub</span></div>
+          <p class="footer-subtitle">Giải pháp tìm kiếm gia sư trực tiếp dành riêng cho sinh viên HUST</p>
+          <div class="social-links d-flex mt-4">
+            <a href="#"><i class="bi bi-twitter-x"></i></a>
+            <a href="#"><i class="bi bi-facebook"></i></a>
+            <a href="#"><i class="bi bi-instagram"></i></a>
+            <a href="#"><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+        
+        <div class="col-lg-7 col-md-12">
+          <div class="row">
+            <div class="col-lg-4 col-6 footer-links">
+              <div class="footer-contact">
+                <p><i class="bi bi-geo-alt me-2"></i> Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội</p>
+                <p><i class="bi bi-telephone me-2"></i> +84 123 456 789</p>
+                <p><i class="bi bi-envelope me-2"></i> info@hlearnhub.com</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="container copyright text-center mt-4">
+      <p>&copy; <span>2025</span> <strong>HlearnHub</strong>. All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+
+  <!-- Main JS File -->
+  <script src="assets/js/main.js"></script>
+  
+  <!-- Additional Custom JS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize Swiper for testimonials
+      new Swiper('.swiper-testimonials', {
+        slidesPerView: 1,
+        spaceBetween: 30,
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true,
+        },
+        breakpoints: {
+          768: {
+            slidesPerView: 2,
+          },
+          1024: {
+            slidesPerView: 3,
+          },
+        },
+        autoplay: {
+          delay: 5000,
+        },
+      });
+    });
+  </script>
+
+</body>
+
+</html>

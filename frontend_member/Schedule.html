@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>HlearnHub - Personal Schedule</title>
+  <meta name="description" content="HlearnHub student learning platform - Schedule page">
+  <meta name="keywords" content="education, tutoring, online learning, schedule">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link href="assets/css/main.css" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-color: #AA261B;
+      --secondary-color: #AA261B;
+      --accent-color: #AA261B;
+      --light-color: #fff;
+      --dark-color: #34495e;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --overdue-color:#e74c3c;
+      --upcoming-color: #2ecc71;
+      --current-color: #f39c12;
+      --tick-color:#3498db;
+    }
+    
+    body {
+      font-family: 'Open Sans', sans-serif;
+      color: #444;
+      background-color: #d7d5d5c4;
+    } 
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--heading-font);
+      color: #444;
+      font-weight: 600;
+    }
+    
+    /* Schedule page specific styles */
+    .page-title {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .page-title h2 {
+      color: white;
+      margin-bottom: 10px;
+    }
+    
+    .schedule-tabs .nav-tabs {
+      border: none;
+      margin-bottom: 30px;
+    }
+    
+    .schedule-tabs .nav-link {
+      font-weight: 600;
+      color: #444;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 50px;
+      margin-right: 10px;
+      transition: 0.3s;
+    }
+    
+    .schedule-tabs .nav-link.active {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .schedule-tabs .nav-link:hover:not(.active) {
+      background: rgba(170, 38, 27, 0.1);
+    }
+    
+    /* Calendar styles */
+    .calendar-header {
+      background: var(--primary-color);
+      color: white;
+      border-radius: 15px 15px 0 0;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .calendar-header h4 {
+      color: white;
+      margin: 0;
+    }
+    
+    .calendar-body {
+      background: white;
+      border-radius: 0 0 15px 15px;
+      padding: 20px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    }
+    
+    .calendar-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .calendar-nav {
+      display: flex;
+      align-items: center;
+    }
+    
+    .calendar-nav button {
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      color: var(--primary-color);
+      cursor: pointer;
+    }
+    
+    .calendar-month {
+      margin: 0 15px;
+      font-weight: 600;
+      font-size: 18px;
+    }
+    
+    .calendar-view button {
+      background: #f5f5f5;
+      border: none;
+      padding: 8px 15px;
+      margin-left: 10px;
+      border-radius: 5px;
+      color: #444;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    
+    .calendar-view button.active {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    /* Event list styles */
+    .schedule-container {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+    }
+    
+    .schedule-header {
+      background: var(--primary-color);
+      color: white;
+      padding: 20px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .schedule-body {
+      padding: 20px;
+    }
+    
+    .class-item {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-left: 4px solid var(--accent-color);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      transition: transform 0.2s;
+    }
+    
+    .class-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .class-date {
+      width: 80px;
+      min-width: 80px;
+      text-align: center;
+      border-right: 1px solid #eee;
+      padding-right: 15px;
+      margin-right: 15px;
+    }
+    
+    .class-date .day {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    
+    .class-date .date {
+      font-size: 14px;
+      color: #777;
+    }
+    
+    .class-info {
+      flex-grow: 1;
+    }
+    
+    .class-info h5 {
+      font-size: 16px;
+      margin-bottom: 5px;
+      color: var(--primary-color);
+    }
+    
+    .class-info p {
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: #777;
+    }
+    
+    .class-time {
+      display: flex;
+      align-items: center;
+      color: var(--accent-color);
+      font-weight: 500;
+      font-size: 14px;
+      margin-bottom: 0;
+    }
+    
+    .class-time i {
+      margin-right: 5px;
+    }
+    
+    .class-actions {
+      min-width: 120px;
+      text-align: right;
+    }
+    
+    .action-btn {
+      background: #f5f5f5;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      color: #444;
+      margin-left: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 14px;
+    }
+    
+    .action-btn.primary {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .action-btn:hover {
+      opacity: 0.8;
+    }
+    
+    .class-item.math {
+      border-left-color: #2ecc71;
+    }
+    
+    .class-item.english {
+      border-left-color: #3498db;
+    }
+    
+    .class-item.physics {
+      border-left-color: #f39c12;
+    }
+    
+    .class-item.cs {
+      border-left-color: var(--overdue-color);
+    }
+    
+    .class-item.chemistry {
+      border-left-color: #e74c3c;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    
+    .status-upcoming {
+      background: rgba(46, 204, 113, 0.15);
+      color: #2ecc71;
+    }
+    
+    .status-ongoing {
+      background: rgba(243, 156, 18, 0.15);
+      color: #f39c12;
+    }
+    
+    .status-completed {
+      background: rgba(231, 76, 60, 0.15);
+      color: #e74c3c;
+    }
+    
+    /* Filter panel styles from first file */
+    .filter-panel {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    }
+    
+    .schedule-type-selector {
+      background: white;
+      border-radius: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .schedule-type-options {
+      margin-top: 15px;
+    }
+    
+    .btn-schedule {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #e9ecef;
+      background-color: #f8f9fa;
+      color: #495057;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-schedule:first-child {
+      border-radius: 8px 0 0 8px;
+    }
+    
+    .btn-schedule:last-child {
+      border-radius: 0 8px 8px 0;
+    }
+    
+    .btn-schedule.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+      box-shadow: 0 2px 10px rgba(170, 38, 27, 0.3);
+    }
+    
+    .btn-schedule:hover:not(.active) {
+      background-color: rgba(170, 38, 27, 0.1);
+    }
+    
+    .filter-header {
+      font-weight: 600;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .filter-reset {
+      color: var(--primary-color);
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    
+    .filter-group {
+      margin-bottom: 15px;
+    }
+    
+    .filter-group-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #495057;
+    }
+    
+    .filter-option {
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .filter-option input[type="checkbox"] {
+      margin-right: 8px;
+      cursor: pointer;
+    }
+    
+    .filter-option label {
+      margin-bottom: 0;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    .date-range .form-control {
+      font-size: 14px;
+      border-radius: 8px;
+      border: 1px solid #dee2e6;
+    }
+    
+    .date-range .form-label {
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+    
+    .apply-filter-btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 20px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .apply-filter-btn:hover {
+      background-color: #8a1e16;
+      box-shadow: 0 2px 10px rgba(170, 38, 27, 0.3);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+      .schedule-tabs .nav-link {
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .filter-group {
+        margin-bottom: 20px;
+      }
+      
+      .class-actions {
+        width: 100%;
+        text-align: left;
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+      }
+      
+      .class-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .class-date {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        padding-right: 0;
+        padding-bottom: 10px;
+        margin-right: 0;
+        margin-bottom: 10px;
+        text-align: left;
+        display: flex;
+        align-items: center;
+      }
+      
+      .class-date .day {
+        margin-right: 10px;
+      }
+      
+      .schedule-tabs .nav-link {
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+      <a href="/" class="logo d-flex align-items-center me-auto">
+        <h1 class="sitename">HlearnHub</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="/">Trang chủ</a></li>
+          <li><a href="/about">Về chúng tôi</a></li>
+          <li><a href="/teaching_register">Đăng ký dạy</a></li>
+          <li><a href="/study_register">Đăng ký học</a></li>
+          <li><a href="/schedule" class="active">Lịch cá nhân</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <a class="btn-getstarted" href="/profile"><i class="bi bi-person-circle me-2"></i>Tài khoản User</a>
+    </div>
+  </header>
+
+  <main class="main py-5">
+    <div class="container">
+      <!-- Page title -->
+      <div class="page-title mb-5" data-aos="fade-up">
+        <div class="row align-items-center">
+          <div class="col-lg-8">
+            <h2>Lịch cá nhân</h2>
+            <p>Quản lý lịch dạy và lịch học của bạn tại đây.</p>
+          </div>
+          <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+            <div class="today-date">
+              <span id="currentDay">Thứ Tư</span>, <span id="currentDate">30/04/2025</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Criteria Box from first file -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="filter-panel">
+            <div class="filter-header">
+              <div>Lọc theo tiêu chí</div>
+              <span class="filter-reset">Đặt lại</span>
+            </div>
+            <div class="row">
+              <!-- Status Filters -->
+              <div class="col-lg-8">
+                <div class="filter-group">
+                  <h6 class="filter-group-title">Trạng thái</h6>
+                  <div class="row">
+                   <div class="col-lg-4" class="filter-option">
+                     <input type="checkbox" id="filter-upcoming" checked>
+                     <label for="filter-upcoming">Sắp tới</label>
+                   </div>
+                   <div class="col-lg-4" class="filter-option">
+                     <input type="checkbox" id="filter-ongoing" checked>
+                     <label for="filter-ongoing">Đang diễn ra</label>
+                   </div>
+                   <div class="col-lg-4" class="filter-option">
+                     <input type="checkbox" id="filter-completed">
+                     <label for="filter-completed">Kết thúc</label>
+                   </div>
+                </div>
+                </div>
+              </div>
+              
+              <!-- Date Range Filter -->
+              <div class="col-md-4">
+                <div class="filter-group">
+                  <h6 class="filter-group-title">Thời gian</h6>
+                  <div class="date-range">
+                    <div class="mb-2">
+                      <label for="start-date" class="form-label">Từ ngày</label>
+                      <input type="date" class="form-control" id="start-date">
+                    </div>
+                    <div>
+                      <label for="end-date" class="form-label">Đến ngày</label>
+                      <input type="date" class="form-control" id="end-date">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Apply Filters Button -->
+            <div class="row mt-3">
+              <div class="col-12 text-end">
+                <button class="btn apply-filter-btn">
+                  <i class="bi bi-funnel-fill me-2"></i>Áp dụng bộ lọc
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Schedule tabs -->
+      <div class="schedule-tabs" data-aos="fade-up">
+        <ul class="nav nav-tabs" id="scheduleTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="teaching-tab" data-bs-toggle="tab" data-bs-target="#teaching-tab-pane" type="button" role="tab" aria-controls="teaching-tab-pane" aria-selected="true">
+              <i class="bi bi-mortarboard-fill me-2"></i>Lịch dạy
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="learning-tab" data-bs-toggle="tab" data-bs-target="#learning-tab-pane" type="button" role="tab" aria-controls="learning-tab-pane" aria-selected="false">
+              <i class="bi bi-book me-2"></i>Lịch học
+            </button>
+          </li>
+        </ul>
+        
+        <div class="tab-content" id="scheduleTabContent">
+          <!-- Teaching schedule tab -->
+          <div class="tab-pane fade show active" id="teaching-tab-pane" role="tabpanel" aria-labelledby="teaching-tab" tabindex="0">
+            
+            <!-- Teaching schedule content -->
+            <div class="schedule-container mb-4">
+              <div class="schedule-header">
+                <i class="bi bi-calendar-week me-2"></i> Lịch dạy
+              </div>
+              <div class="schedule-body">
+                <!-- Teaching class items -->
+                <div class="class-item math">
+                  <div class="class-date">
+                    <div class="day">Thứ Tư</div>
+                    <div class="date">30/04/2025</div>
+                  </div>
+                  <div class="class-info">
+                    <span class="status-badge status-upcoming">Sắp tới</span>
+                    <h5>Toán học - Đại số tuyến tính</h5>
+                    <p>Học sinh: Nguyễn Văn A</p>
+                    <p class="class-time"><i class="bi bi-clock"></i> 15:00 - 17:00</p>
+                    <p class="class-time"><i class="bi bi-calendar-week"></i> Ngày....</p>
+                  </div>
+                  <div class="class-actions">
+                    <button class="action-btn" onclick=""><i class="bi bi-info-circle"></i> Chi tiết</button>
+                  </div>
+                </div>
+                
+                <div class="class-item physics">
+                  <div class="class-date">
+                    <div class="day">Thứ Năm</div>
+                    <div class="date">01/05/2025</div>
+                  </div>
+                  <div class="class-info">
+                    <span class="status-badge status-ongoing">Đang diễn ra</span>
+                    <h5>Vật lý - Cơ học</h5>
+                    <p>Học sinh: Trần Thị B</p>
+                    <p class="class-time"><i class="bi bi-clock"></i> 09:00 - 11:00</p>
+                    <p class="class-time"><i class="bi bi-calendar-week"></i> Ngày....</p>
+                  </div>
+                  <div class="class-actions">
+                    <button class="action-btn" onclick=""><i class="bi bi-info-circle"></i> Chi tiết</button>
+                  </div>
+                </div>
+                
+                <div class="class-item cs">
+                  <div class="class-date">
+                    <div class="day">Thứ Bảy</div>
+                    <div class="date">03/05/2025</div>
+                  </div>
+                  <div class="class-info">
+                    <span class="status-badge status-completed">Kết thúc</span>
+                    <h5>Khoa học máy tính - Lập trình Java</h5>
+                    <p>Học sinh: Lê Văn C</p>
+                    <p class="class-time"><i class="bi bi-clock"></i> 14:30 - 16:30</p>
+                    <p class="class-time"><i class="bi bi-calendar-week"></i> Ngày....</p>
+                  </div>
+                  <div class="class-actions">
+                    <button class="action-btn" onclick=""><i class="bi bi-info-circle"></i> Chi tiết</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Pagination -->
+            <nav aria-label="Page navigation example">
+              <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Trước</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#" style="background-color: var(--primary-color); border-color: var(--primary-color);">1</a></li>
+                <li class="page-item"><a class="page-link" href="#" style="color: var(--dark-color)">2</a></li>
+                <li class="page-item"><a class="page-link" href="#" style="color: var(--dark-color)">3</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#" style="color: var(--dark-color)">Tiếp</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          
+          <!-- Learning schedule tab -->
+          <div class="tab-pane fade" id="learning-tab-pane" role="tabpanel" aria-labelledby="learning-tab" tabindex="0">
+            <!-- Nội dung lịch học sẽ được hiển thị ở đây -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer id="footer" class="footer">
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-info">
+          <div class="footer-logo">Hlearn<span>Hub</span></div>
+          <p class="footer-subtitle">Giải pháp tìm kiếm gia sư trực tiếp dành riêng cho sinh viên HUST</p>
+          <div class="social-links d-flex mt-4">
+            <a href="#"><i class="bi bi-twitter-x"></i></a>
+            <a href="#"><i class="bi bi-facebook"></i></a>
+            <a href="#"><i class="bi bi-instagram"></i></a>
+            <a href="#"><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+        
+        <div class="col-lg-7 col-md-12">
+          <div class="row">
+            <div class="col-lg-4 col-6 footer-links">
+              <div class="footer-contact">
+                <p><i class="bi bi-geo-alt me-2"></i> Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội</p>
+                <p><i class="bi bi-telephone me-2"></i> +84 123 456 789</p>
+                <p><i class="bi bi-envelope me-2"></i> info@hlearnhub.com</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="container copyright text-center mt-4">
+      <p>&copy; <span>2025</span> <strong>HlearnHub</strong>. All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS and other scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Custom JavaScript -->
+  <script>
+    // Set current date in header
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get current date
+      const now = new Date();
+      const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+      const day = days[now.getDay()];
+      const date = String(now.getDate()).padStart(2, '0');
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const year = now.getFullYear();
+      
+      document.getElementById('currentDay').textContent = day;
+      document.getElementById('currentDate').textContent = `${date}/${month}/${year}`;
+    });
+  </script>
