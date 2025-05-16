@@ -1,99 +1,26 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đăng ký tài khoản</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background: #f3f3f3;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .form-container {
-      background: #fff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 400px;
-    }
-    .hidden { display: none; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác thực email</title>
+    <script src="js/auth.js"></script>
 </head>
 <body>
-  <div class="form-container">
-    <h2 class="text-center mb-4">Đăng ký tài khoản</h2>
-    <form id="register-form">
-      <div class="mb-3">
-        <input type="email" id="email" class="form-control" placeholder="Email" required>
-      </div>
-      <div class="mb-3">
-        <input type="password" id="password" class="form-control" placeholder="Mật khẩu" required>
-      </div>
-      <button type="submit" class="btn btn-danger w-100">Đăng ký</button>
-    </form>
-    <div id="verify-message" class="alert alert-info text-center mt-3 hidden">
-      Vui lòng kiểm tra email để xác nhận trong 5 phút...
+    <div class="container">
+        <h2>Xác thực email</h2>
+        <p>Vui lòng kiểm tra email và click vào link xác thực.</p>
+        <p>Nếu bạn không nhận được email, hãy click vào nút bên dưới để gửi lại.</p>
+        
+        <button onclick="resendVerificationEmail()">Gửi lại email xác thực</button>
+        <button onclick="logout()">Hủy đăng ký</button>
     </div>
-  </div>
 
-  <script>
-    const registerForm = document.getElementById("register-form");
-    const verifyMsg = document.getElementById("verify-message");
-
-    registerForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      try {
-        const res = await fetch("http://localhost:3000/api/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password })
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          const idToken = data.idToken;
-          verifyMsg.classList.remove("hidden");
-          registerForm.classList.add("hidden");
-
-          let timeLeft = 300;
-          const interval = setInterval(async () => {
-            const check = await fetch("http://localhost:3000/api/check-verification", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ idToken })
-            });
-            const result = await check.json();
-
-            if (result.emailVerified) {
-              clearInterval(interval);
-              window.location.href = "success.html";
-            } else {
-              timeLeft -= 5;
-              if (timeLeft <= 0) {
-                clearInterval(interval);
-                alert("Xác thực thất bại. Vui lòng thử lại.");
-                window.location.href = "register.html";
-              }
-            }
-          }, 5000);
-        } else {
-          alert(data.error || "Đăng ký thất bại.");
-        }
-      } catch (err) {
-        alert("Lỗi hệ thống: " + err.message);
-      }
-    });
-  </script>
+    <script>
+        // Bắt đầu kiểm tra trạng thái xác thực khi trang được tải
+        window.onload = function() {
+            checkVerification();
+        };
+    </script>
 </body>
 </html>
