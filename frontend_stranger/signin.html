@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Đăng nhập</title>
+</head>
+<body>
+  <h2>Đăng nhập</h2>
+  <form id="loginForm">
+    <input type="email" name="email" placeholder="Email" required><br>
+    <input type="password" name="password" placeholder="Mật khẩu" required><br>
+    <button type="submit">Đăng nhập</button>
+  </form>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+  <script src="firebase-config.js"></script>
+  <script>
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = e.target.email.value;
+  const password = e.target.password.value;
+
+  try {
+    const userCredential = await auth.signInWithEmailAndPassword(email, password);
+    const user = userCredential.user;
+
+    await user.reload(); // cập nhật trạng thái mới nhất
+
+    if (!user.emailVerified) {
+      alert("Bạn cần xác minh email trước khi đăng nhập.");
+      await auth.signOut();
+      return;
+    }
+
+    // Nếu đã xác minh email, lưu thông tin vào Firestore nếu chưa có
+    const docRef = db.collection("users").doc(user.uid);
+    const docSnap = await docRef.get();
+
+    if (!docSnap.exists) {
+      const localUserData = JSON.parse(localStorage.getItem("userData")) || {};
+      await docRef.set({
+        email: user.email,
+        fullName: localUserData.fullName || "Chưa có tên",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      localStorage.removeItem("userData");
+    }
+
+    window.location.href = "dashboard.html";
+
+  } catch (err) {
+    alert("Lỗi đăng nhập: " + err.message);
+  }
+});
+  </script>
+</body>
+</html>
