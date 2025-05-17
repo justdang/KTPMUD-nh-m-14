@@ -14,11 +14,124 @@ import express from 'express';
 import cors from 'cors';
 const app = express()
 import session from './session.mjs';
+// import userProfileRoutes from './routes/userProfile';
 
 // Middleware
 app.use(express.json());
 app.use(cors());
 app.use(session);
+
+// Middleware checkRole 
+function checkRole(req, res, next) {
+  if (!req.session.role) {
+    req.session.role = 'stranger'
+  }
+  next()
+}
+
+app.get('/', checkRole, (req, res) => {
+  const role = req.session.role
+
+  if (role == 'member') {
+    res.sendFile(path.resolve(__dirname, './frontend_member/Index_member.html'))
+  } else if (role == 'stranger') {
+    res.sendFile(path.resolve(__dirname, './frontend_stranger/Index_stranger.html'))
+  }
+})
+
+app.get('/about', (req, res) => {
+  const role = req.session.role;
+  if (role == 'member') {
+    res.sendFile(path.resolve(__dirname, './frontend_member/About_member.html'));
+  } else if (role == 'stranger') {
+    res.sendFile(path.resolve(__dirname, './frontend_stranger/About_stranger.html'));
+  }
+});
+
+app.get('/signup', (req, res) => {
+  res.sendFile(path.resolve(__dirname, './frontend_stranger/register-test.html'))
+});
+
+// // ... các route HTML khác ...
+
+// // 404 cho các route còn lại
+// app.use((req, res) => {
+//   res.status(404).send('resource not found');
+// });
+
+// app.post('/register', (req, res) => {
+//   req.session.role = 'member'; // Gán role thành member
+//   res.redirect('/'); // Redirect về trang chủ
+// })
+
+
+
+// // Home page
+
+
+//Account register 
+app.get('/accreg', checkRole, (req, res) => {
+
+    res.sendFile(path.resolve(__dirname, './frontend_stranger/account_register.html'))
+})
+
+// Register page
+app.get('/register', (req, res) => {
+  res.sendFile(path.resolve(__dirname, './frontend_stranger/Member_register.html'))
+})
+
+//verify test, success test - xóa sau khi test xong
+app.get('/verify', (req, res) => {
+  res.sendFile(path.resolve(__dirname, './frontend_stranger/verify-test.html'))
+})
+
+app.get('/success', (req, res) => {
+  res.sendFile(path.resolve(__dirname, './frontend_stranger/success-test.html'))
+})
+
+// // study page
+// app.get('/study_register', (req, res) => {
+//   const role = req.session.role
+//   if (role == 'member') {
+//     res.sendFile(path.resolve(__dirname, './frontend_member/Study_register.html'))
+//   } else {
+//     res.status(404).send('resource not found')
+//   }
+// })
+
+// // teaching page
+// app.get('/teaching_register', (req, res) => {
+//   const role = req.session.role
+//   if (role == 'member') {
+//     res.sendFile(path.resolve(__dirname, './frontend_member/Teaching_register.html'))
+//   } else {
+//     res.status(404).send('resource not found')
+//   }
+// })
+
+// // schedule page
+// app.get('/schedule', (req, res) => {
+//   const role = req.session.role
+//   if (role == 'member') {
+//     res.sendFile(path.resolve(__dirname, './frontend_member/Schedule.html'))
+//   } else {
+//     res.status(404).send('resource not found')
+//   }
+// })
+
+// // profile page
+// app.get('/profile', (req, res) => {
+//   const role = req.session.role
+//   if (role == 'member') {
+//     res.sendFile(path.resolve(__dirname, './frontend_member/Profile_user.html'))
+//   } else {
+//     res.status(404).send('resource not found')
+//   }
+// })
+
+
+
+// app.use('/api/users', userProfileRoutes);
 
 // ==== ROUTE API (Đặt ở đây, TRƯỚC static và HTML) ====
 import {
@@ -289,111 +402,6 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-// Các route HTML
-app.get('/signup', (req, res) => {
-  res.sendFile(path.resolve(__dirname, './frontend_stranger/register-test.html'))
-});
-
-app.get('/about', (req, res) => {
-  const role = req.session.role;
-  if (role == 'member') {
-    res.sendFile(path.resolve(__dirname, './frontend_member/About_member.html'));
-  } else if (role == 'stranger') {
-    res.sendFile(path.resolve(__dirname, './frontend_stranger/About_stranger.html'));
-  }
-});
-
-// ... các route HTML khác ...
-
-// 404 cho các route còn lại
-app.use((req, res) => {
-  res.status(404).send('resource not found');
-});
-
-app.post('/register', (req, res) => {
-  req.session.role = 'member'; // Gán role thành member
-  res.redirect('/'); // Redirect về trang chủ
-})
-
-// Middleware checkRole 
-function checkRole(req, res, next) {
-  if (!req.session.role) {
-    req.session.role = 'stranger'
-  }
-  next()
-}
-
-// Home page
-app.get('/', checkRole, (req, res) => {
-  const role = req.session.role
-
-  if (role == 'member') {
-    res.sendFile(path.resolve(__dirname, './frontend_member/Index_member.html'))
-  } else if (role == 'stranger') {
-    res.sendFile(path.resolve(__dirname, './frontend_stranger/Index_stranger.html'))
-  }
-})
-
-//Account register 
-app.get('/accreg', checkRole, (req, res) => {
-
-    res.sendFile(path.resolve(__dirname, './frontend_stranger/account_register.html'))
-})
-
-// Register page
-app.get('/register', (req, res) => {
-  res.sendFile(path.resolve(__dirname, './frontend_stranger/Member_register.html'))
-})
-
-//verify test, success test - xóa sau khi test xong
-app.get('/verify', (req, res) => {
-  res.sendFile(path.resolve(__dirname, './frontend_stranger/verify-test.html'))
-})
-
-app.get('/success', (req, res) => {
-  res.sendFile(path.resolve(__dirname, './frontend_stranger/success-test.html'))
-})
-
-// study page
-app.get('/study_register', (req, res) => {
-  const role = req.session.role
-  if (role == 'member') {
-    res.sendFile(path.resolve(__dirname, './frontend_member/Study_register.html'))
-  } else {
-    res.status(404).send('resource not found')
-  }
-})
-
-// teaching page
-app.get('/teaching_register', (req, res) => {
-  const role = req.session.role
-  if (role == 'member') {
-    res.sendFile(path.resolve(__dirname, './frontend_member/Teaching_register.html'))
-  } else {
-    res.status(404).send('resource not found')
-  }
-})
-
-// schedule page
-app.get('/schedule', (req, res) => {
-  const role = req.session.role
-  if (role == 'member') {
-    res.sendFile(path.resolve(__dirname, './frontend_member/Schedule.html'))
-  } else {
-    res.status(404).send('resource not found')
-  }
-})
-
-// profile page
-app.get('/profile', (req, res) => {
-  const role = req.session.role
-  if (role == 'member') {
-    res.sendFile(path.resolve(__dirname, './frontend_member/Profile_user.html'))
-  } else {
-    res.status(404).send('resource not found')
-  }
-})
 
 app.listen(3000, () => {
   console.log('server is listening on port 3000....')

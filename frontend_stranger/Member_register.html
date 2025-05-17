@@ -377,35 +377,55 @@
       document.getElementById('imagePreview').innerHTML = '<i class="bi bi-person"></i>';
 
       //Post form data to the server
-      fetch('/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: '' // gửi form rỗng, hoặc sau này bạn thêm dữ liệu nếu cần
-      })
-      .then(response => {
-        if (response.redirected) {
-          window.location.href = response.url; // redirect đúng về trang student
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-  
+      //fetch('/register', {
+        //method: 'POST',
+        //headers: {
+          //'Content-Type': 'application/x-www-form-urlencoded'
+        //},
+        //body: '' // gửi form rỗng, hoặc sau này bạn thêm dữ liệu nếu cần
+      //})
+      //.then(response => {
+        //if (response.redirected) {
+          //window.location.href = response.url; // redirect đúng về trang student
+        //}
+      //})
+      //.catch(error => {
+        //console.error('Error:', error);
+      //});
+    const email = form.email.value;
+    const password = form.password.value;
+    const fullName = form.fullName.value;
+    const birthday = form.birthday.value;
+    const mssv = form.mssv.value;
+    const gpa = parseFloat(form.gpa.value);
+
+    // Lưu vào object để xử lý tiếp
+    const userData = {
+      email,
+      password,
+      fullName,
+      birthday,
+      mssv,
+      gpa
+    };
+
+    console.log('Dữ liệu thu được:', userData);
+
     });
+
+    import { registerUser } from './authService.js';
     
     // Image preview functionality
-    document.getElementById('profileImage').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          document.getElementById('imagePreview').innerHTML = `<img src="${event.target.result}" alt="Profile Preview">`;
-        }
-        reader.readAsDataURL(file);
-      }
-    });
+    //document.getElementById('profileImage').addEventListener('change', function(e) {
+      //const file = e.target.files[0];
+      //if (file) {
+        //const reader = new FileReader();
+        //reader.onload = function(event) {
+          //document.getElementById('imagePreview').innerHTML = `<img src="${event.target.result}" alt="Profile Preview">`;
+        //}
+        //reader.readAsDataURL(file);
+      //}
+    //});
   </script>
 </body>
 </html>
