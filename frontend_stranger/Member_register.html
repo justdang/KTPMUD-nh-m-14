@@ -215,6 +215,15 @@
       }
     }
   </style>
+  <!-- Firebase App (core) -->
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+
+<!-- Firebase Auth -->
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+
+<!-- Firestore -->
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+
 </head>
 
 <body>
@@ -259,7 +268,21 @@
                     </label>
                   </div>
                 </div>
-                
+
+                <div class="col-12">
+  <div class="mb-3">
+    <label for="email" class="form-label">Email</label>
+    <input type="email" class="form-control" id="email" name="email" required>
+  </div>
+</div>
+
+<div class="col-12">
+  <div class="mb-3">
+    <label for="password" class="form-label">Mật khẩu</label>
+    <input type="password" class="form-control" id="password" name="password" required>
+  </div>
+</div>
+  
                 <!-- Form fields on the right for desktop -->
                 <div class="col-md-8 order-md-2 order-1">
                   <div class="row">
@@ -370,62 +393,75 @@
   <!-- Bootstrap and JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    document.getElementById('teaching-schedule-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      alert('Đăng ký thành công!');
+
+  // Xử lý sự kiện submit form
+  document.getElementById('teaching-schedule-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    // Lấy dữ liệu từ form
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const fullName = document.getElementById('fullName').value;
+    const birthDate = document.getElementById('birthDate').value;
+    const phoneNumber = document.getElementById('phoneNumber').value;
+    const studentId = document.getElementById('studentId').value;
+    const course = document.getElementById('course').value;
+    const departmentCode = document.getElementById('departmentCode').value;
+    const recentGPA = parseFloat(document.getElementById('recentGPA').value);
+    const cpa = parseFloat(document.getElementById('cpa').value);
+    const profileImageFile = document.getElementById('profileImage').files[0];
+
+    try {
+      // Tạo người dùng mới
+      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+      const uid = userCredential.user.uid;
+
+      // Tải ảnh lên Firebase Storage nếu có
+      let imageUrl = "";
+      if (profileImageFile) {
+        const storageRef = storage.ref(`profileImages/${uid}.jpg`);
+        await storageRef.put(profileImageFile);
+        imageUrl = await storageRef.getDownloadURL();
+      }
+
+      // Lưu thông tin vào Firestore
+      await db.collection('users').doc(uid).set({
+        uid,
+        email,
+        fullName,
+        birthDate,
+        phoneNumber,
+        studentId,
+        course,
+        departmentCode,
+        recentGPA,
+        cpa,
+        imageUrl,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      alert("Đăng ký thành công!");
       this.reset();
       document.getElementById('imagePreview').innerHTML = '<i class="bi bi-person"></i>';
+    } catch (error) {
+      console.error("Lỗi đăng ký:", error);
+      alert("Đăng ký thất bại: " + error.message);
+    }
+  });
 
-      //Post form data to the server
-      //fetch('/register', {
-        //method: 'POST',
-        //headers: {
-          //'Content-Type': 'application/x-www-form-urlencoded'
-        //},
-        //body: '' // gửi form rỗng, hoặc sau này bạn thêm dữ liệu nếu cần
-      //})
-      //.then(response => {
-        //if (response.redirected) {
-          //window.location.href = response.url; // redirect đúng về trang student
-        //}
-      //})
-      //.catch(error => {
-        //console.error('Error:', error);
-      //});
-    const email = form.email.value;
-    const password = form.password.value;
-    const fullName = form.fullName.value;
-    const birthday = form.birthday.value;
-    const mssv = form.mssv.value;
-    const gpa = parseFloat(form.gpa.value);
+  // Hiển thị ảnh khi chọn
+  document.getElementById('profileImage').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        document.getElementById('imagePreview').innerHTML =
+          `<img src="${event.target.result}" alt="Profile Preview">`;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+</script>
 
-    // Lưu vào object để xử lý tiếp
-    const userData = {
-      email,
-      password,
-      fullName,
-      birthday,
-      mssv,
-      gpa
-    };
-
-    console.log('Dữ liệu thu được:', userData);
-
-    });
-
-    import { registerUser } from './authService.js';
-    
-    // Image preview functionality
-    //document.getElementById('profileImage').addEventListener('change', function(e) {
-      //const file = e.target.files[0];
-      //if (file) {
-        //const reader = new FileReader();
-        //reader.onload = function(event) {
-          //document.getElementById('imagePreview').innerHTML = `<img src="${event.target.result}" alt="Profile Preview">`;
-        //}
-        //reader.readAsDataURL(file);
-      //}
-    //});
-  </script>
 </body>
 </html>
