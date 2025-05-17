@@ -52,6 +52,8 @@ app.get('/signup', (req, res) => {
   res.sendFile(path.resolve(__dirname, './frontend_stranger/register-test.html'))
 });
 
+
+
 // // ... các route HTML khác ...
 
 // // 404 cho các route còn lại

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đăng Ký Tài Khoản - HlearnHub</title>
-  <meta name="description" content="Trang đăng ký với xác thực email">
+  <meta name="description" content="Trang đăng ký đơn giản">
   <!-- Fonts & Bootstrap -->
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -89,8 +89,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <!-- Firebase Auth -->
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
-  <!-- Firestore -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 
   <script>
     // Firebase configuration
@@ -106,12 +104,6 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    // Cấu hình Firestore
-    db.settings({
-      timestampsInSnapshots: true
-    });
 
     // Xử lý form đăng ký
     document.getElementById('registerForm').addEventListener('submit', async function(e) {
@@ -136,37 +128,16 @@
         submitBtn.disabled = true;
         submitBtn.textContent = 'Đang xử lý...';
 
-        // Tạo tài khoản tạm thời
+        // Tạo tài khoản mới
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        const user = userCredential.user;
+        
+        // Cập nhật tên hiển thị
+        await userCredential.user.updateProfile({
+          displayName: displayName
+        });
 
-        try {
-          // Lưu thông tin đăng nhập tạm thời
-          localStorage.setItem('pendingEmail', email);
-          localStorage.setItem('pendingPassword', password);
-
-          // Lưu thông tin tạm thời vào Firestore
-          await db.collection('pendingUsers').doc(user.uid).set({
-            email: email,
-            displayName: displayName,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            verified: false
-          });
-
-          // Gửi email xác thực
-          await user.sendEmailVerification();
-
-          // Đăng xuất người dùng
-          await auth.signOut();
-
-          // Chuyển đến trang xác thực
-          window.location.href = '/verify';
-        } catch (firestoreError) {
-          console.error('Firestore error:', firestoreError);
-          // Nếu có lỗi Firestore, xóa tài khoản đã tạo
-          await user.delete();
-          throw new Error('Không thể lưu thông tin người dùng. Vui lòng thử lại sau.');
-        }
+        // Chuyển hướng đến trang Member_register
+        window.location.href = '/register';
 
       } catch (error) {
         console.error('Registration error:', error);
@@ -180,11 +151,11 @@
 
     // Kiểm tra trạng thái đăng nhập
     auth.onAuthStateChanged((user) => {
-      if (user && user.emailVerified) {
-        // Nếu đã đăng nhập và đã xác thực email, chuyển đến trang Member_register
+      if (user) {
+        // Nếu đã đăng nhập, chuyển đến trang Member_register
         window.location.href = '/register';
       }
     });
   </script>
 </body>
-</html>
+</html> 
