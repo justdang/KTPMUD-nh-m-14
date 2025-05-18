@@ -21,6 +21,7 @@ app.use(express.json());
 app.use(cors());
 app.use(session);
 
+
 // Middleware checkRole 
 function checkRole(req, res, next) {
   if (!req.session.role) {

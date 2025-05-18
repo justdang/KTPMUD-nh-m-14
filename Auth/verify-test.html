@@ -88,21 +88,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 
   <script>
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyAWXMEwMPSyMBVf4LikdsVCZ0kN4BhYB6E",
-      authDomain: "hlearnhub-testing.firebaseapp.com",
-      projectId: "hlearnhub-testing",
-      storageBucket: "hlearnhub-testing.firebasestorage.app",
-      messagingSenderId: "1054297107041",
-      appId: "1:1054297107041:web:e2e985461b9ac570441820",
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
     // Kiểm tra xác thực email mỗi 30 giây
     function startVerificationCheck() {
       const checkInterval = setInterval(async () => {
@@ -119,14 +104,11 @@
               // Xử lý xác thực email
               await auth.applyActionCode(oobCode);
               
-              // Đăng nhập lại để lấy thông tin user mới
-              const email = localStorage.getItem('pendingEmail');
-              const password = localStorage.getItem('pendingPassword');
+              // // Đăng nhập lại để lấy thông tin user mới
+              // const email = localStorage.getItem('pendingEmail');
+              // const password = localStorage.getItem('pendingPassword');
               
               if (email && password) {
-                const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                const verifiedUser = userCredential.user;
-                
                 if (verifiedUser.emailVerified) {
                   // Lấy thông tin từ pendingUsers
                   const pendingUserDoc = await db.collection('pendingUsers').doc(verifiedUser.uid).get();
@@ -162,37 +144,37 @@
           return;
         }
 
-        try {
-          // Reload user để cập nhật trạng thái xác thực
-          await user.reload();
+    //     try {
+    //       // Reload user để cập nhật trạng thái xác thực
+    //       await user.reload();
           
-          if (user.emailVerified) {
-            clearInterval(checkInterval);
+    //       if (user.emailVerified) {
+    //         clearInterval(checkInterval);
             
-            // Lấy thông tin từ pendingUsers
-            const pendingUserDoc = await db.collection('pendingUsers').doc(user.uid).get();
-            if (pendingUserDoc.exists) {
-              const userData = pendingUserDoc.data();
+    //         // Lấy thông tin từ pendingUsers
+    //         const pendingUserDoc = await db.collection('pendingUsers').doc(user.uid).get();
+    //         if (pendingUserDoc.exists) {
+    //           const userData = pendingUserDoc.data();
               
-              // Chuyển thông tin sang collection users
-              await db.collection('users').doc(user.uid).set({
-                ...userData,
-                verified: true,
-                verifiedAt: firebase.firestore.FieldValue.serverTimestamp()
-              });
+    //           // Chuyển thông tin sang collection users
+    //           await db.collection('users').doc(user.uid).set({
+    //             ...userData,
+    //             verified: true,
+    //             verifiedAt: firebase.firestore.FieldValue.serverTimestamp()
+    //           });
 
-              // Xóa thông tin khỏi pendingUsers
-              await db.collection('pendingUsers').doc(user.uid).delete();
+    //           // Xóa thông tin khỏi pendingUsers
+    //           await db.collection('pendingUsers').doc(user.uid).delete();
 
-              // Chuyển đến trang success
-              window.location.href = '/success';
-            }
-          }
-        } catch (error) {
-          console.error('Verification check error:', error);
-        }
-      }, 30000);
-    }
+    //           // Chuyển đến trang success
+    //           window.location.href = '/success';
+    //         }
+    //       }
+    //     } catch (error) {
+    //       console.error('Verification check error:', error);
+    //     }
+    //   }, 30000);
+    // }
 
     // Gửi lại email xác thực
     async function resendVerificationEmail() {
@@ -209,14 +191,14 @@
     }
 
     // Đăng xuất
-    async function logout() {
-      try {
-        await auth.signOut();
-        window.location.href = '/signup';
-      } catch (error) {
-        console.error('Logout error:', error);
-      }
-    }
+    // async function logout() {
+    //   try {
+    //     await auth.signOut();
+    //     window.location.href = '/signup';
+    //   } catch (error) {
+    //     console.error('Logout error:', error);
+    //   }
+    // }
 
     // Bắt đầu kiểm tra xác thực khi trang được tải
     startVerificationCheck();

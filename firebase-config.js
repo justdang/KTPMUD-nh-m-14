@@ -8,6 +8,18 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+//PHẦN KHAI BÁO firebaseconfig KHÔNG BAO GIỜ ĐƯỢC XÓA NHÉ
+const firebaseConfig = {
+    apiKey: "AIzaSyAWXMEwMPSyMBVf4LikdsVCZ0kN4BhYB6E",
+    authDomain: "hlearnhub-testing.firebaseapp.com",
+    projectId: "hlearnhub-testing",
+    messagingSenderId: "1054297107041",
+    appId: "1:1054297107041:web:e2e985461b9ac570441820"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
 // Đọc service account key
 const serviceAccount = JSON.parse(
   readFileSync('./hlearnhub-testing-firebase-adminsdk-fbsvc-7cdcc148e1.json', 'utf8')
