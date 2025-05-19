@@ -21,6 +21,9 @@ app.use(express.json());
 app.use(cors());
 app.use(session);
 
+app.use(express.static('./frontend_stranger'));
+app.use(express.static('./frontend_member'));
+app.use(express.static('./Auth'));
 
 // Middleware checkRole 
 function checkRole(req, res, next) {
@@ -50,7 +53,7 @@ app.get('/about', (req, res) => {
 });
 
 app.get('/signup', (req, res) => {
-  res.sendFile(path.resolve(__dirname, './frontend_stranger/register-test.html'))
+  res.sendFile(path.resolve(__dirname, './Auth/register-test.html'))
 });
 
 
@@ -85,11 +88,11 @@ app.get('/register', (req, res) => {
 
 //verify test, success test - xóa sau khi test xong
 app.get('/verify', (req, res) => {
-  res.sendFile(path.resolve(__dirname, './frontend_stranger/verify-test.html'))
+  res.sendFile(path.resolve(__dirname, './Auth/verify-test.html'))
 })
 
 app.get('/success', (req, res) => {
-  res.sendFile(path.resolve(__dirname, './frontend_stranger/success-test.html'))
+  res.sendFile(path.resolve(__dirname, './Auth/success-test.html'))
 })
 
 // // study page
@@ -398,8 +401,7 @@ app.use('/api/*', (req, res) => {
 });
 
 // ==== STATIC & ROUTE HTML ====
-app.use(express.static('./frontend_stranger'));
-app.use(express.static('./frontend_member'));
+
 
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
