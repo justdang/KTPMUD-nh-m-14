@@ -72,8 +72,10 @@
             Vui lòng kiểm tra email của bạn và nhấp vào liên kết xác thực để hoàn tất quá trình đăng ký.
           </p>
           <div>
-            <button onclick="resendVerificationEmail()" class="btn">Gửi lại email xác thực</button>
+            <button onclick="resendVerificationEmail()" class="btn">Gửi email xác thực</button>
             <button onclick="logout()" class="btn btn-outline">Đăng xuất</button>
+            <button id="gotoPageBtn" class="btn" disabled> Đăng nhập</button> 
+          <!--Thêm phần thông báo là đã xác thực thành công, đề nghị đăng nhập lại để tiếp tục-->
           </div>
         </div>
       </div>
@@ -88,21 +90,29 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 
   <script>
-    //Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyAWXMEwMPSyMBVf4LikdsVCZ0kN4BhYB6E",
-      authDomain: "hlearnhub-testing.firebaseapp.com",
-      projectId: "hlearnhub-testing",
-      storageBucket: "hlearnhub-testing.firebasestorage.app",
-      messagingSenderId: "1054297107041",
-      appId: "1:1054297107041:web:e2e985461b9ac570441820",
-      measurementId: "G-NSPD0VHMZQ"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyAWXMEwMPSyMBVf4LikdsVCZ0kN4BhYB6E",
+    authDomain: "hlearnhub-testing.firebaseapp.com",
+    projectId: "hlearnhub-testing",
+    messagingSenderId: "1054297107041",
+    appId: "1:1054297107041:web:e2e985461b9ac570441820"
+  };
+
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    //Hàm xác định Định kỳ (mỗi 30 giây) kiểm tra xem user hiện tại đã xác thực email chưa
+// Các phần khai báo hàm được đẩy lên đầu.
+    //Phần để unlock nút dẫn tới trang đăng nhập lại
+  function unlockButton() {
+  const btn = document.getElementById('gotoPageBtn');
+  btn.disabled = false;
+  btn.onclick = () => {
+    window.location.href = '/register'; // Thay link trang đích
+  };
+}
+
+//Hàm xác định Định kỳ (mỗi 30 giây) kiểm tra xem user hiện tại đã xác thực email chưa
     function startVerificationCheck() {
       const checkInterval = setInterval(async () => {
         const user = auth.currentUser;
@@ -126,15 +136,46 @@
                 // Xóa thông tin tạm thời
                 localStorage.removeItem('pendingEmail');
                 localStorage.removeItem('pendingPassword');
+                unlockButton();
               }
-              // Chuyển đến trang success
-              window.location.href = '/success';
+              // FIX ĐỂ QUAY LẠI VỀ TRANG NÀY ĐỂ ĐĂNG NHẬP, HOẶC SÁNG NÚT ĐĂNG NHẬP
             }
           } catch (error) {
             console.error('Verification check error:', error);
           }
         }
       }, 30000);
+    }
+
+    // Hàm gửi lại email xác thực cho user pending
+    async function sendVerificationToPendingUser() {
+      const email = localStorage.getItem('pendingEmail');
+      const password = localStorage.getItem('pendingPassword');
+      if (!email || !password) {
+        alert('Không tìm thấy thông tin đăng nhập tạm thời. Vui lòng đăng nhập lại.');
+        return;
+      }
+      try {
+        // Đăng nhập lại
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+
+        if (!user.emailVerified) {
+          // Kiểm tra pendingUsers
+          const pendingUserDoc = await db.collection('pendingUsers').doc(user.uid).get();
+          if (pendingUserDoc.exists) {
+            await user.sendEmailVerification();
+            alert('Email xác thực đã được gửi lại. Vui lòng kiểm tra hộp thư của bạn.');
+          } else {
+            alert('Không tìm thấy người dùng trong pendingUsers.');
+          }
+        } else {
+          alert('Email đã được xác thực trước đó.');
+        }
+      } catch (error) {
+        console.error('Gửi email xác thực thất bại:', error);
+        alert('Gửi email xác thực thất bại. Vui lòng thử lại.');
+      }
     }
 
     // Xử lý xác thực qua link (nếu có oobCode trên URL)
@@ -148,124 +189,32 @@
           // Đăng nhập lại để lấy user mới
           const email = localStorage.getItem('pendingEmail');
           const password = localStorage.getItem('pendingPassword');
-          if (email && password) {
-            await auth.signInWithEmailAndPassword(email, password);
-            const user = auth.currentUser;
-            if (user && user.emailVerified) {
-              // Lấy thông tin từ pendingUsers
-              const pendingUserDoc = await db.collection('pendingUsers').doc(user.uid).get();
-              if (pendingUserDoc.exists) {
-                const userData = pendingUserDoc.data();
-                await db.collection('users').doc(user.uid).set({
-                  ...userData,
-                  verified: true,
-                  verifiedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                await db.collection('pendingUsers').doc(user.uid).delete();
-                localStorage.removeItem('pendingEmail');
-                localStorage.removeItem('pendingPassword');
-              }
-              window.location.href = '/success';
-              return;
+          if (user) {
+    await user.reload(); // <-- Cập nhật lại user
+    if (user.emailVerified) {
+      const pendingUserDoc = await db.collection('pendingUsers').doc(user.uid).get();
+      if (pendingUserDoc.exists) {
+        const userData = pendingUserDoc.data();
+        await db.collection('users').doc(user.uid).set({
+          ...userData,
+          verified: true,
+          verifiedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        await db.collection('pendingUsers').doc(user.uid).delete();
+        localStorage.removeItem('pendingEmail');
+        localStorage.removeItem('pendingPassword');
+        unlockButton();
+      }
+      return;
             }
           }
-          window.location.href = '/signup';
         } catch (error) {
           console.error('Error applying verification code:', error);
-          window.location.href = '/signup';
         }
       } else {
         startVerificationCheck();
       }
     });
-
-    // Kiểm tra xác thực email mỗi 30 giây
-    // function startVerificationCheck() {
-    //   const checkInterval = setInterval(async () => {
-    //     const user = auth.currentUser;
-    //     if (!user) {
-    //       clearInterval(checkInterval);
-    //       // Kiểm tra xem có phải đang trong quá trình xác thực không
-    //       const urlParams = new URLSearchParams(window.location.search);
-    //       const mode = urlParams.get('mode');
-    //       const oobCode = urlParams.get('oobCode');
-          
-    //       if (mode === 'verifyEmail' && oobCode) {
-    //         try {
-    //           // Xử lý xác thực email
-    //           await auth.applyActionCode(oobCode);
-              
-    //           // // Đăng nhập lại để lấy thông tin user mới
-    //           // const email = localStorage.getItem('pendingEmail');
-    //           // const password = localStorage.getItem('pendingPassword');
-              
-    //           if (email && password) {
-    //             if (verifiedUser.emailVerified) {
-    //               // Lấy thông tin từ pendingUsers
-    //               const pendingUserDoc = await db.collection('pendingUsers').doc(verifiedUser.uid).get();
-    //               if (pendingUserDoc.exists) {
-    //                 const userData = pendingUserDoc.data();
-                    
-    //                 // Chuyển thông tin sang collection users
-    //                 await db.collection('users').doc(verifiedUser.uid).set({
-    //                   ...userData,
-    //                   verified: true,
-    //                   verifiedAt: firebase.firestore.FieldValue.serverTimestamp()
-    //                 });
-
-    //                 // Xóa thông tin khỏi pendingUsers
-    //                 await db.collection('pendingUsers').doc(verifiedUser.uid).delete();
-                    
-    //                 // Xóa thông tin tạm thời
-    //                 localStorage.removeItem('pendingEmail');
-    //                 localStorage.removeItem('pendingPassword');
-    //               }
-    //             }
-    //           }
-              
-    //           // Chuyển đến trang success
-    //           window.location.href = '/success';
-    //         } catch (error) {
-    //           console.error('Error applying verification code:', error);
-    //           window.location.href = '/signup';
-    //         }
-    //       } else {
-    //         window.location.href = '/success';
-    //       }
-    //       return;
-    //     }
-
-    //     try {
-    //       // Reload user để cập nhật trạng thái xác thực
-    //       await user.reload();
-          
-    //       if (user.emailVerified) {
-    //         clearInterval(checkInterval);
-            
-    //         // Lấy thông tin từ pendingUsers
-    //         const pendingUserDoc = await db.collection('pendingUsers').doc(user.uid).get();
-    //         if (pendingUserDoc.exists) {
-    //           const userData = pendingUserDoc.data();
-              
-    //           // Chuyển thông tin sang collection users
-    //           await db.collection('users').doc(user.uid).set({
-    //             ...userData,
-    //             verified: true,
-    //             verifiedAt: firebase.firestore.FieldValue.serverTimestamp()
-    //           });
-
-    //           // Xóa thông tin khỏi pendingUsers
-    //           await db.collection('pendingUsers').doc(user.uid).delete();
-
-    //           // Chuyển đến trang success
-    //           window.location.href = '/success';
-    //         }
-    //       }
-    //     } catch (error) {
-    //       console.error('Verification check error:', error);
-    //     }
-    //   }, 30000);
-    // }
 
     // Gửi lại email xác thực
     async function resendVerificationEmail() {
@@ -292,7 +241,7 @@
     // }
 
     // Bắt đầu kiểm tra xác thực khi trang được tải
-    //startVerificationCheck();
+    startVerificationCheck();
   </script>
 </body>
 </html>
