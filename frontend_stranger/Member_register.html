@@ -412,7 +412,7 @@
         await db.collection('users').doc(user.uid).set(userData, { merge: true });
 
         alert('Thông tin đã được lưu thành công!');
-        window.location.href = '/'; // Chuyển về trang chủ sau khi lưu thành công
+        window.location.href = '/signin'; // Chuyển về trang chủ sau khi lưu thành công
 
       } catch (error) {
         console.error('Lỗi khi lưu thông tin:', error);

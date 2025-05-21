@@ -56,6 +56,9 @@ app.get('/signup', (req, res) => {
   res.sendFile(path.resolve(__dirname, './Auth/register-test.html'))
 });
 
+app.get('/signin', (req, res) => {
+  res.sendFile(path.resolve(__dirname, './Auth/signin.html'))
+});
 
 
 // // ... các route HTML khác ...
@@ -371,6 +374,12 @@ app.get('/api/users/:uid/login-history', async (req, res) => {
   }
 });
 
+// API: Cập nhật thông tin tài khoản
+app.post('/api/set-role-member', (req, res) => {
+  req.session.role = 'member';
+  res.json({ message: 'Role updated to member' });
+});
+
 // API: Xóa tài khoản
 app.delete('/api/users/:uid', async (req, res) => {
   const { uid } = req.params;
@@ -399,6 +408,7 @@ app.delete('/api/users/:uid', async (req, res) => {
 app.use('/api/*', (req, res) => {
   res.status(404).json({ error: 'API endpoint not found' });
 });
+
 
 // ==== STATIC & ROUTE HTML ====
 

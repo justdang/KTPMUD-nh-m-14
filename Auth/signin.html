@@ -18,6 +18,17 @@
 
   <script src="firebase-config.js"></script>
   <script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAWXMEwMPSyMBVf4LikdsVCZ0kN4BhYB6E",
+    authDomain: "hlearnhub-testing.firebaseapp.com",
+    projectId: "hlearnhub-testing",
+    messagingSenderId: "1054297107041",
+    appId: "1:1054297107041:web:e2e985461b9ac570441820"
+  };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
   document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = e.target.email.value;
@@ -44,16 +55,22 @@
       await docRef.set({
         email: user.email,
         fullName: localUserData.fullName || "Chưa có tên",
+        role: "member", // Thêm role khi tạo mới
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
       localStorage.removeItem("userData");
+    }else if (docSnap.data().role === "stranger") {
+       // Nếu đã có user, cập nhật role nếu đang là stranger
+        await docRef.update({ role: "member" });
     }
+    await fetch('/api/set-role-member', { method: 'POST' });
 
-    window.location.href = "dashboard.html";
-
+    // Chuyển về trang chủ
+    window.location.href = '/';
   } catch (err) {
     alert("Lỗi đăng nhập: " + err.message);
   }
+  
 });
   </script>
 </body>
