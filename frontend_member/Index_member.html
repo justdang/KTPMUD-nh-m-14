@@ -402,7 +402,7 @@
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <a class="btn-getstarted" href="/profile"><i class="bi bi-person-circle me-2"></i>Tài khoản User</a>
+      <a class="btn-getstarted" href="/profile"><i class="bi bi-person-circle me-2"></i><span id="user-nickname"></span></a>
     </div>
   </header>
 
@@ -413,7 +413,7 @@
 <div class="welcome-banner" data-aos="fade-up">
   <div class="row align-items-center">
     <div class="col-lg-8">
-      <h2>Chào mừng trở lại, Account!</h2>
+      <h2>Chào mừng trở lại, <span id="user-name"></span>!</h2>
       <p>Hôm nay là <span id="currentDay"></span>, <span id="currentDate"></span>. Bạn có ... nhiệm vụ đang chờ hoàn thành.</p>
     </div>
     <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
@@ -634,8 +634,53 @@
     </div>
   </footer>
 
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+
   <!-- Bootstrap JS (optional) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+  <script>
+     // Firebase cấu hình
+  const firebaseConfig = {
+    apiKey: "AIzaSyAWXMEwMPSyMBVf4LikdsVCZ0kN4BhYB6E",
+    authDomain: "hlearnhub-testing.firebaseapp.com",
+    projectId: "hlearnhub-testing",
+    messagingSenderId: "1054297107041",
+    appId: "1:1054297107041:web:e2e985461b9ac570441820"
+  };
+
+  // Khởi tạo Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  alert("Khai báo");
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    const uid = localStorage.getItem("uid");
+    if (!uid) {
+      alert("Ko tìm thấy UID");
+      return;
+    }
+
+    try {
+      alert("checkpoint");
+      const doc = await db.collection("users").doc(uid).get(); 
+      alert("checkpoint 2");
+      if (!doc.exists) {
+        alert("Không tìm thấy dữ liệu người dùng.");
+        return;
+      }
+      const userData = doc.data();
+      document.getElementById('user-name').textContent = userData.fullName || "Không có tên";
+      document.getElementById('user-nickname').textContent = userData.fullName || "Không có tên";
+    } catch (err) {
+      console.error("Lỗi khi lấy dữ liệu người dùng:", err);
+      alert("Lỗi khi lấy dữ liệu người dùng: " + err.message);
+    }
+  });
+  </script>
 </body>
 
 </html>

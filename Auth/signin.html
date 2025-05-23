@@ -45,6 +45,7 @@
       await auth.signOut();
       return;
     }
+    localStorage.setItem("uid", user.uid);
 
     // Nếu đã xác minh email, lưu thông tin vào Firestore nếu chưa có
     const docRef = db.collection("users").doc(user.uid);
