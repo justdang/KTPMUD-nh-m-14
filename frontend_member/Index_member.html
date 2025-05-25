@@ -414,10 +414,10 @@
   <div class="row align-items-center">
     <div class="col-lg-8">
       <h2>Chào mừng trở lại, <span id="user-name"></span>!</h2>
-      <p>Hôm nay là <span id="currentDay"></span>, <span id="currentDate"></span>. Bạn có ... nhiệm vụ đang chờ hoàn thành.</p>
+      <p>Hôm nay là <span id="currentDay"></span>, <span id="currentDate"></span>. Bạn có <span id="taskNumber"></span> nhiệm vụ đang chờ hoàn thành.</p>
     </div>
     <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-      <a href="#" class="btn btn-light px-4 py-2 rounded-pill fw-semibold">Xem lịch cá nhân <i class="bi bi-arrow-right-circle ms-2"></i></a>
+      <a href="/schedule" class="btn btn-light px-4 py-2 rounded-pill fw-semibold">Xem lịch cá nhân <i class="bi bi-arrow-right-circle ms-2"></i></a>
     </div>
   </div>
 </div>
@@ -454,29 +454,29 @@
         <div class="col-lg-3 col-md-6">
           <div class="stat-card">
             <i class="bi bi-mortarboard-fill"></i>
-            <h3>...</h3>
-            <p>Buổi dạy đã đăng ký</p>
+            <h3><span id="user-completedTeach"></span></h3>
+            <p>Buổi dạy đã hoàn thành</p>
           </div>
         </div>
         <div class="col-lg-3 col-md-6">
           <div class="stat-card">
             <i class="bi bi-briefcase"></i>
-            <h3>...</h3>
+            <h3><span id="user-upcomingTeach"></span></h3>
             <p>Buổi dạy sắp tới</p>
           </div>
         </div>
         <div class="col-lg-3 col-md-6">
           <div class="stat-card">
             <i class="bi bi-award"></i>
-            <h3>...</h3>
-            <p>Điểm đánh giá</p>
+            <h3><span id="user-upcomingStudy"></span></h3>
+            <p>Số buổi học sắp tới</p> <!--Tạm thời-->
           </div>
         </div>
         <div class="col-lg-3 col-md-6">
           <div class="stat-card">
             <i class="bi bi-check-circle"></i>
-            <h3>...</h3>
-            <p>Cái gì đó</p>
+            <h3><span id="user-completedStudy"></span></h3>
+            <p>Số buổi học hoàn thành</p> <!--Tạm thời-->
           </div>
         </div>
       </div>
@@ -655,19 +655,16 @@
   // Khởi tạo Firebase
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
-  alert("Khai báo");
 
   document.addEventListener("DOMContentLoaded", async () => {
     const uid = localStorage.getItem("uid");
     if (!uid) {
-      alert("Ko tìm thấy UID");
+      alert("Không tìm thấy uid");
       return;
     }
 
     try {
-      alert("checkpoint");
       const doc = await db.collection("users").doc(uid).get(); 
-      alert("checkpoint 2");
       if (!doc.exists) {
         alert("Không tìm thấy dữ liệu người dùng.");
         return;
@@ -675,6 +672,15 @@
       const userData = doc.data();
       document.getElementById('user-name').textContent = userData.fullName || "Không có tên";
       document.getElementById('user-nickname').textContent = userData.fullName || "Không có tên";
+      document.getElementById('user-completedStudy').textContent = userData.completedStudySessions || 0;
+      document.getElementById('user-completedTeach').textContent = userData.completedTeachingSessions || 0;
+      document.getElementById('user-upcomingStudy').textContent = userData.upcomingStudySessions || 0;
+      document.getElementById('user-upcomingTeach').textContent = userData.upcomingTeachingSessions || 0;
+      const soBuoiHocSapToi = userData.upcomingStudySessions || 0; // Tránh null
+      const soBuoiDaySapToi = userData.upcomingTeachingSessions || 0;
+
+      const tongSoCongViec = soBuoiHocSapToi + soBuoiDaySapToi;
+      document.getElementById('taskNumber').textContent = tongSoCongViec;
     } catch (err) {
       console.error("Lỗi khi lấy dữ liệu người dùng:", err);
       alert("Lỗi khi lấy dữ liệu người dùng: " + err.message);

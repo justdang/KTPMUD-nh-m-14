@@ -140,6 +140,7 @@
     }
     
     .info-label::before {
+      content: '';
       position: absolute;
       left: 0;
       top: 50%;
@@ -164,15 +165,13 @@
     }
     
     .stats-container {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
       gap: 15px;
       margin: 25px 0;
     }
     
     .stat-item {
-      flex: 1;
-      min-width: 150px;
       background-color: white;
       border-radius: 10px;
       padding: 15px;
@@ -244,6 +243,31 @@
       height: 3px;
       background: var(--primary-color);
       bottom: -1px;
+      left: 0;
+    }
+    
+    .reviews-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .reviews-title {
+      color: var(--primary-color);
+      margin: 0;
+      position: relative;
+    }
+    
+    .reviews-title::after {
+      content: '';
+      position: absolute;
+      width: 50px;
+      height: 3px;
+      background: var(--primary-color);
+      bottom: -10px;
       left: 0;
     }
     
@@ -355,6 +379,10 @@
         text-align: left;
         margin-top: 30px;
       }
+      
+      .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
     
     @media (max-width: 768px) {
@@ -363,7 +391,7 @@
       }
       
       .stats-container {
-        flex-direction: column;
+        grid-template-columns: 1fr;
       }
       
       .rating-container {
@@ -373,6 +401,16 @@
       
       .rating {
         margin-bottom: 15px;
+      }
+      
+      .reviews-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .rating-container {
+        margin-top: 15px;
+        align-self: stretch;
       }
     }
   </style>
@@ -397,7 +435,7 @@
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <a class="btn-getstarted" href="/profile"><i class="bi bi-person-circle me-2"></i>Tài khoản User</a>
+      <a class="btn-getstarted" href="/profile"><i class="bi bi-person-circle me-2"></i><span id="user-accname"></span></a>
     </div>
   </header>
 
@@ -410,47 +448,30 @@
             Thông tin cá nhân User
           </h2>
           <div class="row align-items-center">
-            <div class="col-lg-4 text-center mb-4 mb-lg-0">
-              <div class="profile-image-container">
-                <img src="ava user.jpg" alt="Ảnh đại diện" class="profile-image">
-              </div>
-              <div class="rating-container mt-3">
-                <div class="rating">
-                  <div class="stars">
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-half"></i>
-                  </div>
-                  <span class="rating-number">4.5/5</span>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-8">
+            <div class="col-12">
               <div class="profile-basic-info">
                 <div class="info-item">
                   <div class="info-label">Họ và tên:</div>
                   <div class="info-value d-flex align-items-center">
-                    Nguyễn Văn A7
+                    <span id="user-name"></span> 
                   </div>
                 </div>
                 <div class="info-item">
-                  <div class="info-label">Ngày sinh:</div>
+                  <div class="info-label">Ngày sinh:</div> 
                   <div class="info-value d-flex align-items-center">
-                    01/01/2000
+                    <span id="user-birthday"></span>
                   </div>
                 </div>
                 <div class="info-item">
                   <div class="info-label">Ngành học:</div>
                   <div class="info-value d-flex align-items-center">
-                    Kỹ thuật Điện tử (ET1)
+                    <span id="user-major"></span>
                   </div>
                 </div>
                 <div class="info-item">
                   <div class="info-label">Khóa:</div>
                   <div class="info-value d-flex align-items-center">
-                    K67
+                    <span id="user-course"></span>
                   </div>
                 </div>
               </div>
@@ -458,25 +479,25 @@
               <div class="stats-container">
                 <div class="stat-item">
                   <div class="stat-label">GPA</div>
-                  <div class="stat-value">3.02</div>
+                  <div class="stat-value"><span id="user-gpa"></span></div>
                 </div>
                 <div class="stat-item">
                   <div class="stat-label">CPA</div>
-                  <div class="stat-value">3.40</div>
+                  <div class="stat-value"><span id="user-cpa"></span></div>
                 </div>
                 <div class="stat-item">
-                  <div class="stat-label">Lớp học</div>
-                  <div class="stat-value">24</div>
+                  <div class="stat-label">Lớp đã học</div>
+                  <div class="stat-value"><span id="user-completedStudy"></span></div> 
                 </div>
                 <div class="stat-item">
-                  <div class="stat-label">Lớp dạy</div>
-                  <div class="stat-value">12</div>
+                  <div class="stat-label">Lớp đã dạy</div>
+                  <div class="stat-value"><span id="user-completedTeach"></span></div> 
                 </div>
               </div>
               
               <div class="text-end mt-3">
-                <a href="profile editing" class="btn btn-outline-primary edit-btn">
-                  <i class="bi bi-pencil-square me-2"></i>Chỉnh sửa thông tin
+                <a href="/edit" class="btn btn-outline-primary edit-btn">
+                  <i class="bi bi-pencil-square me-2"></i>Chỉnh sửa thông tin 
                 </a>
               </div>
             </div>
@@ -484,9 +505,23 @@
         </div>
         
         <div class="student-reviews">
-          <h3 class="d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-chat-quote me-2"></i>Đánh giá từ học sinh</span>
-          </h3>
+          <div class="reviews-header">
+            <h3 class="reviews-title">
+              <i class="bi bi-chat-quote me-2"></i>Đánh giá từ học sinh
+            </h3>
+            <div class="rating-container">
+              <div class="rating">
+                <div class="stars">
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-half"></i>
+                </div>
+                <span class="rating-number">4.5/5</span>
+              </div>
+            </div>
+          </div>
           
           <div class="review-item">
             <div class="stars mb-2">
@@ -572,6 +607,57 @@
         return new bootstrap.Tooltip(tooltipTriggerEl)
       });
     });
+  </script>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+
+  <!-- Bootstrap JS (optional) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+  <script>
+     // Firebase cấu hình
+  const firebaseConfig = {
+    apiKey: "AIzaSyAWXMEwMPSyMBVf4LikdsVCZ0kN4BhYB6E",
+    authDomain: "hlearnhub-testing.firebaseapp.com",
+    projectId: "hlearnhub-testing",
+    messagingSenderId: "1054297107041",
+    appId: "1:1054297107041:web:e2e985461b9ac570441820"
+  };
+
+  // Khởi tạo Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    const uid = localStorage.getItem("uid");
+    if (!uid) {
+      return;
+    }
+
+    try {
+      const doc = await db.collection("users").doc(uid).get(); 
+      if (!doc.exists) {
+        alert("Không tìm thấy dữ liệu người dùng.");
+        return;
+      }
+      const userData = doc.data();
+      document.getElementById('user-name').textContent = userData.fullName || "Không có tên";
+      document.getElementById('user-accname').textContent = userData.fullName || "Tài khoản của bạn";
+      document.getElementById('user-birthday').textContent = userData.birthDate || "Không có ngày sinh";
+      document.getElementById('user-major').textContent = userData.departmentCode || "Không có ngành học";
+      document.getElementById('user-course').textContent = userData.course || "Không có khóa học";
+      document.getElementById('user-gpa').textContent = userData.recentGPA || "0";
+      document.getElementById('user-cpa').textContent = userData.cpa || "0";
+      document.getElementById('user-completedStudy').textContent = userData.completedStudySessions || "0";
+      document.getElementById('user-completedTeach').textContent = userData.completedTeachingSessions || "0";
+    } catch (err) {
+      console.error("Lỗi khi lấy dữ liệu người dùng:", err);
+      alert("Lỗi khi lấy dữ liệu người dùng: " + err.message);
+    }
+  });
   </script>
 </body>
 

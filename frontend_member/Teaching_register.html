@@ -153,7 +153,7 @@
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <a class="btn-getstarted" href="/profile"><i class="bi bi-person-circle me-2"></i>Tài khoản User</a>
+      <a class="btn-getstarted" href="/profile"><i class="bi bi-person-circle me-2"></i><span id="user-name"></span></a>
     </div>
   </header>
 
@@ -204,7 +204,7 @@
                   <option value="english">Tiếng Anh cơ bản</option>
                   <option value="philosophy">Triết học Mác-Lênin</option>
                   <option value="economics">Kinh tế chính trị</option>
-                </select>
+                </select> <!--Sửa lại các value và các môn cho phù hợp-->
               </div>
               
               <div class="mb-4" id="specializedSubjectContainer" style="display: none;">
@@ -217,17 +217,7 @@
                   <option value="marketing">Marketing căn bản</option>
                   <option value="econometrics">Kinh tế lượng</option>
                   <option value="law">Luật thương mại</option>
-                </select>
-              </div>
-              
-              <div class="mb-3">
-                <label for="score" class="form-label">Điểm học phần theo thang điểm chữ:</label>
-                <select class="form-select" id="scorePick" name="scorePick">
-                  <option value="scoreDefault" selected disabled>-- Chọn điểm --</option>
-                  <option value="scoreA">A</option>
-                  <option value="scoreB+">B+</option>
-                  <option value="scoreB">B</option>
-                </select>
+                </select> <!--Sửa lại các value và các môn cho phù hợp-->
               </div>
 
               <div class="mb-2">
@@ -273,7 +263,9 @@
     <p>&copy; <span>2025</span> <strong>HlearnHub</strong>. All Rights Reserved</p>
   </div>
 </footer>
-
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <!-- Bootstrap and JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
@@ -292,14 +284,115 @@
         document.getElementById('generalSubject').value = '';
       }
     }
-    
-    document.getElementById('teaching-schedule-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      alert('Đăng ký lịch dạy thành công!');
-      this.reset();
-      document.getElementById('generalSubjectContainer').style.display = 'none';
-      document.getElementById('specializedSubjectContainer').style.display = 'none';
+
+    const firebaseConfig = {
+    apiKey: "AIzaSyAWXMEwMPSyMBVf4LikdsVCZ0kN4BhYB6E",
+    authDomain: "hlearnhub-testing.firebaseapp.com",
+    projectId: "hlearnhub-testing",
+    messagingSenderId: "1054297107041",
+    appId: "1:1054297107041:web:e2e985461b9ac570441820"
+  };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    alert("khai báo");
+
+    //Hiển thị thông tin người dùng từ Firestore
+     document.addEventListener("DOMContentLoaded", async () => {
+    const uid = localStorage.getItem("uid");
+    if (!uid) {
+      return;
+    }
+
+    try {
+      const doc = await db.collection("users").doc(uid).get(); 
+      if (!doc.exists) {
+        alert("Không tìm thấy dữ liệu người dùng.");
+        return;
+      }
+      const userData = doc.data();
+      document.getElementById('user-name').textContent = userData.fullName || "Không có tên";
+      } catch (err) {
+      console.error("Lỗi khi lấy dữ liệu người dùng:", err);
+      alert("Lỗi khi lấy dữ liệu người dùng: " + err.message);
+    }
+  });
+
+
+    document.getElementById('teaching-schedule-form').addEventListener('submit', async function (e) {
+     e.preventDefault();
+     alert("checkpoint0");
+      const uid = localStorage.getItem("uid");
+      if (!uid) {
+        alert("Không tìm thấy uid trong localStorage!");
+        return;
+      }
+      alert("checkpoint1");
+
+      // Thu thập dữ liệu từ form
+      const studyingRequest = {
+        uid: uid,
+        start: document.getElementById("startTime").value,
+        end: document.getElementById("endTime").value,
+        day: document.getElementById("teachingDate").value,
+        subjectType: document.getElementById("courseType").value,
+        daicuong: document.getElementById("generalSubjectContainer").style.display === "block" ? document.getElementById("generalSubject").value : "Không chọn môn chuyên ngành",
+        chuyennganh: document.getElementById("specializedSubjectContainer").style.display === "block" ? document.getElementById("specializedSubject").value : "Không chọn môn đại cương",
+        note: document.getElementById("notes").value || "Không có ghi chú",
+        createdAt: new Date().toISOString()
+      };
+      alert("checkpoint2");
+
+      try {
+        await db.collection("studyingRequest").add(studyingRequest); // Tạo bản ghi mới mỗi lần
+        alert("Đăng ký lịch dạy thành công!");
+        this.reset();
+        document.getElementById("generalSubjectContainer").style.display = "none";
+        document.getElementById("specializedSubjectContainer").style.display = "none";
+      } catch (error) {
+        console.error("Lỗi khi lưu vào Firestore:", error);
+        alert("Đã xảy ra lỗi khi đăng ký lịch dạy.");
+      }
     });
+
+
+    // document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    // e.preventDefault();
+
+    // const uid = localStorage.getItem("uid");
+    // if (!uid) {
+    //   alert("Không tìm thấy uid");
+    //   return;
+    // }
+
+    //  try {
+    //   const studyingRequest ={
+    //   start: document.getElementById("startTime").value,
+    //   end: document.getElementById("endTime").value,
+    //   day: document.getElementById("teachingDate").value,
+    //   subjectType: document.getElementById("courseType").value,
+    //   daicuong: document.getElementById("generalSubject").value || "Không có môn học đại cương",
+    //   chuyennganh: document.getElementById("specializedSubject").value || "Không có môn học chuyên ngành hay cơ sở ngành",
+    //   note: document.getElementById("notes").value || "Không có ghi chú"
+    // }
+    //   await db.collection('users').doc(user.uid).set(userData, { merge: true });
+    //   } catch (err) {
+    //     console.error("Lỗi khi lưu dữ liệu:", err);
+    //     alert("Lỗi khi lưu dữ liệu: " + err.message);
+    //   }
+    // Thềm phần lưu uid người đăng ký 
+    // const studyingRequest ={
+    //   start: document.getElementById("startTime").value,
+    //   end: document.getElementById("endTime").value,
+    //   day: document.getElementById("teachingDate").value,
+    //   subjectType: document.getElementById("courseType").value,
+    //   daicuong: document.getElementById("generalSubject").value || "Không có môn học đại cương",
+    //   chuyennganh: document.getElementById("specializedSubject").value || "Không có môn học chuyên ngành hay cơ sở ngành",
+    //   note: document.getElementById("notes").value || "Không có ghi chú"
+    // }
+    // db.collection('studyingRequest').doc(user.uid).set(userData, { merge: true });
+// });
   </script>
 </body>
 </html>

@@ -98,45 +98,49 @@ app.get('/success', (req, res) => {
   res.sendFile(path.resolve(__dirname, './Auth/success-test.html'))
 })
 
-// // study page
-// app.get('/study_register', (req, res) => {
-//   const role = req.session.role
-//   if (role == 'member') {
-//     res.sendFile(path.resolve(__dirname, './frontend_member/Study_register.html'))
-//   } else {
-//     res.status(404).send('resource not found')
-//   }
-// })
+app.get('/edit', (req, res) => {
+  res.sendFile(path.resolve(__dirname, './frontend/Profile editing.html'))
+})
 
-// // teaching page
-// app.get('/teaching_register', (req, res) => {
-//   const role = req.session.role
-//   if (role == 'member') {
-//     res.sendFile(path.resolve(__dirname, './frontend_member/Teaching_register.html'))
-//   } else {
-//     res.status(404).send('resource not found')
-//   }
-// })
+// study page
+app.get('/study_register', (req, res) => {
+  const role = req.session.role
+  if (role == 'member') {
+    res.sendFile(path.resolve(__dirname, './frontend_member/Study_register.html'))
+  } else {
+    res.status(404).send('resource not found')
+  }
+})
 
-// // schedule page
-// app.get('/schedule', (req, res) => {
-//   const role = req.session.role
-//   if (role == 'member') {
-//     res.sendFile(path.resolve(__dirname, './frontend_member/Schedule.html'))
-//   } else {
-//     res.status(404).send('resource not found')
-//   }
-// })
+// teaching page
+app.get('/teaching_register', (req, res) => {
+  const role = req.session.role
+  if (role == 'member') {
+    res.sendFile(path.resolve(__dirname, './frontend_member/Teaching_register.html'))
+  } else {
+    res.status(404).send('resource not found')
+  }
+})
 
-// // profile page
-// app.get('/profile', (req, res) => {
-//   const role = req.session.role
-//   if (role == 'member') {
-//     res.sendFile(path.resolve(__dirname, './frontend_member/Profile_user.html'))
-//   } else {
-//     res.status(404).send('resource not found')
-//   }
-// })
+// schedule page
+app.get('/schedule', (req, res) => {
+  const role = req.session.role
+  if (role == 'member') {
+    res.sendFile(path.resolve(__dirname, './frontend_member/Schedule.html'))
+  } else {
+    res.status(404).send('resource not found')
+  }
+})
+
+// profile page
+app.get('/profile', (req, res) => {
+  const role = req.session.role
+  if (role == 'member') {
+    res.sendFile(path.resolve(__dirname, './frontend_member/Profile_user.html'))
+  } else {
+    res.status(404).send('resource not found')
+  }
+})
 
 
 
