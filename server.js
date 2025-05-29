@@ -46,9 +46,9 @@ app.get('/', checkRole, (req, res) => {
 app.get('/about', (req, res) => {
   const role = req.session.role;
   if (role == 'member') {
-    res.sendFile(path.resolve(__dirname, './frontend_member/About_member.html'));
+    res.sendFile(path.resolve(__dirname, './frontend_member/about_member.html'));
   } else if (role == 'stranger') {
-    res.sendFile(path.resolve(__dirname, './frontend_stranger/About_stranger.html'));
+    res.sendFile(path.resolve(__dirname, './frontend_stranger/about_stranger.html'));
   }
 });
 
@@ -58,6 +58,14 @@ app.get('/signup', (req, res) => {
 
 app.get('/signin', (req, res) => {
   res.sendFile(path.resolve(__dirname, './Auth/signin.html'))
+});
+
+app.get('/dayVaHoc', (req, res) => {
+  res.sendFile(path.resolve(__dirname, './frontend_member/DayVaHoc.html'))
+});
+
+app.get('/dkyHoc', (req, res) => {
+  res.sendFile(path.resolve(__dirname, './frontend_member/dkyHoc_test.html'))
 });
 
 
@@ -94,9 +102,9 @@ app.get('/verify', (req, res) => {
   res.sendFile(path.resolve(__dirname, './Auth/verify-test.html'))
 })
 
-app.get('/success', (req, res) => {
-  res.sendFile(path.resolve(__dirname, './Auth/success-test.html'))
-})
+// app.get('/success', (req, res) => {
+//   res.sendFile(path.resolve(__dirname, './Auth/success-test.html'))
+// })
 
 app.get('/edit', (req, res) => {
   res.sendFile(path.resolve(__dirname, './frontend/Profile editing.html'))
