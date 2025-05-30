@@ -111,24 +111,24 @@ app.get('/edit', (req, res) => {
 })
 
 // study page
-app.get('/study_register', (req, res) => {
+app.get('/studyregister', (req, res) => {
   const role = req.session.role
   if (role == 'member') {
-    res.sendFile(path.resolve(__dirname, './frontend_member/Study_register.html'))
+    res.sendFile(path.resolve(__dirname, './frontend_member/study_register.html'))
   } else {
     res.status(404).send('resource not found')
   }
 })
 
 // teaching page
-app.get('/teaching_register', (req, res) => {
-  const role = req.session.role
-  if (role == 'member') {
-    res.sendFile(path.resolve(__dirname, './frontend_member/Teaching_register.html'))
-  } else {
-    res.status(404).send('resource not found')
-  }
-})
+// app.get('/teaching_register', (req, res) => {
+//   const role = req.session.role
+//   if (role == 'member') {
+//     res.sendFile(path.resolve(__dirname, './frontend_member/Teaching_register.html'))
+//   } else {
+//     res.status(404).send('resource not found')
+//   }
+// })
 
 // schedule page
 app.get('/schedule', (req, res) => {

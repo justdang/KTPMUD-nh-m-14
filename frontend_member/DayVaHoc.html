@@ -769,6 +769,78 @@
     `;
     document.head.appendChild(style);
   </script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+
+  // Cấu hình Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyAWXMEwMPSyMBVf4LikdsVCZ0kN4BhYB6E",
+    authDomain: "hlearnhub-testing.firebaseapp.com",
+    projectId: "hlearnhub-testing",
+    messagingSenderId: "1054297107041",
+    appId: "1:1054297107041:web:e2e985461b9ac570441820"
+  };
+
+  // Khởi tạo Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Lấy UID từ localStorage
+  const uid = localStorage.getItem("uid");
+
+  if (!uid) {
+    document.querySelector(".learning-request .request-list").innerHTML = "Không tìm thấy tài khoản của bạn.";
+  } else {
+    // Hàm tải dữ liệu
+    async function loadLearningRequests() {
+      const q = query(collection(db, "studyingRequest"), where("uid", "==", uid));
+      const querySnapshot = await getDocs(q);
+
+      let html = "";
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        html += `
+          <div class="request-item">
+            <div class="request-header">
+              <div class="request-info">
+                <h5>${data.daicuong || "Không có tiêu đề"}</h5>
+              </div>
+            </div>
+            <div class="request-details">
+              <div class="detail-item">
+                <i class="bi bi-clock"></i>
+                <span><strong>Thời gian:</strong> ${data.start || "Chưa cập nhật"} - ${data.end || "Chưa cập nhật"}</span>
+              </div>
+              <div class="detail-item">
+                <i class="bi bi-calendar3"></i>
+                <span><strong>Ngày học:</strong> ${data.day || "Chưa cập nhật"}</span>
+              </div>
+            </div>
+            <div class="tutor-list">
+              <h6><i class="bi bi-people-fill me-2"></i>Danh sách gia sư đã ứng tuyển (${data.tutors?.length || 0})</h6>
+              ${data.tutors?.map(tutor => `
+                <div class="tutor-item">
+                  <div class="tutor-info">
+                    <div class="tutor-name">${tutor.name || "Không rõ"}</div>
+                  </div>
+                  <div class="tutor-actions">
+                    <a href="#" class="btn-primary-custom">Chấp nhận</a>
+                  </div>
+                </div>
+              `).join("") || "<p>Chưa có gia sư ứng tuyển.</p>"}
+            </div>
+          </div>
+        `;
+      });
+
+      document.querySelector(".learning-request .request-list").innerHTML = html || "Không có dữ liệu.";
+    }
+
+    loadLearningRequests();
+  }
+</script>
 </body>
 
 </html>

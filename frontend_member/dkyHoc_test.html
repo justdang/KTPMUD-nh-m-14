@@ -296,15 +296,11 @@
         <ul>
           <li><a href="/">Trang chủ</a></li>
           <li><a href="/about">Về chúng tôi</a></li>
-          <li><a href="#">Dạy và học</a></li>
+          <li><a href="/dayvaHoc">Dạy và học</a></li>
           <li><a href="/schedule">Lịch cá nhân</a></li>
         </ul>
       </nav>
-
-      <a class="btn-getstarted" href="/profile">
-        <i class="bi bi-person-circle me-2"></i>
-        <span id="user-nickname">Tài khoản</span>
-      </a>
+      <a class="btn-getstarted" href="/profile"><i class="bi bi-person-circle me-2"></i><span id="user-nickname"></span></a>
     </div>
   </header>
 
@@ -343,12 +339,16 @@
             <label for="subject" class="form-label">Môn học</label>
             <select class="form-select" id="subject">
               <option value="">Tất cả môn học</option>
-              <option value="toan">Toán Cao Cấp</option>
-              <option value="hoa">Hóa Học Đại Cương</option>
-              <option value="ly">Vật Lý Đại Cương</option>
-              <option value="anh">Tiếng Anh</option>
-              <option value="tin">Tin Học Đại Cương</option>
-              <option value="kt">Kỹ Thuật Lập Trình</option>
+              <option value="Calculus 1">Giải tích I</option>
+              <option value="Calculus 2">Giải tích II</option>
+              <option value="Calculus 3">Giải tích III</option>
+              <option value="Probability and Statistics">Xác suất thống kê</option>
+              <option value="linear Algebra">Đại số tuyến tính</option>
+              <option value="Physics">Vật lý đại cương</option>
+              <option value="Chemistry">Hóa học đại cương</option>
+              <option value="English">Tiếng Anh cơ bản</option>
+              <option value="Philosophy">Triết học Mác-Lênin</option>
+              <option value="Economics">Kinh tế chính trị</option>
             </select>
           </div>
           <div class="col-12">
@@ -365,150 +365,42 @@
           <h3><i class="bi bi-list-ul me-2"></i>Danh Sách Request</h3>
         </div>
         <div class="request-list" id="request-list">
-          <!-- Request Item 1 -->
-          <div class="request-item" data-subject="toan" data-time="14:00-16:00" data-date="2025-05-30">
-            <div class="student-name">
-              <i class="bi bi-person-fill"></i>
-              Nguyễn Văn An
+          <template id="request-item-template">
+            <div class="request-item" 
+                data-subject="" 
+                data-time="" 
+                data-date="">
+              <div class="student-name">
+                <i class="bi bi-person-fill"></i>
+                <span class="student-fullname"></span>
+              </div>
+              <div class="request-details">
+                <div class="detail-item">
+                  <i class="bi bi-book-fill"></i>
+                  <span><strong>Môn học:</strong> <span class="detail-value subject-name"></span></span>
+                </div>
+                <div class="detail-item">
+                  <i class="bi bi-clock-fill"></i>
+                  <span><strong>Giờ bắt đầu:</strong> <span class="detail-value start-time"></span></span>
+                </div>
+                <div class="detail-item">
+                  <i class="bi bi-clock"></i>
+                  <span><strong>Giờ kết thúc:</strong> <span class="detail-value end-time"></span></span>
+                </div>
+                <div class="detail-item">
+                  <i class="bi bi-calendar3"></i>
+                  <span><strong>Ngày học:</strong> <span class="detail-value study-day"></span></span>
+                </div>
+                <div class="detail-item">
+                  <i class="bi bi-chat-left-text"></i>
+                  <span><strong>Ghi chú:</strong> <span class="detail-value note"></span></span>
+                </div>
+              </div>
+              <button class="action-btn">
+                <i class="bi bi-hand-thumbs-up me-2"></i>Ứng Tuyển
+              </button>
             </div>
-            <div class="request-details">
-              <div class="detail-item">
-                <i class="bi bi-book-fill"></i>
-                <span><strong>Môn học:</strong> <span class="detail-value">Toán Cao Cấp A1</span></span>
-              </div>
-              <div class="detail-item">
-                <i class="bi bi-clock-fill"></i>
-                <span><strong>Giờ bắt đầu:</strong> <span class="detail-value">14:00</span></span>
-              </div>
-              <div class="detail-item">
-                <i class="bi bi-clock"></i>
-                <span><strong>Giờ kết thúc:</strong> <span class="detail-value">16:00</span></span>
-              </div>
-              <div class="detail-item">
-                <i class="bi bi-calendar3"></i>
-                <span><strong>Ngày học:</strong> <span class="detail-value">30/05/2025</span></span>
-              </div>
-            </div>
-            <button class="action-btn">
-              <i class="bi bi-hand-thumbs-up me-2"></i>Ứng Tuyển
-            </button>
-          </div>
-
-          <!-- Request Item 2 -->
-          <div class="request-item" data-subject="hoa" data-time="09:00-11:00" data-date="2025-05-31">
-            <div class="student-name">
-              <i class="bi bi-person-fill"></i>
-              Trần Thị Bình
-            </div>
-            <div class="request-details">
-              <div class="detail-item">
-                <i class="bi bi-book-fill"></i>
-                <span><strong>Môn học:</strong> <span class="detail-value">Hóa Học Đại Cương</span></span>
-              </div>
-              <div class="detail-item">
-                <i class="bi bi-clock-fill"></i>
-                <span><strong>Giờ bắt đầu:</strong> <span class="detail-value">09:00</span></span>
-              </div>
-              <div class="detail-item">
-                <i class="bi bi-clock"></i>
-                <span><strong>Giờ kết thúc:</strong> <span class="detail-value">11:00</span></span>
-              </div>
-              <div class="detail-item">
-                <i class="bi bi-calendar3"></i>
-                <span><strong>Ngày học:</strong> <span class="detail-value">31/05/2025</span></span>
-              </div>
-            </div>
-            <button class="action-btn">
-              <i class="bi bi-hand-thumbs-up me-2"></i>Ứng Tuyển
-            </button>
-          </div>
-
-          <!-- Request Item 3 -->
-          <div class="request-item" data-subject="ly" data-time="15:30-17:30" data-date="2025-06-01">
-            <div class="student-name">
-              <i class="bi bi-person-fill"></i>
-              Lê Minh Cường
-            </div>
-            <div class="request-details">
-              <div class="detail-item">
-                <i class="bi bi-book-fill"></i>
-                <span><strong>Môn học:</strong> <span class="detail-value">Vật Lý Đại Cương</span></span>
-              </div>
-              <div class="detail-item">
-                <i class="bi bi-clock-fill"></i>
-                <span><strong>Giờ bắt đầu:</strong> <span class="detail-value">15:30</span></span>
-              </div>
-              <div class="detail-item">
-                <i class="bi bi-clock"></i>
-                <span><strong>Giờ kết thúc:</strong> <span class="detail-value">17:30</span></span>
-              </div>
-              <div class="detail-item">
-                <i class="bi bi-calendar3"></i>
-                <span><strong>Ngày học:</strong> <span class="detail-value">01/06/2025</span></span>
-              </div>
-            </div>
-            <button class="action-btn">
-              <i class="bi bi-hand-thumbs-up me-2"></i>Ứng Tuyển
-            </button>
-          </div>
-
-          <!-- Request Item 4 -->
-          <div class="request-item" data-subject="anh" data-time="19:00-21:00" data-date="2025-06-02">
-            <div class="student-name">
-              <i class="bi bi-person-fill"></i>
-              Phạm Thu Hằng
-            </div>
-            <div class="request-details">
-              <div class="detail-item">
-                <i class="bi bi-book-fill"></i>
-                <span><strong>Môn học:</strong> <span class="detail-value">Tiếng Anh Cơ Bản</span></span>
-              </div>
-              <div class="detail-item">
-                <i class="bi bi-clock-fill"></i>
-                <span><strong>Giờ bắt đầu:</strong> <span class="detail-value">19:00</span></span>
-              </div>
-              <div class="detail-item">
-                <i class="bi bi-clock"></i>
-                <span><strong>Giờ kết thúc:</strong> <span class="detail-value">21:00</span></span>
-              </div>
-              <div class="detail-item">
-                <i class="bi bi-calendar3"></i>
-                <span><strong>Ngày học:</strong> <span class="detail-value">02/06/2025</span></span>
-              </div>
-            </div>
-            <button class="action-btn">
-              <i class="bi bi-hand-thumbs-up me-2"></i>Ứng Tuyển
-            </button>
-          </div>
-
-          <!-- Request Item 5 -->
-          <div class="request-item" data-subject="tin" data-time="08:00-10:00" data-date="2025-06-03">
-            <div class="student-name">
-              <i class="bi bi-person-fill"></i>
-              Hoàng Văn Đức
-            </div>
-            <div class="request-details">
-              <div class="detail-item">
-                <i class="bi bi-book-fill"></i>
-                <span><strong>Môn học:</strong> <span class="detail-value">Tin Học Đại Cương</span></span>
-              </div>
-              <div class="detail-item">
-                <i class="bi bi-clock-fill"></i>
-                <span><strong>Giờ bắt đầu:</strong> <span class="detail-value">08:00</span></span>
-              </div>
-              <div class="detail-item">
-                <i class="bi bi-clock"></i>
-                <span><strong>Giờ kết thúc:</strong> <span class="detail-value">10:00</span></span>
-              </div>
-              <div class="detail-item">
-                <i class="bi bi-calendar3"></i>
-                <span><strong>Ngày học:</strong> <span class="detail-value">03/06/2025</span></span>
-              </div>
-            </div>
-            <button class="action-btn">
-              <i class="bi bi-hand-thumbs-up me-2"></i>Ứng Tuyển
-            </button>
-          </div>
+          </template>
         </div>
       </div>
     </div>
@@ -549,8 +441,82 @@
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Firebase -->
+   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+
+  <!-- Bootstrap JS (optional) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
   
   <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAWXMEwMPSyMBVf4LikdsVCZ0kN4BhYB6E",
+      authDomain: "hlearnhub-testing.firebaseapp.com",
+      projectId: "hlearnhub-testing",
+      messagingSenderId: "1054297107041",
+      appId: "1:1054297107041:web:e2e985461b9ac570441820"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    
+    // Lấy fullName từ uid
+    async function getUserFullName(uid) {
+      const userDoc = await db.collection('users').doc(uid).get();
+      if (userDoc.exists) {
+        return userDoc.data().fullName || 'Không rõ tên';
+      }
+      return 'Không rõ tên';
+    }
+
+    function renderRequestsRealtime() {
+      const requestList = document.getElementById('request-list');
+      const template = document.getElementById('request-item-template');
+      requestList.innerHTML = '<div>Đang tải dữ liệu...</div>';
+
+      db.collection('studyingRequest').onSnapshot(async (snapshot) => {
+        if (snapshot.empty) {
+          requestList.innerHTML = '<div>Không có request nào.</div>';
+          return;
+        }
+        requestList.innerHTML = '';
+        const requests = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          data.id = doc.id;
+          requests.push(data);
+        });
+
+        for (const req of requests) {
+          const fullName = await getUserFullName(req.uid);
+          const clone = template.content.cloneNode(true);
+          const item = clone.querySelector('.request-item');
+          item.dataset.subject = req.generalSubject || '';
+          item.dataset.time = `${req.start || ''}-${req.end || ''}`;
+          item.dataset.date = req.day || '';
+          clone.querySelector('.student-fullname').textContent = fullName;
+          clone.querySelector('.subject-name').textContent = req.generalSubject || '';
+          clone.querySelector('.start-time').textContent = req.start || '';
+          clone.querySelector('.end-time').textContent = req.end || '';
+          clone.querySelector('.study-day').textContent = req.day || '';
+          clone.querySelector('.note').textContent = req.note || '';
+
+          // Gán sự kiện cho nút ứng tuyển
+          clone.querySelector('.action-btn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            this.innerHTML = '<i class="bi bi-check-circle me-2"></i>Đã Ứng Tuyển';
+            this.style.background = '#2ecc71';
+            this.disabled = true;
+          });
+
+          requestList.appendChild(clone);
+        }
+      });
+    }
+
     function filterRequests() {
       const startTime = document.getElementById('start-time').value;
       const endTime = document.getElementById('end-time').value;
@@ -608,30 +574,57 @@
     }
 
     // Add click event to action buttons
-    document.addEventListener('DOMContentLoaded', function() {
-      const actionButtons = document.querySelectorAll('.action-btn');
+    // document.addEventListener('DOMContentLoaded', function() {
+    //   const actionButtons = document.querySelectorAll('.action-btn');
       
-      actionButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-          e.stopPropagation();
-          this.innerHTML = '<i class="bi bi-check-circle me-2"></i>Đã Ứng Tuyển';
-          this.style.background = '#2ecc71';
-          this.disabled = true;
-        });
-      });
+    //   actionButtons.forEach(button => {
+    //     button.addEventListener('click', function(e) {
+    //       e.stopPropagation();
+    //       this.innerHTML = '<i class="bi bi-check-circle me-2"></i>Đã Ứng Tuyển';
+    //       this.style.background = '#2ecc71';
+    //       this.disabled = true;
+    //     });
+    //   });
 
-      // Add click event to request items for more details
-      const requestItems = document.querySelectorAll('.request-item');
+    //   // Add click event to request items for more details
+    //   const requestItems = document.querySelectorAll('.request-item');
       
-      requestItems.forEach(item => {
-        item.addEventListener('click', function() {
-          // You can add functionality to show more details or navigate to detail page
-          console.log('Request item clicked');
-        });
-      });
+    //   requestItems.forEach(item => {
+    //     item.addEventListener('click', function() {
+    //       // You can add functionality to show more details or navigate to detail page
+    //       console.log('Request item clicked');
+    //     });
+    //   });
       
-      console.log('Tutoring Search Page Loaded');
+    //   console.log('Tutoring Search Page Loaded');
+    // });
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const uid = localStorage.getItem("uid");
+      if (!uid) {
+        alert("Không tìm thấy uid");
+        return;
+      }
+
+      try {
+        const doc = await db.collection("users").doc(uid).get(); 
+        if (!doc.exists) {
+          alert("Không tìm thấy dữ liệu người dùng.");
+          return;
+        }
+        const userData = doc.data();
+        document.getElementById('user-nickname').textContent = userData.fullName || "Không có tên";
+      } catch (err) {
+        console.error("Lỗi khi lấy dữ liệu người dùng:", err);
+        alert("Lỗi khi lấy dữ liệu người dùng: " + err.message);
+      }
+
+      renderRequestsRealtime();
     });
+
+    // document.addEventListener('DOMContentLoaded', function() {
+    //   renderRequestsRealtime();
+    // });
   </script>
 </body>
 
