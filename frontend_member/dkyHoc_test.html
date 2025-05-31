@@ -490,6 +490,8 @@
           requests.push(data);
         });
 
+        const currentUid = localStorage.getItem("uid"); // Lấy UID của người dùng hiện tại
+
         for (const req of requests) {
           const fullName = await getUserFullName(req.uid);
           const clone = template.content.cloneNode(true);
@@ -504,13 +506,62 @@
           clone.querySelector('.study-day').textContent = req.day || '';
           clone.querySelector('.note').textContent = req.note || '';
 
-          // Gán sự kiện cho nút ứng tuyển
-          clone.querySelector('.action-btn').addEventListener('click', function(e) {
-            e.stopPropagation();
-            this.innerHTML = '<i class="bi bi-check-circle me-2"></i>Đã Ứng Tuyển';
-            this.style.background = '#2ecc71';
-            this.disabled = true;
-          });
+          // Kiểm tra nếu request do người dùng hiện tại tạo ra
+          const actionBtn = clone.querySelector('.action-btn');
+          if (req.uid === currentUid) {
+            actionBtn.innerHTML = '<i class="bi bi-x-circle me-2"></i>Không thể ứng tuyển';
+            actionBtn.style.background = '#ccc';
+            actionBtn.style.cursor = 'not-allowed';
+            actionBtn.disabled = true;
+          } else {
+            // Gán sự kiện cho nút ứng tuyển
+            actionBtn.addEventListener('click', async function (e) {
+              e.stopPropagation();
+              const currentUid = localStorage.getItem("uid"); // Lấy UID của người dùng hiện tại
+              if (!currentUid) {
+                alert("Không tìm thấy UID người dùng.");
+                return;
+              }
+
+              try {
+                // Kiểm tra xem UID đã tồn tại trong subcollection "uids" chưa
+                const uidsSnapshot = await db.collection('studyingRequest')
+                  .doc(req.id) // ID của tài liệu request
+                  .collection('uids')
+                  .where('uid', '==', currentUid)
+                  .get();
+
+                if (!uidsSnapshot.empty) {
+                  alert("Bạn đã ứng tuyển cho request này, không thể ứng tuyển lại");
+                  return;
+                }
+
+                // Lấy fullName của người dùng từ collection "users"
+                const userDoc = await db.collection('users').doc(currentUid).get();
+                if (!userDoc.exists) {
+                  alert("Không tìm thấy thông tin người dùng.");
+                  return;
+                }
+                const fullName = userDoc.data().fullName || "Không rõ tên";
+
+                // Lưu UID và fullName vào subcollection "uids" trong tài liệu hiện tại
+                await db.collection('studyingRequest')
+                  .doc(req.id) // ID của tài liệu request
+                  .collection('uids')
+                  .add({ uid: currentUid, fullName: fullName });
+
+                // Cập nhật giao diện nút
+                this.innerHTML = '<i class="bi bi-check-circle me-2"></i>Đã Ứng Tuyển';
+                this.style.background = '#2ecc71';
+                this.disabled = true;
+
+                alert("Ứng tuyển thành công!");
+              } catch (error) {
+                console.error("Lỗi khi lưu UID vào Firestore:", error);
+                alert("Đã xảy ra lỗi khi ứng tuyển. Vui lòng thử lại.");
+              }
+            });
+          }
 
           requestList.appendChild(clone);
         }

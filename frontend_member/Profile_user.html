@@ -498,6 +498,7 @@
                 <a href="/edit" class="btn btn-outline-primary edit-btn">
                   <i class="bi bi-pencil-square me-2"></i>Chỉnh sửa thông tin 
                 </a>
+                <a id="logout-btn" class="btn btn-outline-danger ms-3" href="/"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</a>
               </div>
             </div>
           </div>
@@ -655,6 +656,18 @@
     } catch (err) {
       console.error("Lỗi khi lấy dữ liệu người dùng:", err);
       alert("Lỗi khi lấy dữ liệu người dùng: " + err.message);
+    }
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+      await firebase.auth().signOut(); // Đăng xuất khỏi Firebase
+      localStorage.removeItem("uid"); // Xóa UID khỏi localStorage
+      window.location.href = "/logout"; // Gọi route /logout để đổi role và chuyển hướng
+    } catch (error) {
+      console.error("Lỗi khi đăng xuất:", error);
+      alert("Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại.");
     }
   });
   </script>

@@ -416,6 +416,18 @@ app.delete('/api/users/:uid', async (req, res) => {
   }
 });
 
+// API đăng xu
+app.get('/logout', (req, res) => {
+  req.session.role = 'stranger'; // Đổi role thành stranger
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Lỗi khi xóa session:", err);
+      return res.status(500).send("Lỗi khi đăng xuất.");
+    }
+    res.redirect('/'); // Chuyển hướng về trang chủ
+  });
+});
+
 // 404 cho API
 app.use('/api/*', (req, res) => {
   res.status(404).json({ error: 'API endpoint not found' });
@@ -433,4 +445,5 @@ const __dirname = dirname(__filename);
 app.listen(3000, () => {
   console.log('server is listening on port 3000....')
 })
+
 

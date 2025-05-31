@@ -299,7 +299,6 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
-    alert("khai báo");
 
     //Hiển thị thông tin người dùng từ Firestore
      document.addEventListener("DOMContentLoaded", async () => {
@@ -325,13 +324,11 @@
 
     document.getElementById('study-schedule-form').addEventListener('submit', async function (e) {
      e.preventDefault();
-     alert("checkpoint0");
       const uid = localStorage.getItem("uid");
       if (!uid) {
         alert("Không tìm thấy uid trong localStorage!");
         return;
       }
-      alert("checkpoint1");
 
       // Thu thập dữ liệu từ form
       const studyingRequest = {
@@ -346,18 +343,38 @@
         note: document.getElementById("notes").value || "Không có ghi chú",
         createdAt: new Date().toISOString()
       };
-      alert("checkpoint2");
 
-      try {
-        await db.collection("studyingRequest").add(studyingRequest); // Tạo bản ghi mới mỗi lần
-        alert("Đăng ký lịch dạy thành công!");
-        this.reset();
-        // document.getElementById("generalSubjectContainer").style.display = "none";
-        // document.getElementById("specializedSubjectContainer").style.display = "none";
-      } catch (error) {
-        console.error("Lỗi khi lưu vào Firestore:", error);
-        alert("Đã xảy ra lỗi khi đăng ký lịch dạy.");
-      }
+
+try {
+  const docRef = await db.collection("studyingRequest").add(studyingRequest);
+  if (!docRef.id) {
+    throw new Error("Không thể tạo tài liệu mới.");
+  }
+
+  try {
+    await db.collection("studyingRequest")
+      .doc(docRef.id)
+      .collection("uids")
+      .add({
+        uid1: "exampleUid1",
+        uid2: "exampleUid2",
+        uid3: "exampleUid3"
+      });
+  } catch (subError) {
+    console.error("Lỗi khi thêm subcollection uids:", subError);
+    alert("Đăng ký thành công, nhưng có lỗi khi thêm thông tin phụ.");
+  }
+
+  document.getElementById('study-schedule-form').reset();
+  // document.getElementById("generalSubjectContainer").style.display = "none";
+  // document.getElementById("specializedSubjectContainer").style.display = "none";
+  alert("Đăng ký lịch học thành công!");
+
+} catch (error) {
+  console.error("Lỗi khi lưu vào Firestore:", error);
+  alert("Đã xảy ra lỗi khi đăng ký lịch học.");
+}
+
     });
 
 
