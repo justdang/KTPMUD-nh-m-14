@@ -364,6 +364,9 @@
         <div class="section-header">
           <h3><i class="bi bi-list-ul me-2"></i>Danh Sách Request</h3>
         </div>
+        <div style="padding: 10px 30px 0 30px; font-size: 0.95rem; color: #888;">
+          (Chỉ hiển thị những lớp từ 24 tiếng trở đi)
+        </div>
         <div class="request-list" id="request-list">
           <template id="request-item-template">
             <div class="request-item" 
@@ -493,6 +496,17 @@
         const currentUid = localStorage.getItem("uid"); // Lấy UID của người dùng hiện tại
 
         for (const req of requests) {
+          // Kiểm tra thời gian bắt đầu còn ít nhất 24 tiếng
+          const studyDate = req.day; // yyyy-mm-dd
+          const startTime = req.start; // hh:mm
+          if (!studyDate || !startTime) continue;
+          const startDateTime = new Date(`${studyDate}T${startTime}`);
+          const now = new Date();
+          if (startDateTime - now < 86400000) {
+            // Nếu còn dưới 24 tiếng thì bỏ qua không hiển thị
+            continue;
+          }
+
           const fullName = await getUserFullName(req.uid);
           const clone = template.content.cloneNode(true);
           const item = clone.querySelector('.request-item');

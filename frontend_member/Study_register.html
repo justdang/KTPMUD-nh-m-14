@@ -330,12 +330,26 @@
         return;
       }
 
+      // Lấy ngày và giờ bắt đầu từ form
+      const studyDate = document.getElementById("studyDate").value;
+      const startTime = document.getElementById("startTime").value;
+
+      // Kết hợp thành đối tượng Date của JS
+      const startDateTime = new Date(`${studyDate}T${startTime}`);
+      const now = new Date();
+
+      // Kiểm tra nếu thời gian còn lại < 48 tiếng (172800000 ms)
+      if (startDateTime - now < 172800000) { // 48 tiếng = 48 * 60 * 60 * 1000 ms = 172800000
+        alert("Bạn chỉ được đăng ký lịch học trước ít nhất 48 tiếng so với giờ bắt đầu.");
+        return;
+      }
+
       // Thu thập dữ liệu từ form
       const studyingRequest = {
         uid: uid,
-        start: document.getElementById("startTime").value,
+        start: startTime,
         end: document.getElementById("endTime").value,
-        day: document.getElementById("studyDate").value,
+        day: studyDate,
         generalSubject: document.getElementById("generalSubject").value,
         // subjectType: document.getElementById("courseType").value,
         // daicuong: document.getElementById("generalSubjectContainer").style.display === "block" ? document.getElementById("generalSubject").value : "Không chọn môn chuyên ngành",

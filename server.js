@@ -5,9 +5,18 @@ const firebaseApiKey = process.env.FIREBASE_API_KEY;
 console.log("Firebase API Key:", firebaseApiKey);
 
 import { readFileSync } from 'fs';
+import admin from 'firebase-admin';
+
 const serviceAccount = JSON.parse(
   readFileSync('./hlearnhub-testing-firebase-adminsdk-fbsvc-7cdcc148e1.json', 'utf8')
 );
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    // databaseURL: 'https://hlearnhub-testing.firebaseio.com' // nếu cần
+  });
+}
 
 import path from 'path';
 import express from 'express';
@@ -410,13 +419,14 @@ app.delete('/api/users/:uid', async (req, res) => {
     // Delete user data from Firestore
     await deleteUserData(uid);
     
-    res.json({ message: 'Tài khoản đã được xóa thành công' });
+    // Sau khi xóa thành công, trả về success để client chuyển hướng
+    res.json({ success: true, message: 'Tài khoản đã được xóa thành công' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 });
 
-// API đăng xu
+// API đăng xuất
 app.get('/logout', (req, res) => {
   req.session.role = 'stranger'; // Đổi role thành stranger
   req.session.destroy((err) => {
