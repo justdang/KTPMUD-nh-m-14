@@ -498,7 +498,6 @@
                 <a href="/edit" class="btn btn-outline-primary edit-btn">
                   <i class="bi bi-pencil-square me-2"></i>Chỉnh sửa thông tin 
                 </a>
-                <a id="logout-btn" class="btn btn-outline-danger ms-3" href="/"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</a>
               </div>
             </div>
           </div>
@@ -566,11 +565,10 @@
       </div>
     </div>
   </main>
-
   <div class="container mb-4">
     <div class="d-flex justify-content-end">
-      <button id="delete-account-btn" style="background:#AA261B; color:white; border:none; border-radius:8px; padding:12px 28px; font-weight:600; font-size:16px;">
-        <i class="bi bi-trash me-2"></i>Xóa tài khoản
+      <button id="logout-btn" style="background:#AA261B; color:white; border:none; border-radius:8px; padding:12px 28px; font-weight:600; font-size:16px;">
+        <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
       </button>
     </div>
   </div>
@@ -669,67 +667,11 @@
 
   document.getElementById('logout-btn').addEventListener('click', async (e) => {
     e.preventDefault();
-    try {
-      await firebase.auth().signOut(); // Đăng xuất khỏi Firebase
-      localStorage.removeItem("uid"); // Xóa UID khỏi localStorage
-      window.location.href = "/logout"; // Gọi route /logout để đổi role và chuyển hướng
-    } catch (error) {
-      console.error("Lỗi khi đăng xuất:", error);
-      alert("Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại.");
-    }
+    localStorage.removeItem("uid");
+    window.location.href = "/logout";
   });
 
-  document.getElementById('delete-account-btn').addEventListener('click', async () => {
-    const uid = localStorage.getItem("uid");
-    if (!uid) {
-      alert("Bạn cần đăng nhập lại trước khi xóa tài khoản.");
-      return;
-    }
-
-    // Kiểm tra trạng thái đăng nhập
-    const user = firebase.auth().currentUser;
-    if (!user) {
-      alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng xuất và đăng nhập lại trước khi xóa tài khoản.");
-      return;
-    }
-
-    if (confirm("Bạn có chắc chắn muốn xóa tài khoản này không?")) {
-      try {
-        const idToken = await user.getIdToken();
-
-        // Gọi API xóa tài khoản trên server
-        const response = await fetch(`/api/users/${uid}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            'idToken': idToken
-          }
-        });
-
-        // Nếu server trả về lỗi, log chi tiết lỗi để debug
-        let result;
-        try {
-          result = await response.json();
-        } catch (e) {
-          result = {};
-        }
-
-        if (response.ok && result.success) {
-          alert("Tài khoản đã được xóa thành công.");
-          localStorage.removeItem("uid");
-          window.location.href = "/logout"; // Chuyển hướng về trang đăng xuất
-        } else {
-          // Hiển thị lỗi chi tiết từ server nếu có
-          let errMsg = result.error || response.statusText || "Đã xảy ra lỗi khi xóa tài khoản.";
-          alert("Đã xảy ra lỗi khi xóa tài khoản. Chi tiết: " + errMsg);
-          console.error("Xóa tài khoản lỗi:", errMsg, result);
-        }
-      } catch (error) {
-        console.error("Lỗi khi xóa tài khoản:", error);
-        alert("Đã xảy ra lỗi khi xóa tài khoản. Vui lòng thử lại.\nChi tiết: " + (error.message || error));
-      }
-    }
-  });
+  
   </script>
 </body>
 
