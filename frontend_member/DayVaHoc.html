@@ -313,10 +313,10 @@
     }
 
     .nav-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 30px;
-      padding: 0 15px;
+      display: flex; /* Sử dụng flexbox để căn chỉnh */
+      justify-content: space-between; /* Căn đều khoảng cách giữa các ô */
+      gap: 10px; /* Giảm khoảng cách giữa các ô */
+      flex-wrap: wrap; /* Đảm bảo các ô xuống dòng nếu không đủ không gian */
     }
 
     .nav-card {
@@ -330,6 +330,9 @@
       color: inherit;
       position: relative;
       overflow: hidden;
+      flex: 1; /* Đảm bảo các ô có kích thước bằng nhau */
+      max-width: 300px; /* Đặt kích thước tối đa cho mỗi ô */
+      margin: 0 auto; /* Căn giữa các ô */
     }
 
     .nav-card::before {
@@ -564,27 +567,6 @@
         </div>
         <div class="request-list p-4">
           <div class="request-item">
-            <div class="request-header">
-              <div class="request-info">
-                <h5>Hóa Học Đại Cương</h5>
-              </div>
-            </div>
-            <div class="request-details">
-              <div class="detail-item">
-                <i class="bi bi-clock"></i>
-                <span><strong>Thời gian:</strong> 14:30 - 16:30</span>
-              </div>
-              <div class="detail-item">
-                <i class="bi bi-calendar3"></i>
-                <span><strong>Ngày dạy:</strong> Thứ 7, Chủ Nhật</span>
-              </div>
-              <div class="detail-item">
-                <i class="bi bi-person"></i>
-                <span>
-                  <strong>Học sinh:</strong>
-                  <span class="highlight-student">Lê Văn H - K67 Hóa Học</span>
-                </span>
-              </div>
             </div>
           </div>
         </div>
@@ -728,7 +710,8 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs, doc, updateDoc, deleteDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+
 
     // Cấu hình Firebase
     const firebaseConfig = {
@@ -743,13 +726,14 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Lấy UID từ localStorage
-    const uid = localStorage.getItem("uid");
+    document.addEventListener('DOMContentLoaded', async () => {
+      const uid = localStorage.getItem("uid");
 
-    if (!uid) {
-      document.querySelector(".learning-request .request-list").innerHTML = "Không tìm thấy tài khoản của bạn.";
-    } else {
-      // Hàm tải dữ liệu
+      if (!uid) {
+        document.querySelector(".learning-request .request-list").innerHTML = "Không tìm thấy tài khoản của bạn.";
+        return;
+      }
+
       async function loadLearningRequests() {
         try {
           const q = query(collection(db, "studyingRequest"), where("uid", "==", uid));
@@ -759,19 +743,21 @@
 
           for (const docSnap of querySnapshot.docs) {
             const data = docSnap.data();
-            if (!data) continue; // Bỏ qua nếu dữ liệu không tồn tại
+            if (!data) continue;
 
             const requestId = docSnap.id;
 
             // Lấy danh sách gia sư từ subcollection "uids"
             const uidsSnapshot = await getDocs(collection(db, "studyingRequest", requestId, "uids"));
-            const tutorNames = [];
+            const tutors = [];
             uidsSnapshot.forEach((uidDoc) => {
               const uidData = uidDoc.data();
               if (uidData && uidData.fullName) {
-                tutorNames.push(uidData.fullName); // Lấy fullName từ subcollection
+                tutors.push({ uid: uidData.uid, fullName: uidData.fullName }); // Lưu cả uid và fullName
               }
             });
+
+            // alert("UID:" +tutor.uid);
 
             // Tạo HTML hiển thị
             html += `
@@ -792,14 +778,17 @@
                   </div>
                 </div>
                 <div class="tutor-list">
-                  <h6><i class="bi bi-people-fill me-2"></i>Danh sách gia sư đã ứng tuyển (${tutorNames.length})</h6>
-                  ${tutorNames.map(name => `
+                  <h6><i class="bi bi-people-fill me-2"></i>Danh sách gia sư đã ứng tuyển (${tutors.length})</h6>
+                  ${tutors.map(tutor => `
                     <div class="tutor-item">
                       <div class="tutor-info">
-                        <div class="tutor-name">${name}</div>
+                        <!-- Tên gia sư là một đường link -->
+                        <a href="/profileOther?uid=${tutor.uid}" class="tutor-name-link">
+                          ${tutor.fullName}
+                        </a>
                       </div>
                       <div class="tutor-actions">
-                        <button class="btn btn-primary-custom accept-btn">Chấp nhận</button>
+                        <button class="btn btn-primary-custom accept-btn" data-request-id="${requestId}" data-tutor-uid="${tutor.uid}" data-tutor-name="${tutor.fullName}">Chấp nhận</button>
                       </div>
                     </div>
                   `).join("") || "<p>Chưa có gia sư ứng tuyển.</p>"}
@@ -809,6 +798,59 @@
           }
 
           document.querySelector(".learning-request .request-list").innerHTML = html || "Không có dữ liệu.";
+
+          // Gán sự kiện click cho nút "Chấp nhận"
+          document.querySelectorAll('.accept-btn').forEach(button => {
+            button.addEventListener('click', async (e) => {
+              const requestId = button.getAttribute('data-request-id');
+              const tutorUid = button.getAttribute('data-tutor-uid');
+              const tutorName = button.getAttribute('data-tutor-name');
+
+              try {
+                // Lấy dữ liệu từ document "studyingRequest"
+                const requestRef = doc(db, "studyingRequest", requestId);
+                const requestDoc = await getDoc(requestRef);
+
+                if (!requestDoc.exists()) {
+                  alert("Không tìm thấy request để tạo lớp học.");
+                  return;
+                }
+
+                const requestData = requestDoc.data(); // Lấy dữ liệu từ document "studyingRequest"
+
+                // Cập nhật document trong Firestore
+                await updateDoc(requestRef, {
+                  teacherId: tutorUid // Lưu UID của gia sư vào trường "teacherId"
+                });
+
+                // Xóa document trong subcollection "uids"
+                const tutorDocRef = doc(db, "studyingRequest", requestId, "uids", tutorUid);
+                await deleteDoc(tutorDocRef);
+
+                // Tạo document mới trong collection "class"
+                const classRef = doc(collection(db, "class"));
+                await setDoc(classRef, {
+                  ...requestData, // Sao chép toàn bộ dữ liệu từ "studyingRequest"
+                  teacherId: tutorUid, // Thêm trường "teacherId" với UID của gia sư
+                  teacherName: tutorName, // Thêm trường "teacherName" với tên của gia sư
+                  createdAt: new Date().toISOString() // Thêm thời gian tạo
+                });
+
+                // Xóa document chính trong "studyingRequest"
+                await deleteDoc(requestRef);
+
+                // Cập nhật giao diện nút
+                button.innerHTML = '<i class="bi bi-check-circle me-2"></i>Đã Chấp Nhận';
+                button.disabled = true;
+                button.style.background = '#2ecc71';
+
+                alert("Gia sư đã được chấp nhận và lớp học đã được tạo thành công!");
+              } catch (error) {
+                console.error("Lỗi khi chấp nhận gia sư:", error);
+                alert("Đã xảy ra lỗi khi chấp nhận gia sư. Vui lòng thử lại.");
+              }
+            });
+          });
         } catch (error) {
           console.error("Lỗi khi tải dữ liệu:", error);
           document.querySelector(".learning-request .request-list").innerHTML = "Đã xảy ra lỗi khi tải dữ liệu.";
@@ -816,7 +858,89 @@
       }
 
       loadLearningRequests();
-    }
+    });
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const teacherUid = localStorage.getItem("uid"); // Lấy UID của giáo viên từ localStorage
+
+      if (!teacherUid) {
+        document.querySelector(".teaching-request .request-list").innerHTML = "Không tìm thấy tài khoản của bạn.";
+        return;
+      }
+
+      async function loadTeachingRequests() {
+        try {
+          const studyingRequestRef = collection(db, "studyingRequest"); // Sử dụng cú pháp modular
+          const querySnapshot = await getDocs(studyingRequestRef);
+
+          let html = "";
+
+          for (const docSnap of querySnapshot.docs) {
+            const requestId = docSnap.id;
+            const data = docSnap.data();
+
+            // Kiểm tra subcollection "uids" để tìm giáo viên
+            const uidsRef = collection(db, "studyingRequest", requestId, "uids"); // Sử dụng cú pháp modular
+            const uidsSnapshot = await getDocs(uidsRef);
+            let isTeacherInRequest = false;
+
+            uidsSnapshot.forEach((uidDoc) => {
+              const uidData = uidDoc.data();
+              if (uidData.uid === teacherUid) {
+                isTeacherInRequest = true;
+              }
+            });
+
+            // Nếu giáo viên có trong subcollection "uids", lấy thông tin học sinh
+            if (isTeacherInRequest) {
+              let studentName = "Không rõ"; // Giá trị mặc định nếu không tìm thấy tên học sinh
+              if (data.uid) {
+                const studentDoc = await getDoc(doc(db, "users", data.uid)); // Truy vấn thông tin học sinh từ collection "users"
+                if (studentDoc.exists()) {
+                  const studentData = studentDoc.data();
+                  studentName = studentData.fullName || "Không rõ"; // Lấy tên học sinh từ trường "fullName"
+                }
+              }
+
+              // Tạo HTML hiển thị
+              html += `
+                <div class="request-item">
+                  <div class="request-header">
+                    <div class="request-info">
+                      <h5>${data.generalSubject || "Không có tiêu đề"}</h5>
+                    </div>
+                  </div>
+                  <div class="request-details">
+                    <div class="detail-item">
+                      <i class="bi bi-clock"></i>
+                      <span><strong>Thời gian:</strong> ${data.start || "Chưa cập nhật"} - ${data.end || "Chưa cập nhật"}</span>
+                    </div>
+                    <div class="detail-item">
+                      <i class="bi bi-calendar3"></i>
+                      <span><strong>Ngày học:</strong> ${data.day || "Chưa cập nhật"}</span>
+                    </div>
+                    <div class="detail-item">
+                      <i class="bi bi-person"></i>
+                      <span>
+                        <strong>Học sinh:</strong>
+                        <span class="highlight-student"><a href="/profileOther?uid=${data.uid}" class="tutor-name-link"> ${studentName} </a></span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }
+          }
+
+          document.querySelector(".teaching-request .request-list").innerHTML = html || "Không có yêu cầu dạy nào.";
+        } catch (error) {
+          console.error("Lỗi khi tải dữ liệu:", error);
+          document.querySelector(".teaching-request .request-list").innerHTML = "Đã xảy ra lỗi khi tải dữ liệu.";
+        }
+      }
+
+      loadTeachingRequests();
+    });
   </script>
 </body>
 

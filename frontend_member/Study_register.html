@@ -355,6 +355,7 @@
         // daicuong: document.getElementById("generalSubjectContainer").style.display === "block" ? document.getElementById("generalSubject").value : "Không chọn môn chuyên ngành",
         // chuyennganh: document.getElementById("specializedSubjectContainer").style.display === "block" ? document.getElementById("specializedSubject").value : "Không chọn môn đại cương",
         note: document.getElementById("notes").value || "Không có ghi chú",
+        teacherId: "none",
         createdAt: new Date().toISOString()
       };
 
@@ -369,11 +370,9 @@ try {
     await db.collection("studyingRequest")
       .doc(docRef.id)
       .collection("uids")
-      .add({
-        uid1: "exampleUid1",
-        uid2: "exampleUid2",
-        uid3: "exampleUid3"
-      });
+      // .add({
+      //   uid1: "khởi tạo"
+      // });
   } catch (subError) {
     console.error("Lỗi khi thêm subcollection uids:", subError);
     alert("Đăng ký thành công, nhưng có lỗi khi thêm thông tin phụ.");
