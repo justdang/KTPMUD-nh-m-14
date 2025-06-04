@@ -747,6 +747,20 @@
 
             const requestId = docSnap.id;
 
+             // ➤ Kiểm tra nếu thời gian bắt đầu cách hiện tại < 12 tiếng thì xóa luôn
+            const studyDate = data.day; // yyyy-mm-dd
+            const startTime = data.start; // hh:mm
+            if (!studyDate || !startTime) continue;
+
+            const startDateTime = new Date(`${studyDate}T${startTime}`);
+            const now = new Date();
+
+            if ((startDateTime - now) < 43200000) { // 43200000 milliseconds = 12 hours
+              // Nếu còn dưới 12 tiếng → xóa
+              await deleteDoc(doc(db, "studyingRequest", requestId));
+              continue; // Bỏ qua không hiển thị
+            }
+
             // Lấy danh sách gia sư từ subcollection "uids"
             const uidsSnapshot = await getDocs(collection(db, "studyingRequest", requestId, "uids"));
             const tutors = [];
@@ -878,6 +892,18 @@
           for (const docSnap of querySnapshot.docs) {
             const requestId = docSnap.id;
             const data = docSnap.data();
+
+            const studyDate = data.day;
+            const startTime = data.start;
+            if (!studyDate || !startTime) continue;
+
+            const startDateTime = new Date(`${studyDate}T${startTime}`);
+            const now = new Date();
+
+            if ((startDateTime - now) < 43200000) {
+              await deleteDoc(doc(db, "studyingRequest", requestId));
+              continue;
+            }
 
             // Kiểm tra subcollection "uids" để tìm giáo viên
             const uidsRef = collection(db, "studyingRequest", requestId, "uids"); // Sử dụng cú pháp modular
