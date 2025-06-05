@@ -488,7 +488,7 @@
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <a class="btn-getstarted" href="/profile"><i class="bi bi-person-circle me-2"></i>Tài khoản User</a>
+      <a class="btn-getstarted" href="/profile"><i class="bi bi-person-circle me-2"></i><span id="user-nickname"></span></a>
     </div>
   </header>
 
@@ -687,7 +687,7 @@
         <div class="col-lg-5 col-md-12 footer-info">
           <div class="footer-logo">Hlearn<span>Hub</span></div>
           <p class="footer-subtitle">Giải pháp tìm kiếm gia sư trực tiếp dành riêng cho sinh viên HUST</p>
-          <div class="social-links d-flex mt-4">
+          <div class="
             <a href="#"><i class="bi bi-twitter-x"></i></a>
             <a href="#"><i class="bi bi-facebook"></i></a>
             <a href="#"><i class="bi bi-instagram"></i></a>
@@ -747,85 +747,107 @@
       document.getElementById('currentDate').textContent = `${date}/${month}/${year}`;
     });
 
-    document.addEventListener('DOMContentLoaded', async () => {
-  const uid = localStorage.getItem("uid"); // Lấy UID của user từ localStorage
+  document.addEventListener('DOMContentLoaded', async () => {
+  const uid = localStorage.getItem("uid");
 
   if (!uid) {
     document.querySelector("#learning-tab-pane .schedule-body").innerHTML = "Không tìm thấy tài khoản của bạn.";
     return;
   }
 
-  const db = firebase.firestore(); // Sử dụng Firestore compat
+  try {
+    // Sửa lại cách truy vấn document
+    const userRef = db.collection("users").doc(uid);
+    const userSnap = await userRef.get();
 
-  //Lịch học
-  async function loadLearningSchedule() {
-    try {
-      const q = db.collection("class").where("uid", "==", uid);
-      const querySnapshot = await q.get();
-
-      let html = "";
-
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-
-        // Chuyển đổi chuỗi ngày thành đối tượng Date
-        // Giả sử data.day có định dạng "DD/MM/YYYY"
-        const [day, month, year] = data.day.split('-');
-        const date = new Date(year, month - 1, day); // month - 1 vì tháng trong JS bắt đầu từ 0
-      
-        // Lấy thứ trong tuần
-        const weekdays = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
-        const weekday = weekdays[date.getDay()];
-
-        // Xác định trạng thái
-        const now = new Date();
-        let status = "Sắp tới";
-        let statusClass = "status-upcoming";
-        if (date < now) {
-          status = "Kết thúc";
-          statusClass = "status-completed";
-        } else if (date.toDateString() === now.toDateString()) {
-          status = "Đang diễn ra";
-          statusClass = "status-ongoing";
-        }
-
-        // Tạo HTML cho từng lớp học
-        html += `
-          <div class="class-item">
-            <div class="class-date">
-              <div class="day">${weekday}</div> <!-- Hiển thị thứ -->
-              <div class="date">${data.day}</div>
-            </div>
-            <div class="class-info">
-              <span class="status-badge ${statusClass}">${status}</span>
-              <h5>${data.generalSubject || "Không có tiêu đề"}</h5>
-              <p>Gia sư: ${data.teacherName || "Không rõ"}</p>
-              <p class="class-time"><i class="bi bi-clock"></i> ${data.start} - ${data.end}</p>
-            </div>
-            <div class="class-actions">
-              <button class="action-btn"><i class="bi bi-info-circle"></i><a href="/profileOther?uid=${data.teacherId}" class="tutor-name-link"> Chi tiết gia sư </a></button>
-            </div>
-          </div>
-        `;
-      });
-
-      const scheduleBody = document.querySelector("#learning-tab-pane .schedule-body");
-      scheduleBody.innerHTML = html || "<p>Không có lớp học nào.</p>";
-    } catch (error) {
-      console.error("Lỗi khi tải dữ liệu lịch học:", error);
-      document.querySelector("#learning-tab-pane .schedule-body").innerHTML = "Đã xảy ra lỗi khi tải dữ liệu.";
+    if (!userSnap.exists) {
+      alert("Không tìm thấy dữ liệu người dùng.");
+      return;
     }
+
+    const userData = userSnap.data();
+    document.getElementById('user-nickname').textContent = userData.fullName || "Không có tên";
+    
+    // Gọi các hàm load lịch sau khi đã xác thực user
+    await Promise.all([
+      loadLearningSchedule(),
+      loadTeachingSchedule()
+    ]);
+
+  } catch (err) {
+    console.error("Lỗi khi lấy dữ liệu người dùng:", err);
+    alert("Lỗi khi lấy dữ liệu người dùng: " + err.message);
   }
+});
 
-  loadLearningSchedule();
+  // Định nghĩa các hàm load lịch một lần duy nhất
+  async function loadLearningSchedule() {
+  try {
+    const uid = localStorage.getItem("uid");
+    const q = db.collection("class").where("uid", "==", uid);
+    const querySnapshot = await q.get();
 
-  //Lịch dạy
-  async function loadTeachingSchedule() {
+    let html = "";
+
+    querySnapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+
+      // Chuyển đổi chuỗi ngày thành đối tượng Date
+      // Giả sử data.day có định dạng "DD/MM/YYYY"
+      const [day, month, year] = data.day.split('-');
+      const date = new Date(year, month - 1, day); // month - 1 vì tháng trong JS bắt đầu từ 0
+      
+      // Lấy thứ trong tuần
+      const weekdays = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+      const weekday = weekdays[date.getDay()];
+
+      // Xác định trạng thái
+      const now = new Date();
+      let status = "Sắp tới";
+      let statusClass = "status-upcoming";
+      if (date < now) {
+        status = "Kết thúc";
+        statusClass = "status-completed";
+      } else if (date.toDateString() === now.toDateString()) {
+        status = "Đang diễn ra";
+        statusClass = "status-ongoing";
+      }
+
+      // Tạo HTML cho từng lớp học
+      html += `
+        <div class="class-item">
+          <div class="class-date">
+            <div class="day">${weekday}</div> <!-- Hiển thị thứ -->
+            <div class="date">${data.day}</div>
+          </div>
+          <div class="class-info">
+            <span class="status-badge ${statusClass}">${status}</span>
+            <h5>${data.generalSubject || "Không có tiêu đề"}</h5>
+            <p>Gia sư: ${data.teacherName || "Không rõ"}</p>
+            <p class="class-time"><i class="bi bi-clock"></i> ${data.start} - ${data.end}</p>
+          </div>
+          <div class="class-actions">
+            <button class="action-btn"><i class="bi bi-info-circle"></i><a href="/profileOther?uid=${data.teacherId}" class="tutor-name-link"> Chi tiết gia sư </a></button>
+          </div>
+        </div>
+      `;
+    });
+
+    const scheduleBody = document.querySelector("#learning-tab-pane .schedule-body");
+    scheduleBody.innerHTML = html || "<p>Không có lớp học nào.</p>";
+  } catch (error) {
+    console.error("Lỗi khi tải dữ liệu lịch học:", error);
+    document.querySelector("#learning-tab-pane .schedule-body").innerHTML = 
+      "Đã xảy ra lỗi khi tải dữ liệu.";
+  }
+}
+
+async function loadTeachingSchedule() {
   try {
     const teacherId = localStorage.getItem("uid");
-    
     if (!teacherId) {
-      document.querySelector("#teaching-tab-pane .schedule-body").innerHTML = "Không tìm thấy tài khoản của bạn.";
+      document.querySelector("#teaching-tab-pane .schedule-body").innerHTML = 
+        "Không tìm thấy tài khoản của bạn.";
       return;
     }
 
@@ -891,12 +913,10 @@
     teachingScheduleBody.innerHTML = html || "<p>Không có lớp dạy nào.</p>";
   } catch (error) {
     console.error("Lỗi khi tải dữ liệu lịch dạy:", error);
-    document.querySelector("#teaching-tab-pane .schedule-body").innerHTML = "Đã xảy ra lỗi khi tải dữ liệu.";
+    document.querySelector("#teaching-tab-pane .schedule-body").innerHTML = 
+      "Đã xảy ra lỗi khi tải dữ liệu.";
   }
-}
-
-loadTeachingSchedule();
-});
+} 
   </script>
 </body>
 

@@ -531,7 +531,7 @@
 
       <a class="btn-getstarted" href="/profile">
         <i class="bi bi-person-circle me-2"></i>
-        <span id="user-nickname">Tài khoản</span>
+        <span id="user-nickname"></span>
       </a>
     </div>
   </header>
@@ -733,6 +733,24 @@
         document.querySelector(".learning-request .request-list").innerHTML = "Không tìm thấy tài khoản của bạn.";
         return;
       }
+
+      try {
+    // Sử dụng đúng cú pháp để truy vấn document
+    const userRef = doc(db, "users", uid);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      alert("Không tìm thấy dữ liệu người dùng.");
+      return;
+    }
+
+    const userData = userSnap.data();
+    document.getElementById('user-nickname').textContent = userData.fullName || "Không có tên";
+    
+  } catch (err) {
+    console.error("Lỗi khi lấy dữ liệu người dùng:", err);
+    alert("Lỗi khi lấy dữ liệu người dùng: " + err.message);
+  }
 
       async function loadLearningRequests() {
         try {

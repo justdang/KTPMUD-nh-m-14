@@ -434,7 +434,7 @@
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <a class="btn-getstarted" href="/profile"><i class="bi bi-person-circle me-2"></i><span id="user-accname"></span></a>
+      <a class="btn-getstarted" href="/profile"><i class="bi bi-person-circle me-2"></i><span id="user-nickname"></span></a>
     </div>
   </header>
 
@@ -638,32 +638,51 @@
   const db = firebase.firestore();
 
   document.addEventListener("DOMContentLoaded", async () => {
-    const uid = localStorage.getItem("uid");
-    if (!uid) {
+  const uid = localStorage.getItem("uid");
+  if (!uid) {
+    console.log("Chưa đăng nhập");
+    return;
+  }
+
+  try {
+    const userRef = db.collection("users").doc(uid);
+    const doc = await userRef.get();
+    
+    if (!doc.exists) {
+      console.log("Không tìm thấy dữ liệu người dùng");
       return;
     }
 
-    try {
-      const doc = await db.collection("users").doc(uid).get(); 
-      if (!doc.exists) {
-        alert("Không tìm thấy dữ liệu người dùng.");
-        return;
+    const userData = doc.data();
+    
+    // Tạo object chứa các id và giá trị mặc định
+    const userElements = {
+      'user-nickname': userData.fullName || "",
+      'user-name': userData.fullName || "Không có tên",
+      'user-accname': userData.fullName || "Tài khoản của bạn", 
+      'user-birthday': userData.birthDate || "Không có ngày sinh",
+      'user-major': userData.departmentCode || "Không có ngành học",
+      'user-course': userData.course || "Không có khóa học",
+      'user-gpa': userData.recentGPA || "0",
+      'user-cpa': userData.cpa || "0",
+      'user-completedStudy': userData.completedStudySessions || "0",
+      'user-completedTeach': userData.completedTeachingSessions || "0"
+    };
+
+    // Cập nhật từng phần tử một cách an toàn
+    Object.entries(userElements).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.textContent = value;
+      } else {
+        console.log(`Không tìm thấy phần tử có id: ${id}`);
       }
-      const userData = doc.data();
-      document.getElementById('user-name').textContent = userData.fullName || "Không có tên";
-      document.getElementById('user-accname').textContent = userData.fullName || "Tài khoản của bạn";
-      document.getElementById('user-birthday').textContent = userData.birthDate || "Không có ngày sinh";
-      document.getElementById('user-major').textContent = userData.departmentCode || "Không có ngành học";
-      document.getElementById('user-course').textContent = userData.course || "Không có khóa học";
-      document.getElementById('user-gpa').textContent = userData.recentGPA || "0";
-      document.getElementById('user-cpa').textContent = userData.cpa || "0";
-      document.getElementById('user-completedStudy').textContent = userData.completedStudySessions || "0";
-      document.getElementById('user-completedTeach').textContent = userData.completedTeachingSessions || "0";
-    } catch (err) {
-      console.error("Lỗi khi lấy dữ liệu người dùng:", err);
-      alert("Lỗi khi lấy dữ liệu người dùng: " + err.message);
-    }
-  });
+    });
+
+  } catch (err) {
+    console.error("Lỗi khi lấy dữ liệu người dùng:", err);
+  }
+});
 
   document.getElementById('logout-btn').addEventListener('click', async (e) => {
     e.preventDefault();
