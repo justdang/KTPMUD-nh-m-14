@@ -506,60 +506,22 @@
         <div class="student-reviews">
           <div class="reviews-header">
             <h3 class="reviews-title">
-              <i class="bi bi-chat-quote me-2"></i>Đánh giá từ học sinh
+              <i class="bi bi-chat-quote me-2"></i>Đánh giá
             </h3>
             <div class="rating-container">
               <div class="rating">
-                <div class="stars">
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-half"></i>
+                <div class="stars" id="average-stars">
+                  <!-- Stars will be dynamically inserted here -->
                 </div>
-                <span class="rating-number">4.5/5</span>
+                <span class="rating-number" id="average-rating">0.0/5</span>
+                <i class="bi bi-star-fill ms-1" style="color: #ffc107;"></i>
               </div>
             </div>
           </div>
-          
-          <div class="review-item">
-            <div class="stars mb-2">
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-            </div>
-            <p class="review-text mb-1">Gia sư có phương pháp giảng dạy rất dễ hiểu, giải thích mọi vấn đề rõ ràng và kiên nhẫn. Tôi đã cải thiện điểm số rất nhiều sau khi học với thầy.</p>
-            <p class="review-author text-end">- Học sinh lớp Kỹ thuật lập trình</p>
-          </div>
-          
-          <div class="review-item">
-            <div class="stars mb-2">
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star"></i>
-            </div>
-            <p class="review-text mb-1">Thầy luôn chuẩn bị bài giảng kỹ lưỡng và có nhiều ví dụ thực tế giúp em hiểu bài nhanh hơn. Em rất hài lòng với những buổi học.</p>
-            <p class="review-author text-end">- Học sinh lớp Giải tích</p>
-          </div>
-          
-          <div class="review-item">
-            <div class="stars mb-2">
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-half"></i>
-            </div>
-            <p class="review-text mb-1">Gia sư rất tận tâm và luôn sẵn sàng giải đáp thắc mắc của em ngay cả ngoài giờ học. Kiến thức chuyên môn rất tốt và cách truyền đạt dễ hiểu.</p>
-            <p class="review-author text-end">- Học sinh lớp Vật lý đại cương</p>
-          </div>
-          
-          <div class="text-center mt-4">
-            <button style="color:#AA261B;" class="btn btn-outline-primary edit-btn"><a href="Review list.html"><i class="bi bi-chat-text me-2"></i> Xem thêm đánh giá </a></button>
+
+          <!-- Reviews List -->
+          <div class="reviews-list" id="reviews-list">
+            <!-- Reviews will be dynamically inserted here -->
           </div>
         </div>
       </div>
@@ -679,12 +641,101 @@
       }
     });
 
+    // Hiển thị số sao dựa trên field Star
+    const starRating = userData.Star || 0;
+    const starsContainer = document.getElementById('average-stars');
+    const ratingNumber = document.getElementById('average-rating');
+    
+    // Tạo HTML cho sao
+    let starsHTML = '';
+    const fullStars = Math.floor(starRating);
+    const hasHalfStar = starRating % 1 >= 0.5;
+
+    for (let i = 1; i <= 5; i++) {
+      if (i <= fullStars) {
+        starsHTML += '<i class="bi bi-star-fill"></i>';
+      } else if (i === fullStars + 1 && hasHalfStar) {
+        starsHTML += '<i class="bi bi-star-half"></i>';
+      } else {
+        starsHTML += '<i class="bi bi-star"></i>';
+      }
+    }
+
+    starsContainer.innerHTML = starsHTML;
+    ratingNumber.textContent = `${starRating.toFixed(1)}/5`;
+
+    // Load reviews
+    await loadReviews(uid);
+
   } catch (err) {
     console.error("Lỗi khi lấy dữ liệu người dùng:", err);
   }
 });
 
-  document.getElementById('logout-btn').addEventListener('click', async (e) => {
+async function loadReviews(uid) {
+  try {
+    const reviewsList = document.getElementById('reviews-list');
+    
+    // Lấy tất cả đánh giá từ subcollection reviews
+    const reviewsQuery = db.collection("users").doc(uid).collection("reviews").orderBy("createdAt", "desc");
+    const reviewsSnapshot = await reviewsQuery.get();
+
+    if (reviewsSnapshot.empty) {
+      reviewsList.innerHTML = '<p class="text-center text-muted">Chưa có đánh giá nào.</p>';
+      return;
+    }
+
+    let reviewsHTML = '';
+    for (const reviewDoc of reviewsSnapshot.docs) {
+      const review = reviewDoc.data();
+      
+      // Lấy thông tin người đánh giá
+      const reviewerDoc = await db.collection("users").doc(review.reviewerId).get();
+      const reviewerData = reviewerDoc.data();
+      
+      // Tạo HTML cho sao
+      let starsHTML = '';
+      const fullStars = Math.floor(review.rating);
+      const hasHalfStar = review.rating % 1 !== 0;
+
+      for (let i = 1; i <= 5; i++) {
+        if (i <= fullStars) {
+          starsHTML += '<i class="bi bi-star-fill"></i>';
+        } else if (i === fullStars + 1 && hasHalfStar) {
+          starsHTML += '<i class="bi bi-star-half"></i>';
+        } else {
+          starsHTML += '<i class="bi bi-star"></i>';
+        }
+      }
+
+      // Format ngày đánh giá
+      const reviewDate = review.createdAt ? new Date(review.createdAt.toDate()).toLocaleDateString('vi-VN') : 'Không có ngày';
+
+      reviewsHTML += `
+        <div class="review-item">
+          <div class="stars mb-2">
+            ${starsHTML}
+          </div>
+          <p class="review-text mb-1">${review.content}</p>
+          <p class="review-author text-end">
+            - ${reviewerData.fullName || 'Người dùng'} 
+            (${review.reviewerRole === 'student' ? 'Học sinh' : 'Gia sư'})
+            <br>
+            <small class="text-muted">${reviewDate}</small>
+          </p>
+        </div>
+      `;
+    }
+
+    reviewsList.innerHTML = reviewsHTML;
+  } catch (error) {
+    console.error("Lỗi khi tải đánh giá:", error);
+    document.getElementById('reviews-list').innerHTML = 
+      '<p class="text-center text-danger">Đã xảy ra lỗi khi tải đánh giá.</p>';
+  }
+}
+
+document.getElementById('logout-btn').addEventListener('click', async (e) => {
     e.preventDefault();
     localStorage.removeItem("uid");
     window.location.href = "/logout";

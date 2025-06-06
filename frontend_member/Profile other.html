@@ -210,6 +210,7 @@
     .rating {
       display: flex;
       align-items: center;
+      gap: 15px;
     }
     
     .stars {
@@ -222,6 +223,12 @@
       font-size: 20px;
       font-weight: 700;
       color: #333;
+    }
+
+    .rating-text {
+      font-size: 14px;
+      color: #666;
+      margin-left: 15px;
     }
     
     .student-reviews {
@@ -522,7 +529,7 @@
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <a class="btn-getstarted" href="/profile"><i class="bi bi-person-circle me-2"></i><span id="user-accname"></span></a>
+      <a class="btn-getstarted" href="/profile"><i class="bi bi-person-circle me-2"></i><span id="user-nickname"></span></a>
     </div>
   </header>
 
@@ -588,18 +595,18 @@
         <div class="student-reviews">
           <div class="reviews-header">
             <h3 class="reviews-title">
-              <i class="bi bi-chat-quote me-2"></i>Đánh giá từ học sinh
+              <i class="bi bi-chat-quote me-2"></i>Đánh giá
             </h3>
             <div class="rating-container">
               <div class="rating">
-                <div class="stars">
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-half"></i>
+                <div class="stars" id="average-stars">
+                  <!-- Stars will be dynamically inserted here -->
                 </div>
-                <span class="rating-number">4.5/5</span>
+                <span class="rating-number" id="average-rating">0.0/5</span>
+                <i class="bi bi-star-fill ms-1" style="color: #ffc107;"></i>
+              </div>
+              <div class="rating-text">
+                <span id="total-reviews">0</span> đánh giá
               </div>
             </div>
           </div>
@@ -660,12 +667,9 @@
               </button>
             </form>
           </div>
-          
-          
-          
-          <div class="text-center mt-4">
-            <button style="color:#AA261B;" class="btn btn-outline-primary edit-btn"><a href="Review list.html"><i class="bi bi-chat-text me-2"></i> Xem thêm đánh giá </a></button>
-          </div>
+
+          <!-- Danh sách đánh giá sẽ được chèn vào đây -->
+          <div class="reviews-list"></div>
         </div>
       </div>
     </div>
@@ -732,6 +736,23 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
+    // Lấy và hiển thị tên người dùng hiện tại
+    document.addEventListener('DOMContentLoaded', async () => {
+      const uid = localStorage.getItem("uid");
+      if (uid) {
+        try {
+          const userRef = doc(db, "users", uid);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            const userData = userSnap.data();
+            document.getElementById('user-nickname').textContent = userData.fullName || "Không có tên";
+          }
+        } catch (err) {
+          console.error("Lỗi khi lấy dữ liệu người dùng:", err);
+        }
+      }
+    });
+
     // Lấy UID từ URL
     const params = new URLSearchParams(window.location.search);
     const uid = params.get("uid");
@@ -769,97 +790,120 @@
 
     async function loadReviews(uid) {
       try {
-        const reviewsContainer = document.querySelector('.student-reviews');
-        const reviewsList = document.createElement('div');
-        reviewsList.className = 'reviews-list';
+        const reviewsList = document.querySelector('.reviews-list');
+        if (!reviewsList) {
+          console.error("Không tìm thấy phần tử reviews-list");
+          return;
+        }
 
         // Lấy tất cả đánh giá từ subcollection reviews
         const reviewsQuery = query(collection(db, "users", uid, "reviews"), orderBy("createdAt", "desc"));
         const reviewsSnapshot = await getDocs(reviewsQuery);
 
+        let averageRating = 0;
+        let totalRating = 0;
+
         if (reviewsSnapshot.empty) {
           reviewsList.innerHTML = '<p class="text-center text-muted">Chưa có đánh giá nào.</p>';
+          // Cập nhật Star field thành 0 nếu không có review
+          await setDoc(doc(db, "users", uid), { Star: 0 }, { merge: true });
         } else {
           let reviewsHTML = '';
-          let totalRating = 0;
 
           for (const reviewDoc of reviewsSnapshot.docs) {
             const review = reviewDoc.data();
             
-            // Lấy thông tin người đánh giá
-            const reviewerDoc = await getDoc(doc(db, "users", review.reviewerId));
-            const reviewerData = reviewerDoc.data();
-            
-            // Tính toán số sao
-            totalRating += review.rating;
-            const fullStars = Math.floor(review.rating);
-            const hasHalfStar = review.rating % 1 !== 0;
+            try {
+              // Lấy thông tin người đánh giá
+              const reviewerDoc = await getDoc(doc(db, "users", review.reviewerId));
+              const reviewerData = reviewerDoc.exists() ? reviewerDoc.data() : { fullName: 'Người dùng không xác định' };
+              
+              // Tính toán số sao
+              totalRating += review.rating;
+              const fullStars = Math.floor(review.rating);
+              const hasHalfStar = review.rating % 1 !== 0;
 
-            // Tạo HTML cho sao
-            let starsHTML = '';
-            for (let i = 1; i <= 5; i++) {
-              if (i <= fullStars) {
-                starsHTML += '<i class="bi bi-star-fill"></i>';
-              } else if (i === fullStars + 1 && hasHalfStar) {
-                starsHTML += '<i class="bi bi-star-half"></i>';
-              } else {
-                starsHTML += '<i class="bi bi-star"></i>';
+              // Tạo HTML cho sao
+              let starsHTML = '';
+              for (let i = 1; i <= 5; i++) {
+                if (i <= fullStars) {
+                  starsHTML += '<i class="bi bi-star-fill"></i>';
+                } else if (i === fullStars + 1 && hasHalfStar) {
+                  starsHTML += '<i class="bi bi-star-half"></i>';
+                } else {
+                  starsHTML += '<i class="bi bi-star"></i>';
+                }
               }
-            }
 
-            reviewsHTML += `
-              <div class="review-item">
-                <div class="stars mb-2">
-                  ${starsHTML}
+              // Format thời gian
+              const reviewDate = review.createdAt ? new Date(review.createdAt.toDate()).toLocaleDateString('vi-VN') : 'Không có ngày';
+
+              reviewsHTML += `
+                <div class="review-item">
+                  <div class="stars mb-2">
+                    ${starsHTML}
+                  </div>
+                  <p class="review-text mb-1">${review.content}</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <p class="review-author mb-0">
+                      - ${reviewerData.fullName || 'Người dùng'} 
+                      (${review.reviewerRole === 'student' ? 'Học sinh' : 'Gia sư'})
+                    </p>
+                    <small class="text-muted">${reviewDate}</small>
+                  </div>
                 </div>
-                <p class="review-text mb-1">${review.content}</p>
-                <p class="review-author text-end">
-                  - ${reviewerData.fullName || 'Người dùng'} 
-                  (${review.reviewerRole === 'student' ? 'Học sinh' : 'Gia sư'})
-                </p>
-              </div>
-            `;
+              `;
+            } catch (error) {
+              console.error("Lỗi khi xử lý đánh giá:", error);
+              continue; // Bỏ qua đánh giá bị lỗi và tiếp tục với đánh giá tiếp theo
+            }
           }
 
-          // Tính và hiển thị đánh giá trung bình
-          const averageRating = totalRating / reviewsSnapshot.size;
-          const ratingContainer = document.querySelector('.rating-container .rating');
-          ratingContainer.innerHTML = `
-            <div class="stars">
-              ${generateStarsHTML(averageRating)}
-            </div>
-            <span class="rating-number">${averageRating.toFixed(1)}/5</span>
-          `;
+          // Tính đánh giá trung bình
+          averageRating = totalRating / reviewsSnapshot.size;
+          
+          // Cập nhật Star field trong document của user
+          await setDoc(doc(db, "users", uid), { Star: averageRating }, { merge: true });
+
+          // Hiển thị đánh giá trung bình
+          const starsContainer = document.getElementById('average-stars');
+          const ratingNumber = document.getElementById('average-rating');
+          
+          // Tạo HTML cho sao
+          let starsHTML = '';
+          const fullStars = Math.floor(averageRating);
+          const hasHalfStar = averageRating % 1 >= 0.5;
+
+          for (let i = 1; i <= 5; i++) {
+            if (i <= fullStars) {
+              starsHTML += '<i class="bi bi-star-fill"></i>';
+            } else if (i === fullStars + 1 && hasHalfStar) {
+              starsHTML += '<i class="bi bi-star-half"></i>';
+            } else {
+              starsHTML += '<i class="bi bi-star"></i>';
+            }
+          }
+
+          starsContainer.innerHTML = starsHTML;
+          ratingNumber.textContent = `${averageRating.toFixed(1)}/5`;
+          
+          // Cập nhật số lượng đánh giá
+          document.getElementById('total-reviews').textContent = reviewsSnapshot.size;
 
           reviewsList.innerHTML = reviewsHTML;
         }
-
-        // Chèn danh sách đánh giá vào container
-        const existingReviewsList = document.querySelector('.reviews-list');
-        if (existingReviewsList) {
-          existingReviewsList.remove();
-        }
-        reviewsContainer.insertBefore(reviewsList, document.querySelector('.text-center'));
       } catch (error) {
         console.error("Lỗi khi tải đánh giá:", error);
-      }
-    }
-
-    function generateStarsHTML(rating) {
-      let starsHTML = '';
-      const fullStars = Math.floor(rating);
-      const hasHalfStar = rating % 1 >= 0.5;
-
-      for (let i = 1; i <= 5; i++) {
-        if (i <= fullStars) {
-          starsHTML += '<i class="bi bi-star-fill"></i>';
-        } else if (i === fullStars + 1 && hasHalfStar) {
-          starsHTML += '<i class="bi bi-star-half"></i>';
-        } else {
-          starsHTML += '<i class="bi bi-star"></i>';
+        // Hiển thị thông báo lỗi cho người dùng
+        const reviewsList = document.querySelector('.reviews-list');
+        if (reviewsList) {
+          reviewsList.innerHTML = `
+            <div class="alert alert-danger">
+              Đã xảy ra lỗi khi tải đánh giá. Vui lòng thử lại sau.
+            </div>
+          `;
         }
       }
-      return starsHTML;
     }
 
     // Cập nhật script cho đánh giá sao
