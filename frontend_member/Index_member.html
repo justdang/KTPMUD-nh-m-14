@@ -415,9 +415,9 @@
       <h2>Chào mừng trở lại, <span id="user-name"></span>!</h2>
       <p>Hôm nay là <span id="currentDay"></span>, <span id="currentDate"></span>. Bạn có <span id="taskNumber"></span> nhiệm vụ đang chờ hoàn thành.</p>
     </div>
-    <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+    <!-- <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
       <a href="/schedule" class="btn btn-light px-4 py-2 rounded-pill fw-semibold">Xem lịch cá nhân <i class="bi bi-arrow-right-circle ms-2"></i></a>
-    </div>
+    </div> -->
   </div>
 </div>
 
@@ -480,16 +480,16 @@
         </div>
       </div>
 
-      <!-- Split Weekly Schedule into two side-by-side schedules -->
+      <!-- Split Weekly Schedule into two side-by-side schedules 
       <div class="row g-4 mb-5" data-aos="fade-up" data-aos-delay="200">
-        <!-- First schedule - Lịch dạy -->
+        <!-- First schedule - Lịch dạy 
         <div class="col-lg-6">
           <div class="weekly-schedule">
             <div class="schedule-header">
               <i class="bi bi-calendar-week me-2"></i> Lịch dạy sắp tới
             </div>
             <div class="schedule-body">
-              <!-- Teaching classes -->
+              <!-- Teaching classes 
               <div class="class-item cs">
                 <div class="class-date">
                   <div class="day">Thứ ...</div>
@@ -497,7 +497,7 @@
                 </div>
                 <div class="class-info">
                   <h5>Môn học</h5>
-                  <p>Người học: ... </p> <!--Lấy ra từ DB-->
+                  <p>Người học: ... </p> <!--Lấy ra từ DB
                   <p class="class-time"><i class="bi bi-clock"></i> thời gian bắt đầu - thời gian kết thúc </p>
                 </div>
                 <div class="class-actions">
@@ -527,16 +527,16 @@
               </div>
             </div>
           </div>
-        </div>
+        </div>-->
         
-        <!-- Second schedule - Lịch học -->
+        <!-- Second schedule - Lịch học
         <div class="col-lg-6">
           <div class="weekly-schedule">
             <div class="schedule-header">
               <i class="bi bi-calendar-week me-2"></i> Lịch học sắp tới
             </div>
             <div class="schedule-body">
-              <!-- Learning classes -->
+              <!-- Learning classes 
               <div class="class-item cs">
                 <div class="class-date">
                   <div class="day">Thứ ...</div>
@@ -544,7 +544,7 @@
                 </div>
                 <div class="class-info">
                   <h5>Môn học</h5>
-                  <p>Người dạy: ... </p> <!--Lấy ra từ DB-->
+                  <p>Người dạy: ... </p> Lấy ra từ DB
                   <p class="class-time"><i class="bi bi-clock"></i> thời gian bắt đầu - thời gian kết thúc </p>
                 </div>
                 <div class="class-actions">
@@ -575,25 +575,25 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- Modified subject selection section -->
       <div class="row g-4 mb-5" data-aos="fade-up" data-aos-delay="100">
         <div class="col-lg-6">
           <div class="icon-box">
-            <a href="/dkyHoc">
-              <i class="bi bi-briefcase-fill"></i>
-              <h4>Đăng ký dạy</h4>
-              <p>Đăng ký làm gia sư và tìm kiếm học sinh phù hợp</p>
+            <a href="/schedule">
+              <i class="bi bi-calendar"></i>
+              <h4>Lịch cá nhân</h4>
+              <p>Quản lý lịch cá nhân của bạn</p>
             </a>
           </div>
         </div>
         <div class="col-lg-6">
           <div class="icon-box">
-            <a href="/studyregister">
+            <a href="/dayVaHoc">
               <i class="bi bi-book"></i>
-              <h4>Đăng ký học</h4>
-              <p>Đăng ký làm học sinh và tìm kiếm gia sư phù hợp</p>
+              <h4>Dạy và học</h4>
+              <p>Quản lý các công việc dạy và học</p>
             </a>
           </div>
         </div>
