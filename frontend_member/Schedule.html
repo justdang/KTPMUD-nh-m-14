@@ -467,6 +467,60 @@
         margin-bottom: 10px;
       }
     }
+
+    /* Filter Section */
+    .filter-section {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .filter-section h3 {
+      color: var(--primary-color);
+      margin-bottom: 25px;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-label {
+      color: var(--primary-color);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-control,
+    .form-select {
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      padding: 12px 15px;
+      transition: all 0.3s;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.2rem rgba(170, 38, 27, 0.15);
+    }
+
+    .btn-search {
+      background: var(--primary-color);
+      border: none;
+      color: white;
+      padding: 12px 30px;
+      border-radius: 25px;
+      font-weight: 600;
+      transition: all 0.3s;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .btn-search:hover {
+      background: #8a1e15;
+      transform: translateY(-2px);
+    }
   </style>
 </head>
 
@@ -512,56 +566,60 @@
       <!-- Filter Criteria Box from first file -->
       <div class="row mb-4">
         <div class="col-12">
-          <div class="filter-panel">
-            <div class="filter-header">
-              <div>Lọc theo tiêu chí</div>
-              <span class="filter-reset">Đặt lại</span>
-            </div>
+          <div class="filter-section">
+            <h3><i class="bi bi-funnel-fill me-2"></i>Bộ Lọc Tìm Kiếm</h3>
             <div class="row">
-              <!-- Status Filters -->
-              <div class="col-lg-8">
-                <div class="filter-group">
-                  <h6 class="filter-group-title">Trạng thái</h6>
-                  <div class="row">
-                   <div class="col-lg-4" class="filter-option">
-                     <input type="checkbox" id="filter-upcoming" checked>
-                     <label for="filter-upcoming">Sắp tới</label>
-                   </div>
-                   <div class="col-lg-4" class="filter-option">
-                     <input type="checkbox" id="filter-ongoing" checked>
-                     <label for="filter-ongoing">Đang diễn ra</label>
-                   </div>
-                   <div class="col-lg-4" class="filter-option">
-                     <input type="checkbox" id="filter-completed">
-                     <label for="filter-completed">Kết thúc</label>
-                   </div>
-                </div>
-                </div>
+              <div class="col-md-2 mb-3">
+                <label for="start-time" class="form-label">Giờ bắt đầu</label>
+                <input type="time" class="form-control" id="start-time">
               </div>
-              
-              <!-- Date Range Filter -->
-              <div class="col-md-4">
-                <div class="filter-group">
-                  <h6 class="filter-group-title">Thời gian</h6>
-                  <div class="date-range">
-                    <div class="mb-2">
-                      <label for="start-date" class="form-label">Từ ngày</label>
-                      <input type="date" class="form-control" id="start-date">
-                    </div>
-                    <div>
-                      <label for="end-date" class="form-label">Đến ngày</label>
-                      <input type="date" class="form-control" id="end-date">
-                    </div>
-                  </div>
-                </div>
+              <div class="col-md-2 mb-3">
+                <label for="end-time" class="form-label">Giờ kết thúc</label>
+                <input type="time" class="form-control" id="end-time">
               </div>
-            </div>
-            
-            <!-- Apply Filters Button -->
-            <div class="row mt-3">
-              <div class="col-12 text-end">
-                <button class="btn apply-filter-btn">
-                  <i class="bi bi-funnel-fill me-2"></i>Áp dụng bộ lọc
+              <div class="col-md-2 mb-3">
+                <label for="date" class="form-label">Ngày</label>
+                <input type="date" class="form-control" id="date">
+              </div>
+              <div class="col-md-2 mb-3">
+                <label for="status" class="form-label">Trạng thái</label>
+                <select class="form-select" id="status">
+                  <option value="">Tất cả trạng thái</option>
+                  <option value="upcoming">Sắp tới</option>
+                  <option value="ongoing">Đang diễn ra</option>
+                  <option value="completed">Kết thúc</option>
+                </select>
+              </div>
+              <div class="col-md-2 mb-3">
+                <label for="subject" class="form-label">Môn học</label>
+                <select class="form-select" id="subject">
+                  <option value="">Tất cả môn học</option>
+                  <option value="Calculus 1">Giải tích I</option>
+                  <option value="Calculus 2">Giải tích II</option>
+                  <option value="Calculus 3">Giải tích III</option>
+                  <option value="Probability and Statistics">Xác suất thống kê</option>
+                  <option value="linear Algebra">Đại số tuyến tính</option>
+                  <option value="Physics">Vật lý đại cương</option>
+                  <option value="Chemistry">Hóa học đại cương</option>
+                  <option value="English">Tiếng Anh cơ bản</option>
+                  <option value="Philosophy">Triết học Mác-Lênin</option>
+                  <option value="Economics">Kinh tế chính trị</option>
+                </select>
+              </div>
+              <div class="col-md-2 mb-3">
+                <label for="sort" class="form-label">Sắp xếp</label>
+                <select class="form-select" id="sort">
+                  <option value="date-asc">Ngày tăng dần</option>
+                  <option value="date-desc">Ngày giảm dần</option>
+                  <option value="time-asc">Giờ tăng dần</option>
+                  <option value="time-desc">Giờ giảm dần</option>
+                  <option value="subject-asc">Môn học A-Z</option>
+                  <option value="subject-desc">Môn học Z-A</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <button class="btn btn-search" onclick="filterRequests()">
+                  <i class="bi bi-search me-2"></i>Tìm Kiếm
                 </button>
               </div>
             </div>
@@ -647,21 +705,6 @@
                 </div>
               </div>
             </div>
-            
-            <!-- Pagination -->
-            <nav aria-label="Page navigation example">
-              <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                  <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Trước</a>
-                </li>
-                <li class="page-item active"><a class="page-link" href="#" style="background-color: var(--primary-color); border-color: var(--primary-color);">1</a></li>
-                <li class="page-item"><a class="page-link" href="#" style="color: var(--dark-color)">2</a></li>
-                <li class="page-item"><a class="page-link" href="#" style="color: var(--dark-color)">3</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#" style="color: var(--dark-color)">Tiếp</a>
-                </li>
-              </ul>
-            </nav>
           </div>
           
           <!-- Learning schedule tab -->
@@ -788,36 +831,62 @@
     const querySnapshot = await q.get();
 
     let html = "";
+    let upcomingCount = 0;
+    let completedCount = 0;
 
     querySnapshot.forEach((docSnap) => {
       const data = docSnap.data();
 
       // Chuyển đổi chuỗi ngày thành đối tượng Date
-      // Giả sử data.day có định dạng "DD/MM/YYYY"
       const [day, month, year] = data.day.split('-');
-      const date = new Date(year, month - 1, day); // month - 1 vì tháng trong JS bắt đầu từ 0
+      const date = new Date(year, month - 1, day);
       
       // Lấy thứ trong tuần
       const weekdays = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
       const weekday = weekdays[date.getDay()];
 
-      // Xác định trạng thái
+      // Xác định trạng thái dựa trên thời gian hiện tại
       const now = new Date();
+      const [startHour, startMinute] = data.start.split(':');
+      const [endHour, endMinute] = data.end.split(':');
+      
+      // Tạo đối tượng Date cho thời gian bắt đầu và kết thúc
+      const startTime = new Date(date);
+      startTime.setHours(parseInt(startHour), parseInt(startMinute), 0);
+      
+      const endTime = new Date(date);
+      endTime.setHours(parseInt(endHour), parseInt(endMinute), 0);
+
       let status = "Sắp tới";
       let statusClass = "status-upcoming";
-      if (date < now) {
+      
+      // Kiểm tra ngày trước
+      if (date.toDateString() < now.toDateString()) {
+        // Nếu ngày học đã qua
         status = "Kết thúc";
         statusClass = "status-completed";
+        completedCount++;
       } else if (date.toDateString() === now.toDateString()) {
-        status = "Đang diễn ra";
-        statusClass = "status-ongoing";
+        // Nếu là ngày hôm nay thì kiểm tra giờ
+        if (now > endTime) {
+          status = "Kết thúc";
+          statusClass = "status-completed";
+          completedCount++;
+        } else if (now >= startTime && now <= endTime) {
+          status = "Đang diễn ra";
+          statusClass = "status-ongoing";
+        } else {
+          upcomingCount++;
+        }
+      } else {
+        upcomingCount++;
       }
 
       // Tạo HTML cho từng lớp học
       html += `
         <div class="class-item">
           <div class="class-date">
-            <div class="day">${weekday}</div> <!-- Hiển thị thứ -->
+            <div class="day">${weekday}</div>
             <div class="date">${data.day}</div>
           </div>
           <div class="class-info">
@@ -832,6 +901,17 @@
         </div>
       `;
     });
+
+    // Cập nhật số lớp vào Firestore
+    try {
+      await db.collection("users").doc(uid).update({
+        upcomingStudySessions: upcomingCount,
+        completedStudySessions: completedCount
+      });
+      console.log(`Cập nhật số lớp học - Sắp tới: ${upcomingCount}, Kết thúc: ${completedCount}`);
+    } catch (error) {
+      console.error("Lỗi khi cập nhật số lớp học:", error);
+    }
 
     const scheduleBody = document.querySelector("#learning-tab-pane .schedule-body");
     scheduleBody.innerHTML = html || "<p>Không có lớp học nào.</p>";
@@ -855,6 +935,8 @@ async function loadTeachingSchedule() {
     const querySnapshot = await q.get();
 
     let html = "";
+    let upcomingCount = 0;
+    let completedCount = 0;
 
     for (const docSnap of querySnapshot.docs) {
       const data = docSnap.data();
@@ -875,16 +957,41 @@ async function loadTeachingSchedule() {
       const weekdays = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
       const weekday = weekdays[date.getDay()];
 
-      // Xác định trạng thái
+      // Xác định trạng thái dựa trên thời gian hiện tại
       const now = new Date();
+      const [startHour, startMinute] = data.start.split(':');
+      const [endHour, endMinute] = data.end.split(':');
+      
+      // Tạo đối tượng Date cho thời gian bắt đầu và kết thúc
+      const startTime = new Date(date);
+      startTime.setHours(parseInt(startHour), parseInt(startMinute), 0);
+      
+      const endTime = new Date(date);
+      endTime.setHours(parseInt(endHour), parseInt(endMinute), 0);
+
       let status = "Sắp tới";
       let statusClass = "status-upcoming";
-      if (date < now) {
+      
+      // Kiểm tra ngày trước
+      if (date.toDateString() < now.toDateString()) {
+        // Nếu ngày học đã qua
         status = "Kết thúc";
         statusClass = "status-completed";
+        completedCount++;
       } else if (date.toDateString() === now.toDateString()) {
-        status = "Đang diễn ra";
-        statusClass = "status-ongoing";
+        // Nếu là ngày hôm nay thì kiểm tra giờ
+        if (now > endTime) {
+          status = "Kết thúc";
+          statusClass = "status-completed";
+          completedCount++;
+        } else if (now >= startTime && now <= endTime) {
+          status = "Đang diễn ra";
+          statusClass = "status-ongoing";
+        } else {
+          upcomingCount++;
+        }
+      } else {
+        upcomingCount++;
       }
 
       html += `
@@ -909,6 +1016,17 @@ async function loadTeachingSchedule() {
       `;
     }
 
+    // Cập nhật số lớp vào Firestore
+    try {
+      await db.collection("users").doc(teacherId).update({
+        upcomingTeachingSessions: upcomingCount,
+        completedTeachingSessions: completedCount
+      });
+      console.log(`Cập nhật số lớp dạy - Sắp tới: ${upcomingCount}, Kết thúc: ${completedCount}`);
+    } catch (error) {
+      console.error("Lỗi khi cập nhật số lớp dạy:", error);
+    }
+
     const teachingScheduleBody = document.querySelector("#teaching-tab-pane .schedule-body");
     teachingScheduleBody.innerHTML = html || "<p>Không có lớp dạy nào.</p>";
   } catch (error) {
@@ -916,7 +1034,112 @@ async function loadTeachingSchedule() {
     document.querySelector("#teaching-tab-pane .schedule-body").innerHTML = 
       "Đã xảy ra lỗi khi tải dữ liệu.";
   }
-} 
+}
+
+function filterRequests() {
+  const startTime = document.getElementById('start-time').value;
+  const endTime = document.getElementById('end-time').value;
+  const date = document.getElementById('date').value;
+  const status = document.getElementById('status').value;
+  const subject = document.getElementById('subject').value;
+  const sort = document.getElementById('sort').value;
+  
+  const classItems = Array.from(document.querySelectorAll('.class-item'));
+  
+  // Filter items
+  const filteredItems = classItems.filter(item => {
+    let shouldShow = true;
+    
+    // Filter by status
+    if (status) {
+      const itemStatus = item.querySelector('.status-badge').textContent.toLowerCase();
+      if (itemStatus !== status) {
+        shouldShow = false;
+      }
+    }
+    
+    // Filter by subject
+    if (subject) {
+      const itemSubject = item.querySelector('h5').textContent;
+      if (!itemSubject.includes(subject)) {
+        shouldShow = false;
+      }
+    }
+    
+    // Filter by date
+    if (date) {
+      const itemDate = item.querySelector('.date').textContent;
+      const [day, month, year] = itemDate.split('/');
+      const itemDateObj = new Date(year, month - 1, day);
+      const filterDate = new Date(date);
+      if (itemDateObj.toDateString() !== filterDate.toDateString()) {
+        shouldShow = false;
+      }
+    }
+    
+    // Filter by time
+    if (startTime || endTime) {
+      const timeText = item.querySelector('.class-time').textContent;
+      const timeMatch = timeText.match(/(\d{2}:\d{2}) - (\d{2}:\d{2})/);
+      if (timeMatch) {
+        const [_, itemStart, itemEnd] = timeMatch;
+        
+        if (startTime && itemStart < startTime) {
+          shouldShow = false;
+        }
+        
+        if (endTime && itemEnd > endTime) {
+          shouldShow = false;
+        }
+      }
+    }
+    
+    return shouldShow;
+  });
+
+  // Sort items
+  filteredItems.sort((a, b) => {
+    switch(sort) {
+      case 'date-asc':
+        return new Date(a.querySelector('.date').textContent) - new Date(b.querySelector('.date').textContent);
+      case 'date-desc':
+        return new Date(b.querySelector('.date').textContent) - new Date(a.querySelector('.date').textContent);
+      case 'time-asc':
+        return a.querySelector('.class-time').textContent.localeCompare(b.querySelector('.class-time').textContent);
+      case 'time-desc':
+        return b.querySelector('.class-time').textContent.localeCompare(a.querySelector('.class-time').textContent);
+      case 'subject-asc':
+        return a.querySelector('h5').textContent.localeCompare(b.querySelector('h5').textContent);
+      case 'subject-desc':
+        return b.querySelector('h5').textContent.localeCompare(a.querySelector('h5').textContent);
+      default:
+        return 0;
+    }
+  });
+
+  // Get the container
+  const container = document.querySelector('.schedule-body');
+  
+  // Remove all items
+  classItems.forEach(item => {
+    item.style.opacity = '0';
+    item.style.transform = 'translateY(-10px)';
+    setTimeout(() => {
+      item.style.display = 'none';
+    }, 300);
+  });
+
+  // Add filtered and sorted items back
+  setTimeout(() => {
+    filteredItems.forEach((item, index) => {
+      item.style.display = 'block';
+      setTimeout(() => {
+        item.style.opacity = '1';
+        item.style.transform = 'translateY(0)';
+      }, index * 50);
+    });
+  }, 300);
+}
   </script>
 </body>
 
