@@ -123,7 +123,7 @@ app.get('/edit', (req, res) => {
 app.get('/studyregister', (req, res) => {
   const role = req.session.role
   if (role == 'member') {
-    res.sendFile(path.resolve(__dirname, './frontend_member/study_register.html'))
+    res.sendFile(path.resolve(__dirname, './frontend_member/Study_register.html'))
   } else {
     res.status(404).send('resource not found')
   }
