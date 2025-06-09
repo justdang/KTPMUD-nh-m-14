@@ -638,32 +638,6 @@
       });
     }
 
-    // Add click event to action buttons
-    // document.addEventListener('DOMContentLoaded', function() {
-    //   const actionButtons = document.querySelectorAll('.action-btn');
-      
-    //   actionButtons.forEach(button => {
-    //     button.addEventListener('click', function(e) {
-    //       e.stopPropagation();
-    //       this.innerHTML = '<i class="bi bi-check-circle me-2"></i>Đã Ứng Tuyển';
-    //       this.style.background = '#2ecc71';
-    //       this.disabled = true;
-    //     });
-    //   });
-
-    //   // Add click event to request items for more details
-    //   const requestItems = document.querySelectorAll('.request-item');
-      
-    //   requestItems.forEach(item => {
-    //     item.addEventListener('click', function() {
-    //       // You can add functionality to show more details or navigate to detail page
-    //       console.log('Request item clicked');
-    //     });
-    //   });
-      
-    //   console.log('Tutoring Search Page Loaded');
-    // });
-
     document.addEventListener("DOMContentLoaded", async () => {
       const uid = localStorage.getItem("uid");
       if (!uid) {
@@ -686,10 +660,6 @@
 
       renderRequestsRealtime();
     });
-
-    // document.addEventListener('DOMContentLoaded', function() {
-    //   renderRequestsRealtime();
-    // });
   </script>
 </body>
 

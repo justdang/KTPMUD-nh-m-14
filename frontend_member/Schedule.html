@@ -727,9 +727,8 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
-    // Set current date in header
+    // Lấy thời gian cụ thể ở 
     document.addEventListener('DOMContentLoaded', function() {
-      // Get current date
       const now = new Date();
       const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
       const day = days[now.getDay()];
@@ -742,7 +741,7 @@
     });
 
   document.addEventListener('DOMContentLoaded', async () => {
-  const uid = localStorage.getItem("uid");
+  const uid = localStorage.getItem("uid"); //Lấy id từ localStorage
 
   if (!uid) {
     document.querySelector("#learning-tab-pane .schedule-body").innerHTML = "Không tìm thấy tài khoản của bạn.";
@@ -750,7 +749,7 @@
   }
 
   try {
-    // Sửa lại cách truy vấn document
+    // truy vấn document
     const userRef = db.collection("users").doc(uid);
     const userSnap = await userRef.get();
 
@@ -774,7 +773,7 @@
   }
 });
 
-  // Định nghĩa các hàm load lịch một lần duy nhất
+  // Định nghĩa các hàm load lịch 
   async function loadLearningSchedule() {
   try {
     const uid = localStorage.getItem("uid");
@@ -789,7 +788,7 @@
       const data = docSnap.data();
 
       // Chuyển đổi chuỗi ngày thành đối tượng Date
-      const [day, month, year] = data.day.split('-');
+      const [day, month, year] = data.day.split('-'); //tách chuỗi ngày tháng năm bằng hàm split
       const date = new Date(year, month - 1, day);
       
       // Lấy thứ trong tuần
@@ -807,6 +806,7 @@
       
       const endTime = new Date(date);
       endTime.setHours(parseInt(endHour), parseInt(endMinute), 0);
+      //ép kiểu thành int để thực hiện
 
       let status = "Sắp tới";
       let statusClass = "status-upcoming";
@@ -875,14 +875,14 @@
 
 async function loadTeachingSchedule() {
   try {
-    const teacherId = localStorage.getItem("uid");
+    const teacherId = localStorage.getItem("uid"); // gán teacher ID với uid người dùng
     if (!teacherId) {
       document.querySelector("#teaching-tab-pane .schedule-body").innerHTML = 
         "Không tìm thấy tài khoản của bạn.";
       return;
     }
 
-    const q = db.collection("class").where("teacherId", "==", teacherId);
+    const q = db.collection("class").where("teacherId", "==", teacherId); // tìm các collection có teacher ID trùng với uid của người dùng
     const querySnapshot = await q.get();
 
     let html = "";
@@ -909,16 +909,16 @@ async function loadTeachingSchedule() {
       const weekday = weekdays[date.getDay()];
 
       // Xác định trạng thái dựa trên thời gian hiện tại
-      const now = new Date();
+      const now = new Date(); // chia thời gian bằng split
       const [startHour, startMinute] = data.start.split(':');
       const [endHour, endMinute] = data.end.split(':');
       
       // Tạo đối tượng Date cho thời gian bắt đầu và kết thúc
       const startTime = new Date(date);
-      startTime.setHours(parseInt(startHour), parseInt(startMinute), 0);
+      startTime.setHours(parseInt(startHour), parseInt(startMinute), 0);//ép kiểu thời gian thành số nguyên
       
       const endTime = new Date(date);
-      endTime.setHours(parseInt(endHour), parseInt(endMinute), 0);
+      endTime.setHours(parseInt(endHour), parseInt(endMinute), 0);// ép kiểu 
 
       let status = "Sắp tới";
       let statusClass = "status-upcoming";
@@ -945,6 +945,7 @@ async function loadTeachingSchedule() {
         upcomingCount++;
       }
 
+      // Tạo HTML cho từng lớp học
       html += `
         <div class="class-item">
           <div class="class-date">
@@ -987,6 +988,7 @@ async function loadTeachingSchedule() {
   }
 }
 
+//filter
 function filterRequests() {
   const startTime = document.getElementById('start-time').value;
   const endTime = document.getElementById('end-time').value;

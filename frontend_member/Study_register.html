@@ -184,15 +184,6 @@
                 <input type="date" class="form-control" id="studyDate" name="studyDate" required>
               </div>
               
-              <!-- <div class="mb-4">
-                <label for="courseType" class="form-label">Loại môn học</label>
-                <select class="form-select" id="courseType" name="courseType" required onchange="updateSubjectDropdown()">
-                  <option value="" selected disabled>-- Chọn loại môn học --</option>
-                  <option value="general">Môn học đại cương</option>
-                  <option value="specialized">Môn chuyên ngành và cơ sở ngành</option>
-                </select>
-              </div> -->
-              
               <div class="mb-4">
                 <label for="generalSubject" class="form-label">Chọn môn đại cương</label>
                 <select class="form-select" id="generalSubject" name="generalSubject">
@@ -210,19 +201,6 @@
                 </select> <!--Sửa lại các value và các môn cho phù hợp-->
               </div>
               
-              <!-- <div class="mb-4" id="specializedSubjectContainer" style="display: none;">
-                <label for="specializedSubject" class="form-label">Chọn môn chuyên ngành</label>
-                <select class="form-select" id="specializedSubject" name="specializedSubject">
-                  <option value="" selected disabled>-- Chọn môn học --</option>
-                  <option value="cpp">Lập trình C++</option>
-                  <option value="database">Cơ sở dữ liệu</option>
-                  <option value="accounting">Kế toán tài chính</option>
-                  <option value="marketing">Marketing căn bản</option>
-                  <option value="econometrics">Kinh tế lượng</option>
-                  <option value="law">Luật thương mại</option>
-                </select> 
-              </div> -->
-
               <div class="mb-2">
                 <label for="notes" class="form-label">Ghi chú</label>
                 <textarea class="form-control" id="notes" name="notes" rows="4" placeholder="Nhập các yêu cầu hoặc thông tin bổ sung nếu có..."></textarea>
@@ -272,22 +250,6 @@
   <!-- Bootstrap and JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // function updateSubjectDropdown() {
-    //   const courseType = document.getElementById('courseType').value;
-    //   const generalSubjectContainer = document.getElementById('generalSubjectContainer');
-    //   const specializedSubjectContainer = document.getElementById('specializedSubjectContainer');
-      
-    //   if (courseType === 'general') {
-    //     generalSubjectContainer.style.display = 'block';
-    //     specializedSubjectContainer.style.display = 'none';
-    //     document.getElementById('specializedSubject').value = '';
-    //   } else if (courseType === 'specialized') {
-    //     generalSubjectContainer.style.display = 'none';
-    //     specializedSubjectContainer.style.display = 'block';
-    //     document.getElementById('generalSubject').value = '';
-    //   }
-    // }
-
     const firebaseConfig = {
     apiKey: "AIzaSyAWXMEwMPSyMBVf4LikdsVCZ0kN4BhYB6E",
     authDomain: "hlearnhub-testing.firebaseapp.com",
@@ -302,7 +264,7 @@
 
     //Hiển thị thông tin người dùng từ Firestore
      document.addEventListener("DOMContentLoaded", async () => {
-    const uid = localStorage.getItem("uid");
+    const uid = localStorage.getItem("uid"); //lấy uid từ localStorage
     if (!uid) {
       return;
     }
@@ -351,9 +313,6 @@
         end: document.getElementById("endTime").value,
         day: studyDate,
         generalSubject: document.getElementById("generalSubject").value,
-        // subjectType: document.getElementById("courseType").value,
-        // daicuong: document.getElementById("generalSubjectContainer").style.display === "block" ? document.getElementById("generalSubject").value : "Không chọn môn chuyên ngành",
-        // chuyennganh: document.getElementById("specializedSubjectContainer").style.display === "block" ? document.getElementById("specializedSubject").value : "Không chọn môn đại cương",
         note: document.getElementById("notes").value || "Không có ghi chú",
         teacherId: "none",
         createdAt: new Date().toISOString()
@@ -361,7 +320,7 @@
 
 
 try {
-  const docRef = await db.collection("studyingRequest").add(studyingRequest);
+  const docRef = await db.collection("studyingRequest").add(studyingRequest); // tạo document mới và đẩy thông tin vào 
   if (!docRef.id) {
     throw new Error("Không thể tạo tài liệu mới.");
   }
@@ -369,64 +328,20 @@ try {
   try {
     await db.collection("studyingRequest")
       .doc(docRef.id)
-      .collection("uids")
-      // .add({
-      //   uid1: "khởi tạo"
-      // });
+      .collection("uids") // tạo subcollection "uids"
   } catch (subError) {
     console.error("Lỗi khi thêm subcollection uids:", subError);
     alert("Đăng ký thành công, nhưng có lỗi khi thêm thông tin phụ.");
   }
 
-  document.getElementById('study-schedule-form').reset();
-  // document.getElementById("generalSubjectContainer").style.display = "none";
-  // document.getElementById("specializedSubjectContainer").style.display = "none";
+  document.getElementById('study-schedule-form').reset(); // reset form, clear toàn bộ thông tin đã nhập
   alert("Đăng ký lịch học thành công!");
 
 } catch (error) {
   console.error("Lỗi khi lưu vào Firestore:", error);
   alert("Đã xảy ra lỗi khi đăng ký lịch học.");
 }
-
     });
-
-
-    // document.getElementById("loginForm").addEventListener("submit", async (e) => {
-    // e.preventDefault();
-
-    // const uid = localStorage.getItem("uid");
-    // if (!uid) {
-    //   alert("Không tìm thấy uid");
-    //   return;
-    // }
-
-    //  try {
-    //   const studyingRequest ={
-    //   start: document.getElementById("startTime").value,
-    //   end: document.getElementById("endTime").value,
-    //   day: document.getElementById("teachingDate").value,
-    //   subjectType: document.getElementById("courseType").value,
-    //   daicuong: document.getElementById("generalSubject").value || "Không có môn học đại cương",
-    //   chuyennganh: document.getElementById("specializedSubject").value || "Không có môn học chuyên ngành hay cơ sở ngành",
-    //   note: document.getElementById("notes").value || "Không có ghi chú"
-    // }
-    //   await db.collection('users').doc(user.uid).set(userData, { merge: true });
-    //   } catch (err) {
-    //     console.error("Lỗi khi lưu dữ liệu:", err);
-    //     alert("Lỗi khi lưu dữ liệu: " + err.message);
-    //   }
-    // Thềm phần lưu uid người đăng ký 
-    // const studyingRequest ={
-    //   start: document.getElementById("startTime").value,
-    //   end: document.getElementById("endTime").value,
-    //   day: document.getElementById("teachingDate").value,
-    //   subjectType: document.getElementById("courseType").value,
-    //   daicuong: document.getElementById("generalSubject").value || "Không có môn học đại cương",
-    //   chuyennganh: document.getElementById("specializedSubject").value || "Không có môn học chuyên ngành hay cơ sở ngành",
-    //   note: document.getElementById("notes").value || "Không có ghi chú"
-    // }
-    // db.collection('studyingRequest').doc(user.uid).set(userData, { merge: true });
-// });
   </script>
 </body>
 </html>

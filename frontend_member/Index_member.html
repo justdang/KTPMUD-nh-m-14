@@ -408,7 +408,6 @@
 
   <main class="main py-5">
     <div class="container">
-      <!-- Welcome banner -->
       <!-- Welcome banner with dynamic date -->
 <div class="welcome-banner" data-aos="fade-up">
   <div class="row align-items-center">
@@ -416,40 +415,30 @@
       <h2>Chào mừng trở lại, <span id="user-name"></span>!</h2>
       <p>Hôm nay là <span id="currentDay"></span>, <span id="currentDate"></span>. Bạn có <span id="taskNumber"></span> nhiệm vụ đang chờ hoàn thành.</p>
     </div>
-    <!-- <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-      <a href="/schedule" class="btn btn-light px-4 py-2 rounded-pill fw-semibold">Xem lịch cá nhân <i class="bi bi-arrow-right-circle ms-2"></i></a>
-    </div> -->
   </div>
 </div>
 
-<!-- Add this JavaScript before the closing body tag -->
 <script>
-  // Function to get and format the current date in Vietnamese
+  // Lấy thời gian thực 
   function updateCurrentDate() {
     const now = new Date();
     
-    // Array of Vietnamese day names
     const weekdayNames = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
     
-    // Get day of week in Vietnamese
     const weekday = weekdayNames[now.getDay()];
     
-    // Format date as dd/mm/yyyy
+    //dd/mm/yyyy
     const day = String(now.getDate()).padStart(2, '0');
-    const month = String(now.getMonth() + 1).padStart(2, '0'); // January is 0
+    const month = String(now.getMonth() + 1).padStart(2, '0'); 
     const year = now.getFullYear();
     const formattedDate = `${day}/${month}/${year}`;
     
-    // Update the spans with the current day and date
     document.getElementById('currentDay').textContent = weekday;
     document.getElementById('currentDate').textContent = formattedDate;
   }
   
-  // Run the function when the page loads
   document.addEventListener('DOMContentLoaded', updateCurrentDate);
 </script>
-
-      <!-- Stats cards -->
       <div class="row g-4 mb-5" data-aos="fade-up" data-aos="fade-up" data-aos-delay="100">
         <div class="col-lg-3 col-md-6">
           <div class="stat-card">
@@ -469,116 +458,18 @@
           <div class="stat-card">
             <i class="bi bi-backpack"></i>
             <h3><span id="user-upcomingStudy"></span></h3>
-            <p>Số buổi học sắp tới</p> <!--Tạm thời-->
+            <p>Số buổi học sắp tới</p> 
           </div>
         </div>
         <div class="col-lg-3 col-md-6">
           <div class="stat-card">
             <i class="bi bi-check-circle"></i>
             <h3><span id="user-completedStudy"></span></h3>
-            <p>Số buổi học hoàn thành</p> <!--Tạm thời-->
+            <p>Số buổi học hoàn thành</p> 
           </div>
         </div>
       </div>
 
-      <!-- Split Weekly Schedule into two side-by-side schedules 
-      <div class="row g-4 mb-5" data-aos="fade-up" data-aos-delay="200">
-        <!-- First schedule - Lịch dạy 
-        <div class="col-lg-6">
-          <div class="weekly-schedule">
-            <div class="schedule-header">
-              <i class="bi bi-calendar-week me-2"></i> Lịch dạy sắp tới
-            </div>
-            <div class="schedule-body">
-              <!-- Teaching classes 
-              <div class="class-item cs">
-                <div class="class-date">
-                  <div class="day">Thứ ...</div>
-                  <div class="date">dd/mm/yyyy</div>
-                </div>
-                <div class="class-info">
-                  <h5>Môn học</h5>
-                  <p>Người học: ... </p> <!--Lấy ra từ DB
-                  <p class="class-time"><i class="bi bi-clock"></i> thời gian bắt đầu - thời gian kết thúc </p>
-                </div>
-                <div class="class-actions">
-                  <span class="upcoming-label">ĐANG DIỄN RA</span>
-                </div>
-              </div>
-              
-              <div class="class-item math">
-                <div class="class-date">
-                  <div class="day">Thứ ...</div>
-                  <div class="date">dd/mm/yyyy</div>
-                </div>
-                <div class="class-info">
-                  <h5>Môn học</h5>
-                  <p>Người học: ...</p>
-                  <p class="class-time"><i class="bi bi-clock"></i> thời gian bắt đầu - thời gian kết thúc</p>
-                </div>
-                <div class="class-actions">
-                  <span class="upcoming-label">SẮP TỚI</span>
-                </div>
-              </div>
-              
-              <div class="text-center mt-4">
-                <a href="#" class="btn btn-primary rounded-pill px-4 py-2" style="background-color: var(--primary-color); border-color: var(--primary-color);">
-                  Xem lịch dạy đầy đủ <i class="bi bi-calendar-check ms-2"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>-->
-        
-        <!-- Second schedule - Lịch học
-        <div class="col-lg-6">
-          <div class="weekly-schedule">
-            <div class="schedule-header">
-              <i class="bi bi-calendar-week me-2"></i> Lịch học sắp tới
-            </div>
-            <div class="schedule-body">
-              <!-- Learning classes 
-              <div class="class-item cs">
-                <div class="class-date">
-                  <div class="day">Thứ ...</div>
-                  <div class="date">dd/mm/yyyy</div>
-                </div>
-                <div class="class-info">
-                  <h5>Môn học</h5>
-                  <p>Người dạy: ... </p> Lấy ra từ DB
-                  <p class="class-time"><i class="bi bi-clock"></i> thời gian bắt đầu - thời gian kết thúc </p>
-                </div>
-                <div class="class-actions">
-                  <span class="upcoming-label">SẮP TỚI</span>
-                </div>
-              </div>
-              
-              <div class="class-item math">
-                <div class="class-date">
-                  <div class="day">Thứ ...</div>
-                  <div class="date">dd/mm/yyyy</div>
-                </div>
-                <div class="class-info">
-                  <h5>Môn học</h5>
-                  <p>Người dạy: ...</p>
-                  <p class="class-time"><i class="bi bi-clock"></i> thời gian bắt đầu - thời gian kết thúc</p>
-                </div>
-                <div class="class-actions">
-                  <span class="upcoming-label">ĐANG DIỄN RA</span>
-                </div>
-              </div>
-              
-              <div class="text-center mt-4">
-                <a href="#" class="btn btn-primary rounded-pill px-4 py-2" style="background-color: var(--primary-color); border-color: var(--primary-color);">
-                  Xem lịch học đầy đủ <i class="bi bi-calendar-check ms-2"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> -->
-
-      <!-- Modified subject selection section -->
       <div class="row g-4 mb-5" data-aos="fade-up" data-aos-delay="100">
         <div class="col-lg-6">
           <div class="icon-box">
@@ -614,7 +505,6 @@
             <a href="#"><i class="bi bi-linkedin"></i></a>
           </div>
         </div>
-        
         <div class="col-lg-7 col-md-12">
           <div class="row">
             <div class="col-lg-4 col-6 footer-links">
@@ -628,7 +518,6 @@
         </div>
       </div>
     </div>
-    
     <div class="container copyright text-center mt-4">
       <p>&copy; <span>2025</span> <strong>HlearnHub</strong>. All Rights Reserved</p>
     </div>
@@ -636,14 +525,12 @@
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
-
   <!-- Bootstrap JS (optional) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
   <script>
-     // Firebase cấu hình
   const firebaseConfig = {
     apiKey: "AIzaSyAWXMEwMPSyMBVf4LikdsVCZ0kN4BhYB6E",
     authDomain: "hlearnhub-testing.firebaseapp.com",
@@ -652,24 +539,23 @@
     appId: "1:1054297107041:web:e2e985461b9ac570441820"
   };
 
-  // Khởi tạo Firebase
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  document.addEventListener("DOMContentLoaded", async () => {
-    const uid = localStorage.getItem("uid");
+  document.addEventListener("DOMContentLoaded", async () => { 
+    const uid = localStorage.getItem("uid"); // Lấy uid từ localStorage
     if (!uid) {
       alert("Không tìm thấy uid");
       return;
     }
 
-    try {
+    try { //truy xuất dữ liệu người dùng từ Firestore
       const doc = await db.collection("users").doc(uid).get(); 
       if (!doc.exists) {
         alert("Không tìm thấy dữ liệu người dùng.");
         return;
       }
-      const userData = doc.data();
+      const userData = doc.data(); // thực hiện lấy dữ liệu của từng trường trong document
       document.getElementById('user-name').textContent = userData.fullName || "Không có tên";
       document.getElementById('user-nickname').textContent = userData.fullName || "Không có tên";
       document.getElementById('user-completedStudy').textContent = userData.completedStudySessions || 0;
@@ -679,9 +565,10 @@
       const soBuoiHocSapToi = userData.upcomingStudySessions || 0; // Tránh null
       const soBuoiDaySapToi = userData.upcomingTeachingSessions || 0;
 
+      // Tính tổng số công việc sắp tới, cần hoàn thành...
       const tongSoCongViec = soBuoiHocSapToi + soBuoiDaySapToi;
       document.getElementById('taskNumber').textContent = tongSoCongViec;
-    } catch (err) {
+    } catch (err) { // bắt lỗi 
       console.error("Lỗi khi lấy dữ liệu người dùng:", err);
       alert("Lỗi khi lấy dữ liệu người dùng: " + err.message);
     }

@@ -1,0 +1,48 @@
+GIẢI THÍCH CHƯƠNG TRÌNH 
+1.Backend:  *Dưới đây là các hàm, lệnh gặp nhiều trong backend.
+1.1.try{}catch{error};
+ - Để xử lý lỗi, để chương trình không bị đột ngột dừng, crash khi gặp lỗi
+ - Đoạn code trong phần try là đoạn code có thể gặp lỗi, nếu như có gặp lỗi thì sẽ báo lại lỗi về catch, với biến error chữ thông tin lỗi.
+1.2.getelementbyid():
+ - Trả về phần tử đầu tiên có thuộc tính id khớp với giá trị bạn truyền vào.
+ - Dùng để lấy dữ liệu trong firebase (với chương trình này nói riêng).
+1.3.addeventlistener():
+ - Đây là tên của các hàm được khai báo trong chương trình, với chức năng chủ yếu là lấy một số thông tin từ người dùng.
+ - Với mỗi trang, thì hàm này được sử dụng với các mục đích truy xuất thông tin khác nhau.
+1.4.html +='':
+ - +=: là toán tử cộng chuỗi để thêm nội dung vào biến html.
+ - Hỗ trợ để sử dụng html động, tức có thể không hiện hoặc hiện thông tin trên frontend tùy vào các yếu tố khác của chương trình.
+1.5.getDoc(), get(), getItem()
+ - getItem(): lấy dữ liệu trong session storage hoặc localStorage.
+ - get(): lấy dữ liệu từ Map hoặc gọi API.
+ - getDoc(): lấy document cụ thể từ firebase. 
+1.6.forEach()
+ - Để lặp qua từng phần tử của mảng và thực hiện callback cho từng phẩn tử đó.
+1.7.sth.push()
+ - Để thêm phần tử vào cuối mảng.
+1.8.e.stopPropagation
+ - Dùng trong xử lý sự kiện, ngăn không cho các sự kiện lan truyền đến phần tử cha.
+1.9.parse + datatype
+ - Là một cách ép kiểu, ép chuỗi thành kiểu dữ liệu sau chữ parse.
+ VD: parseInt(), parseFloat()...
+1.10.element.getAttribute(attributeName)
+ - Lấy giá trị của một thuộc tính trên html (id, class, src...).
+1.11.e.preventDefault()
+ - Thường có dạng:
+ Hàm gì đó{
+  e.preventDefault();}
+  - Để ngăn cho hệ thống thực hiện thao tác mặc định của html thực hiện ở hàm chứa phương thức này.
+1.12.setTimeout(function, delay)
+ - function: hàm mà mình muốn chạy.
+ - delay: thời gian trì hoãn, tính bằng ms.
+ - Công dụng: để trì hoãn thời gian chạy một cái hàm nhất định.
+1.13.entries
+ - Biến đổi các cấu trúc dữ liệu (object, array, map) thành cặp giá trị [key, value] (hoặc [index, value]) để bạn có thể dễ dàng lặp qua và xử lý từng phần tử.
+ - Sẽ tùy theo ngữ cảnh của chương trình.
+1.14.onAuthStateChanged
+ -  là một phương thức được cung cấp bởi Firebase Authentication (thường dùng trong Firebase SDK cho JavaScript), cho phép bạn theo dõi sự thay đổi trạng thái đăng nhập của người dùng. Nó thường được sử dụng để kiểm tra xem người dùng đã đăng nhập hay đăng xuất và thực hiện các hành động phù hợp.
+1.15.setInterval(function, delay)
+ -  là một hàm có sẵn trong JavaScript, dùng để thực hiện một đoạn mã (hàm) lặp đi lặp lại sau mỗi khoảng thời gian cố định (tính bằng mili-giây).
+ - function: hàm thực hiện.
+ - delay: khoảng thời gian, đơn vị là ms.
+

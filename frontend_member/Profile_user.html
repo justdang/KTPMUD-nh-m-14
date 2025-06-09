@@ -511,7 +511,6 @@
             <div class="rating-container">
               <div class="rating">
                 <div class="stars" id="average-stars">
-                  <!-- Stars will be dynamically inserted here -->
                 </div>
                 <span class="rating-number" id="average-rating">0.0/5</span>
                 <i class="bi bi-star-fill ms-1" style="color: #ffc107;"></i>
@@ -521,7 +520,6 @@
 
           <!-- Reviews List -->
           <div class="reviews-list" id="reviews-list">
-            <!-- Reviews will be dynamically inserted here -->
           </div>
         </div>
       </div>
@@ -586,7 +584,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
   <script>
-     // Firebase cấu hình
   const firebaseConfig = {
     apiKey: "AIzaSyAWXMEwMPSyMBVf4LikdsVCZ0kN4BhYB6E",
     authDomain: "hlearnhub-testing.firebaseapp.com",
@@ -595,12 +592,11 @@
     appId: "1:1054297107041:web:e2e985461b9ac570441820"
   };
 
-  // Khởi tạo Firebase
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
   document.addEventListener("DOMContentLoaded", async () => {
-  const uid = localStorage.getItem("uid");
+  const uid = localStorage.getItem("uid"); // kiểm tra uid từ localStorage xem có không
   if (!uid) {
     console.log("Chưa đăng nhập");
     return;
@@ -631,7 +627,7 @@
       'user-completedTeach': userData.completedTeachingSessions || "0"
     };
 
-    // Cập nhật từng phần tử một cách an toàn
+    // Cập nhật từng phần tử một cách an toàn, tạo thành các cặp [id,value]
     Object.entries(userElements).forEach(([id, value]) => {
       const element = document.getElementById(id);
       if (element) {

@@ -137,7 +137,6 @@
                 localStorage.removeItem('pendingPassword');
                 unlockButton();
               }
-              // FIX ĐỂ QUAY LẠI VỀ TRANG NÀY ĐỂ ĐĂNG NHẬP, HOẶC SÁNG NÚT ĐĂNG NHẬP
             }
           } catch (error) {
             console.error('Verification check error:', error);
@@ -181,8 +180,8 @@
     window.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const mode = urlParams.get('mode');
-      const oobCode = urlParams.get('oobCode');
-      if (mode === 'verifyEmail' && oobCode) {
+      const oobCode = urlParams.get('oobCode'); // Lấy mã oobCode từ URL được gửi vào email người đăng ký
+      if (mode === 'verifyEmail' && oobCode) { //Chạy trường hợp mã xác thực email trùng khớp, tức xác thực được.
         try {
           await auth.applyActionCode(oobCode);
           // Đăng nhập lại để lấy user mới
@@ -191,15 +190,15 @@
           if (user) {
     await user.reload(); // <-- Cập nhật lại user
     if (user.emailVerified) {
-      const pendingUserDoc = await db.collection('pendingUsers').doc(user.uid).get();
+      const pendingUserDoc = await db.collection('pendingUsers').doc(user.uid).get(); //truy xuất thông tin trong pending user
       if (pendingUserDoc.exists) {
         const userData = pendingUserDoc.data();
         await db.collection('users').doc(user.uid).set({
           ...userData,
           verified: true,
-          verifiedAt: firebase.firestore.FieldValue.serverTimestamp()
+          verifiedAt: firebase.firestore.FieldValue.serverTimestamp() //cập nhật lại thông tin vào collection users
         });
-        await db.collection('pendingUsers').doc(user.uid).delete();
+        await db.collection('pendingUsers').doc(user.uid).delete();// xóa pending user
         localStorage.removeItem('pendingEmail');
         localStorage.removeItem('pendingPassword');
         unlockButton();
@@ -228,16 +227,6 @@
         }
       }
     }
-
-    // Đăng xuất
-    // async function logout() {
-    //   try {
-    //     await auth.signOut();
-    //     window.location.href = '/signup';
-    //   } catch (error) {
-    //     console.error('Logout error:', error);
-    //   }
-    // }
 
     // Bắt đầu kiểm tra xác thực khi trang được tải
     startVerificationCheck();

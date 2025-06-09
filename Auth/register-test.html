@@ -108,7 +108,7 @@
     //Cấu hình Firestore
     db.settings({
       timestampsInSnapshots: true
-    });
+    }); // bật lấy mốc thời gian để cập nhật vào thông tin 
 
     // Xử lý form đăng ký
     document.getElementById('registerForm').addEventListener('submit', async function(e) {
@@ -116,7 +116,9 @@
       
       // Reset errors
       document.querySelectorAll('.error').forEach(el => el.textContent = '');
+      //chức năng là xóa các thông tin của các phần tử có class là error
       
+      //Lấy giá trị từ form 
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
       const displayName = document.getElementById('displayName').value;
@@ -147,13 +149,12 @@
             email: email,
             displayName: displayName,
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            verified: false
-            //expireAt: new Date(Date.now() + 30 * 60 * 1000) // TTL sau 30 phút
+            verified: false // trạng thái xác thực 
           });
 
           // Chuyển đến trang xác thực
-          window.location.href = '/verify';
-        } catch (firestoreError) {
+          window.location.href = '/verify'; // đường dẫn 
+        } catch (firestoreError) { //bắt lỗi 
           console.error('Firestore error:', firestoreError);
           // Nếu có lỗi Firestore, xóa tài khoản đã tạo
           await user.delete();

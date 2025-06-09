@@ -706,8 +706,6 @@
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <!-- Initialize tooltips -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -716,13 +714,11 @@
       });
     });
   </script>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp, setDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
     import { getAuth } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
-    // Firebase cấu hình
     const firebaseConfig = {
       apiKey: "AIzaSyAWXMEwMPSyMBVf4LikdsVCZ0kN4BhYB6E",
       authDomain: "hlearnhub-testing.firebaseapp.com",
@@ -731,7 +727,6 @@
       appId: "1:1054297107041:web:e2e985461b9ac570441820"
     };
 
-    // Khởi tạo Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
@@ -757,17 +752,17 @@
     const params = new URLSearchParams(window.location.search);
     const uid = params.get("uid");
 
-    if (!uid) {
+    if (!uid) { //trường hợp không tìm thấy uid
       alert("Không tìm thấy UID trong URL");
     } else {
       loadUser(uid);
     }
 
-    async function loadUser(uid) {
+    async function loadUser(uid) { 
       try {
         const userDoc = await getDoc(doc(db, "users", uid));
         if (userDoc.exists()) {
-          const data = userDoc.data();
+          const data = userDoc.data(); // lấy các thông tin từ document
           document.getElementById('user-name').textContent = data.fullName || "Không có tên";
           document.getElementById('user-birthday').textContent = data.birthDate || "Không có ngày sinh";
           document.getElementById('user-major').textContent = data.departmentCode || "Không có ngành học";
@@ -778,11 +773,11 @@
           document.getElementById('user-completedTeach').textContent = data.completedTeachingSessions || "0";
 
           // Load reviews after loading user data
-          await loadReviews(uid);
+          await loadReviews(uid); // tạm hoãn hàm loadReviews cho đến khi dữ liệu người dùng được tải xong
         } else {
           document.getElementById("user-name").textContent = "Không tìm thấy người dùng.";
         }
-      } catch (error) {
+      } catch (error) { // bắt lỗi
         console.error("Lỗi khi tải dữ liệu:", error);
         alert("Đã xảy ra lỗi khi tải dữ liệu: " + error.message);
       }
@@ -798,6 +793,7 @@
 
         // Lấy tất cả đánh giá từ subcollection reviews
         const reviewsQuery = query(collection(db, "users", uid, "reviews"), orderBy("createdAt", "desc"));
+        //truy vấn review và sắp xếp theo thứ tự thời gian
         const reviewsSnapshot = await getDocs(reviewsQuery);
 
         let averageRating = 0;
@@ -871,7 +867,7 @@
           
           // Tạo HTML cho sao
           let starsHTML = '';
-          const fullStars = Math.floor(averageRating);
+          const fullStars = Math.floor(averageRating);//làm tròn xuống để lấy số sao đầy
           const hasHalfStar = averageRating % 1 >= 0.5;
 
           for (let i = 1; i <= 5; i++) {
@@ -882,7 +878,7 @@
             } else {
               starsHTML += '<i class="bi bi-star"></i>';
             }
-          }
+          } //hiển thị sao trên html
 
           starsContainer.innerHTML = starsHTML;
           ratingNumber.textContent = `${averageRating.toFixed(1)}/5`;

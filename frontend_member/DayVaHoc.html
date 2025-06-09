@@ -837,7 +837,7 @@
           const studyingRequestRef = collection(db, "studyingRequest"); // Sử dụng cú pháp modular
           const querySnapshot = await getDocs(studyingRequestRef);
 
-          let html = "";
+          let html = ""; //Khai báo biến tên html 
 
           for (const docSnap of querySnapshot.docs) {
             const requestId = docSnap.id;

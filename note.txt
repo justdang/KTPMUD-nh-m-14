@@ -1,0 +1,24 @@
+note:
+try catch
+getelementbyid
+addeventlistener
+async
+await
+getFirestore, collection, query, where, getDocs, doc, updateDoc, deleteDoc, setDoc, getDoc
+let html = "";
+continue
+get()
+getItem()
+querySelector (dành riêng từng code)
+collection().onSnapshot ()
+forEach()
+.push
+e.stopPropagation
+parse + datatype
+getattribute
+e.preventDefault()
+setTimeout
+entries
+onAuthStateChanged
+signInWithemailandpassword
+setInterval

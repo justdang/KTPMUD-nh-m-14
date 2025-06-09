@@ -94,26 +94,10 @@ app.get('/dkyHoc', (req, res) => {
 
 // // Home page
 
-
-//Account register 
-app.get('/accreg', checkRole, (req, res) => {
-
-    res.sendFile(path.resolve(__dirname, './frontend_stranger/account_register.html'))
-})
-
-// Register page
-app.get('/register', (req, res) => {
-  res.sendFile(path.resolve(__dirname, './frontend_stranger/Member_register.html'))
-})
-
 //verify test, success test - xóa sau khi test xong
 app.get('/verify', (req, res) => {
   res.sendFile(path.resolve(__dirname, './Auth/verify-test.html'))
 })
-
-// app.get('/success', (req, res) => {
-//   res.sendFile(path.resolve(__dirname, './Auth/success-test.html'))
-// })
 
 app.get('/edit', (req, res) => {
   res.sendFile(path.resolve(__dirname, './frontend/Profile editing.html'))
@@ -128,16 +112,6 @@ app.get('/studyregister', (req, res) => {
     res.status(404).send('resource not found')
   }
 })
-
-// teaching page
-// app.get('/teaching_register', (req, res) => {
-//   const role = req.session.role
-//   if (role == 'member') {
-//     res.sendFile(path.resolve(__dirname, './frontend_member/Teaching_register.html'))
-//   } else {
-//     res.status(404).send('resource not found')
-//   }
-// })
 
 // schedule page
 app.get('/schedule', (req, res) => {

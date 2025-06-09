@@ -274,7 +274,7 @@
 
     // Xử lý sự kiện submit form
     document.getElementById('teaching-schedule-form').addEventListener('submit', async function (e) {
-      e.preventDefault();
+      e.preventDefault(); // Ngăn việc nhấn vào submit và kích hoạt reload trang và dẫn tới trang khác khi chưa nhập hết các thông tin
 
       try {
         // Lấy thông tin người dùng hiện tại

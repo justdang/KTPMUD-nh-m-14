@@ -1,0 +1,8 @@
+note:
+try catch
+getelementbyid
+addeventlistener
+async
+await
+getFirestore, collection, query, where, getDocs, doc, updateDoc, deleteDoc, setDoc, getDoc
+let html = "";
