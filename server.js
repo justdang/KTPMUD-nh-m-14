@@ -55,7 +55,7 @@ app.get('/', checkRole, (req, res) => {
 app.get('/about', (req, res) => {
   const role = req.session.role;
   if (role == 'member') {
-    res.sendFile(path.resolve(__dirname, './frontend_member/about_member.html'));
+    res.sendFile(path.resolve(__dirname, './frontend_member/About_member.html'));
   } else if (role == 'stranger') {
     res.sendFile(path.resolve(__dirname, './frontend_stranger/about_stranger.html'));
   }
