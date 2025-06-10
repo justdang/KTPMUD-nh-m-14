@@ -142,9 +142,14 @@ app.get('/profileOther', (req, res) => {
   }
 })
 
-
-
-
+app.get('/profileOthernoReview', (req, res) => {
+  const role = req.session.role
+  if (role == 'member') {
+    res.sendFile(path.resolve(__dirname, './frontend_member/Profile_other_noreview.html'))
+  } else {
+    res.status(404).send('resource not found')
+  }
+})
 
 // app.use('/api/users', userProfileRoutes);
 

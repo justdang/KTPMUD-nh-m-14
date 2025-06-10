@@ -681,7 +681,7 @@
         <div class="col-lg-5 col-md-12 footer-info">
           <div class="footer-logo">Hlearn<span>Hub</span></div>
           <p class="footer-subtitle">HlearnHub – Học cùng nhau, vững bước cùng nhau.</p>
-          <div class="
+          <div class="footer-social">
             <a href="#"><i class="bi bi-twitter-x"></i></a>
             <a href="#"><i class="bi bi-facebook"></i></a>
             <a href="#"><i class="bi bi-instagram"></i></a>
@@ -740,8 +740,8 @@
       document.getElementById('currentDate').textContent = `${date}/${month}/${year}`;
     });
 
-  document.addEventListener('DOMContentLoaded', async () => {
-  const uid = localStorage.getItem("uid"); //Lấy id từ localStorage
+ document.addEventListener('DOMContentLoaded', async () => {
+  const uid = localStorage.getItem("uid");
 
   if (!uid) {
     document.querySelector("#learning-tab-pane .schedule-body").innerHTML = "Không tìm thấy tài khoản của bạn.";
@@ -749,7 +749,7 @@
   }
 
   try {
-    // truy vấn document
+    // Sửa lại cách truy vấn document
     const userRef = db.collection("users").doc(uid);
     const userSnap = await userRef.get();
 
@@ -773,326 +773,355 @@
   }
 });
 
-  // Định nghĩa các hàm load lịch 
+  // Định nghĩa các hàm load lịch một lần duy nhất
   async function loadLearningSchedule() {
-  try {
-    const uid = localStorage.getItem("uid");
-    const q = db.collection("class").where("uid", "==", uid);
-    const querySnapshot = await q.get();
+    try {
+      const uid = localStorage.getItem("uid");
+      const q = db.collection("class").where("uid", "==", uid);
+      const querySnapshot = await q.get();
 
-    let html = "";
-    let upcomingCount = 0;
-    let completedCount = 0;
+      let html = "";
+      let upcomingCount = 0;
+      let completedCount = 0;
 
-    querySnapshot.forEach((docSnap) => {
-      const data = docSnap.data();
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
 
-      // Chuyển đổi chuỗi ngày thành đối tượng Date
-      const [day, month, year] = data.day.split('-'); //tách chuỗi ngày tháng năm bằng hàm split
-      const date = new Date(year, month - 1, day);
-      
-      // Lấy thứ trong tuần
-      const weekdays = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
-      const weekday = weekdays[date.getDay()];
+        // Chuyển đổi chuỗi ngày thành đối tượng Date
+        const [year, month, day] = data.day.split('-');
+        const date = new Date(Number(year), Number(month) - 1, Number(day));
+        
+        // Lấy thứ trong tuần
+        const weekdays = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+        const weekday = weekdays[date.getDay()];
 
-      // Xác định trạng thái dựa trên thời gian hiện tại
-      const now = new Date();
-      const [startHour, startMinute] = data.start.split(':');
-      const [endHour, endMinute] = data.end.split(':');
-      
-      // Tạo đối tượng Date cho thời gian bắt đầu và kết thúc
-      const startTime = new Date(date);
-      startTime.setHours(parseInt(startHour), parseInt(startMinute), 0);
-      
-      const endTime = new Date(date);
-      endTime.setHours(parseInt(endHour), parseInt(endMinute), 0);
-      //ép kiểu thành int để thực hiện
+        // Xác định trạng thái dựa trên thời gian hiện tại
+        const now = new Date();
+        const [startHour, startMinute] = data.start.split(':');
+        const [endHour, endMinute] = data.end.split(':');
+        
+        // Tạo đối tượng Date cho thời gian bắt đầu và kết thúc
+        const startTime = new Date(date);
+        startTime.setHours(parseInt(startHour), parseInt(startMinute), 0);
+        
+        const endTime = new Date(date);
+        endTime.setHours(parseInt(endHour), parseInt(endMinute), 0);
 
-      let status = "Sắp tới";
-      let statusClass = "status-upcoming";
-      
-      // Kiểm tra ngày trước
-      if (date.toDateString() < now.toDateString()) {
-        // Nếu ngày học đã qua
-        status = "Kết thúc";
-        statusClass = "status-completed";
-        completedCount++;
-      } else if (date.toDateString() === now.toDateString()) {
-        // Nếu là ngày hôm nay thì kiểm tra giờ
-        if (now > endTime) {
+        let status = "Sắp tới";
+        let statusClass = "status-upcoming";
+        
+        function getDateOnly(d) {
+          return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        }
+        const classDate = getDateOnly(date);
+        const today = getDateOnly(now);
+
+        if (classDate < today) {
+          // Nếu ngày học đã qua
           status = "Kết thúc";
           statusClass = "status-completed";
           completedCount++;
-        } else if (now >= startTime && now <= endTime) {
-          status = "Đang diễn ra";
-          statusClass = "status-ongoing";
+        } else if (classDate.getTime() === today.getTime()) {
+          // Nếu là ngày hôm nay thì kiểm tra giờ
+          if (now > endTime) {
+            // Nếu đã qua giờ kết thúc
+            status = "Kết thúc";
+            statusClass = "status-completed";
+            completedCount++;
+          } else if (now >= startTime && now <= endTime) {
+            // Nếu đang trong giờ học
+            status = "Đang diễn ra";
+            statusClass = "status-ongoing";
+          } else {
+            // Nếu chưa đến giờ bắt đầu
+            status = "Sắp tới";
+            statusClass = "status-upcoming";
+            upcomingCount++;
+          }
         } else {
+          // Nếu là ngày trong tương lai
+          status = "Sắp tới";
+          statusClass = "status-upcoming";
           upcomingCount++;
         }
-      } else {
-        upcomingCount++;
+
+        // Xác định đường dẫn profile dựa trên trạng thái
+        const profilePath = (status === "Kết thúc") ? "/profileOther" : "/profileOthernoReview";
+
+        // Tạo HTML cho từng lớp học
+        html += `
+          <div class="class-item">
+            <div class="class-date">
+              <div class="day">${weekday}</div>
+              <div class="date">${data.day}</div>
+            </div>
+            <div class="class-info">
+              <span class="status-badge ${statusClass}">${status}</span>
+              <h5>${data.generalSubject || "Không có tiêu đề"}</h5>
+              <p>Gia sư: ${data.teacherName || "Không rõ"}</p>
+              <p class="class-time"><i class="bi bi-clock"></i> ${data.start} - ${data.end}</p>
+            </div>
+            <div class="class-actions">
+              <button class="action-btn"><i class="bi bi-info-circle"></i><a href="${profilePath}?uid=${data.teacherId}" class="tutor-name-link"> Chi tiết gia sư </a></button>
+            </div>
+          </div>
+        `;
+      });
+
+      // Cập nhật số lớp vào Firestore
+      try {
+        await db.collection("users").doc(uid).update({
+          upcomingStudySessions: upcomingCount,
+          completedStudySessions: completedCount
+        });
+        console.log(`Cập nhật số lớp học - Sắp tới: ${upcomingCount}, Kết thúc: ${completedCount}`);
+      } catch (error) {
+        console.error("Lỗi khi cập nhật số lớp học:", error);
       }
 
-      // Tạo HTML cho từng lớp học
-      html += `
-        <div class="class-item">
-          <div class="class-date">
-            <div class="day">${weekday}</div>
-            <div class="date">${data.day}</div>
-          </div>
-          <div class="class-info">
-            <span class="status-badge ${statusClass}">${status}</span>
-            <h5>${data.generalSubject || "Không có tiêu đề"}</h5>
-            <p>Gia sư: ${data.teacherName || "Không rõ"}</p>
-            <p class="class-time"><i class="bi bi-clock"></i> ${data.start} - ${data.end}</p>
-          </div>
-          <div class="class-actions">
-            <button class="action-btn"><i class="bi bi-info-circle"></i><a href="/profileOther?uid=${data.teacherId}" class="tutor-name-link"> Chi tiết gia sư </a></button>
-          </div>
-        </div>
-      `;
-    });
-
-    // Cập nhật số lớp vào Firestore
-    try {
-      await db.collection("users").doc(uid).update({
-        upcomingStudySessions: upcomingCount,
-        completedStudySessions: completedCount
-      });
-      console.log(`Cập nhật số lớp học - Sắp tới: ${upcomingCount}, Kết thúc: ${completedCount}`);
+      const scheduleBody = document.querySelector("#learning-tab-pane .schedule-body");
+      scheduleBody.innerHTML = html || "<p>Không có lớp học nào.</p>";
     } catch (error) {
-      console.error("Lỗi khi cập nhật số lớp học:", error);
+      console.error("Lỗi khi tải dữ liệu lịch học:", error);
+      document.querySelector("#learning-tab-pane .schedule-body").innerHTML = 
+        "Đã xảy ra lỗi khi tải dữ liệu.";
     }
-
-    const scheduleBody = document.querySelector("#learning-tab-pane .schedule-body");
-    scheduleBody.innerHTML = html || "<p>Không có lớp học nào.</p>";
-  } catch (error) {
-    console.error("Lỗi khi tải dữ liệu lịch học:", error);
-    document.querySelector("#learning-tab-pane .schedule-body").innerHTML = 
-      "Đã xảy ra lỗi khi tải dữ liệu.";
   }
-}
 
-async function loadTeachingSchedule() {
-  try {
-    const teacherId = localStorage.getItem("uid"); // gán teacher ID với uid người dùng
-    if (!teacherId) {
+  async function loadTeachingSchedule() {
+    try {
+      const teacherId = localStorage.getItem("uid");
+      if (!teacherId) {
+        document.querySelector("#teaching-tab-pane .schedule-body").innerHTML = 
+          "Không tìm thấy tài khoản của bạn.";
+        return;
+      }
+
+      const q = db.collection("class").where("teacherId", "==", teacherId);
+      const querySnapshot = await q.get();
+
+      let html = "";
+      let upcomingCount = 0;
+      let completedCount = 0;
+
+      for (const docSnap of querySnapshot.docs) {
+        const data = docSnap.data();
+
+        // Lấy thông tin học sinh từ collection users
+        let studentName = "Không rõ";
+        if (data.uid) {
+          const studentDoc = await db.collection("users").doc(data.uid).get();
+          if (studentDoc.exists) {
+            const studentData = studentDoc.data();
+            studentName = studentData.fullName || "Không rõ";
+          }
+        }
+
+        // Chuyển đổi ngày và tính toán thứ
+        const [year, month, day] = data.day.split('-');
+        const date = new Date(Number(year), Number(month) - 1, Number(day));
+        const weekdays = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+        const weekday = weekdays[date.getDay()];
+
+        // Xác định trạng thái dựa trên thời gian hiện tại
+        const now = new Date();
+        const [startHour, startMinute] = data.start.split(':');
+        const [endHour, endMinute] = data.end.split(':');
+        
+        // Tạo đối tượng Date cho thời gian bắt đầu và kết thúc
+        const startTime = new Date(date);
+        startTime.setHours(parseInt(startHour), parseInt(startMinute), 0);
+        
+        const endTime = new Date(date);
+        endTime.setHours(parseInt(endHour), parseInt(endMinute), 0);
+
+        let status = "Sắp tới";
+        let statusClass = "status-upcoming";
+        
+        function getDateOnly(d) {
+          return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        }
+        const classDate = getDateOnly(date);
+        const today = getDateOnly(now);
+
+        if (classDate < today) {
+          // Nếu ngày học đã qua
+          status = "Kết thúc";
+          statusClass = "status-completed";
+          completedCount++;
+        } else if (classDate.getTime() === today.getTime()) {
+          // Nếu là ngày hôm nay thì kiểm tra giờ
+          if (now > endTime) {
+            // Nếu đã qua giờ kết thúc
+            status = "Kết thúc";
+            statusClass = "status-completed";
+            completedCount++;
+          } else if (now >= startTime && now <= endTime) {
+            // Nếu đang trong giờ học
+            status = "Đang diễn ra";
+            statusClass = "status-ongoing";
+          } else {
+            // Nếu chưa đến giờ bắt đầu
+            status = "Sắp tới";
+            statusClass = "status-upcoming";
+            upcomingCount++;
+          }
+        } else {
+          // Nếu là ngày trong tương lai
+          status = "Sắp tới";
+          statusClass = "status-upcoming";
+          upcomingCount++;
+        }
+
+        // Xác định đường dẫn profile dựa trên trạng thái
+        const profilePath = (status === "Kết thúc") ? "/profileOther" : "/profileOthernoReview";
+
+        html += `
+          <div class="class-item">
+            <div class="class-date">
+              <div class="day">${weekday}</div>
+              <div class="date">${data.day}</div>
+            </div>
+            <div class="class-info">
+              <span class="status-badge ${statusClass}">${status}</span>
+              <h5>${data.generalSubject || "Không có tiêu đề"}</h5>
+              <p>Học sinh: ${studentName}</p>
+              <p class="class-time"><i class="bi bi-clock"></i> ${data.start} - ${data.end}</p>
+            </div>
+            <div class="class-actions">
+              <button class="action-btn">
+                <i class="bi bi-info-circle"></i>
+                <a href="${profilePath}?uid=${data.uid}" class="tutor-name-link"> Chi tiết học sinh </a>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      // Cập nhật số lớp vào Firestore
+      try {
+        await db.collection("users").doc(teacherId).update({
+          upcomingTeachingSessions: upcomingCount,
+          completedTeachingSessions: completedCount
+        });
+        console.log(`Cập nhật số lớp dạy - Sắp tới: ${upcomingCount}, Kết thúc: ${completedCount}`);
+      } catch (error) {
+        console.error("Lỗi khi cập nhật số lớp dạy:", error);
+      }
+
+      const teachingScheduleBody = document.querySelector("#teaching-tab-pane .schedule-body");
+      teachingScheduleBody.innerHTML = html || "<p>Không có lớp dạy nào.</p>";
+    } catch (error) {
+      console.error("Lỗi khi tải dữ liệu lịch dạy:", error);
       document.querySelector("#teaching-tab-pane .schedule-body").innerHTML = 
-        "Không tìm thấy tài khoản của bạn.";
-      return;
+        "Đã xảy ra lỗi khi tải dữ liệu.";
     }
-
-    const q = db.collection("class").where("teacherId", "==", teacherId); // tìm các collection có teacher ID trùng với uid của người dùng
-    const querySnapshot = await q.get();
-
-    let html = "";
-    let upcomingCount = 0;
-    let completedCount = 0;
-
-    for (const docSnap of querySnapshot.docs) {
-      const data = docSnap.data();
-
-      // Lấy thông tin học sinh từ collection users
-      let studentName = "Không rõ";
-      if (data.uid) {
-        const studentDoc = await db.collection("users").doc(data.uid).get();
-        if (studentDoc.exists) {
-          const studentData = studentDoc.data();
-          studentName = studentData.fullName || "Không rõ";
-        }
-      }
-
-      // Chuyển đổi ngày và tính toán thứ
-      const [day, month, year] = data.day.split('-');
-      const date = new Date(year, month - 1, day);
-      const weekdays = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
-      const weekday = weekdays[date.getDay()];
-
-      // Xác định trạng thái dựa trên thời gian hiện tại
-      const now = new Date(); // chia thời gian bằng split
-      const [startHour, startMinute] = data.start.split(':');
-      const [endHour, endMinute] = data.end.split(':');
-      
-      // Tạo đối tượng Date cho thời gian bắt đầu và kết thúc
-      const startTime = new Date(date);
-      startTime.setHours(parseInt(startHour), parseInt(startMinute), 0);//ép kiểu thời gian thành số nguyên
-      
-      const endTime = new Date(date);
-      endTime.setHours(parseInt(endHour), parseInt(endMinute), 0);// ép kiểu 
-
-      let status = "Sắp tới";
-      let statusClass = "status-upcoming";
-      
-      // Kiểm tra ngày trước
-      if (date.toDateString() < now.toDateString()) {
-        // Nếu ngày học đã qua
-        status = "Kết thúc";
-        statusClass = "status-completed";
-        completedCount++;
-      } else if (date.toDateString() === now.toDateString()) {
-        // Nếu là ngày hôm nay thì kiểm tra giờ
-        if (now > endTime) {
-          status = "Kết thúc";
-          statusClass = "status-completed";
-          completedCount++;
-        } else if (now >= startTime && now <= endTime) {
-          status = "Đang diễn ra";
-          statusClass = "status-ongoing";
-        } else {
-          upcomingCount++;
-        }
-      } else {
-        upcomingCount++;
-      }
-
-      // Tạo HTML cho từng lớp học
-      html += `
-        <div class="class-item">
-          <div class="class-date">
-            <div class="day">${weekday}</div>
-            <div class="date">${data.day}</div>
-          </div>
-          <div class="class-info">
-            <span class="status-badge ${statusClass}">${status}</span>
-            <h5>${data.generalSubject || "Không có tiêu đề"}</h5>
-            <p>Học sinh: ${studentName}</p>
-            <p class="class-time"><i class="bi bi-clock"></i> ${data.start} - ${data.end}</p>
-          </div>
-          <div class="class-actions">
-            <button class="action-btn">
-              <i class="bi bi-info-circle"></i>
-              <a href="/profileOther?uid=${data.uid}" class="tutor-name-link"> Chi tiết học sinh </a>
-            </button>
-          </div>
-        </div>
-      `;
-    }
-
-    // Cập nhật số lớp vào Firestore
-    try {
-      await db.collection("users").doc(teacherId).update({
-        upcomingTeachingSessions: upcomingCount,
-        completedTeachingSessions: completedCount
-      });
-      console.log(`Cập nhật số lớp dạy - Sắp tới: ${upcomingCount}, Kết thúc: ${completedCount}`);
-    } catch (error) {
-      console.error("Lỗi khi cập nhật số lớp dạy:", error);
-    }
-
-    const teachingScheduleBody = document.querySelector("#teaching-tab-pane .schedule-body");
-    teachingScheduleBody.innerHTML = html || "<p>Không có lớp dạy nào.</p>";
-  } catch (error) {
-    console.error("Lỗi khi tải dữ liệu lịch dạy:", error);
-    document.querySelector("#teaching-tab-pane .schedule-body").innerHTML = 
-      "Đã xảy ra lỗi khi tải dữ liệu.";
   }
-}
 
-//filter
-function filterRequests() {
-  const startTime = document.getElementById('start-time').value;
-  const endTime = document.getElementById('end-time').value;
-  const date = document.getElementById('date').value;
-  const status = document.getElementById('status').value;
-  const subject = document.getElementById('subject').value;
-  const sort = document.getElementById('sort').value;
-  
-  const classItems = Array.from(document.querySelectorAll('.class-item'));
-  
-  // Filter items
-  const filteredItems = classItems.filter(item => {
-    let shouldShow = true;
+  function filterRequests() {
+    const startTime = document.getElementById('start-time').value;
+    const endTime = document.getElementById('end-time').value;
+    const date = document.getElementById('date').value;
+    const status = document.getElementById('status').value;
+    const subject = document.getElementById('subject').value;
+    const sort = document.getElementById('sort').value;
     
-    // Filter by status
-    if (status) {
-      const itemStatus = item.querySelector('.status-badge').textContent.toLowerCase();
-      if (itemStatus !== status) {
-        shouldShow = false;
-      }
-    }
+    const classItems = Array.from(document.querySelectorAll('.class-item'));
     
-    // Filter by subject
-    if (subject) {
-      const itemSubject = item.querySelector('h5').textContent;
-      if (!itemSubject.includes(subject)) {
-        shouldShow = false;
-      }
-    }
-    
-    // Filter by date
-    if (date) {
-      const itemDate = item.querySelector('.date').textContent;
-      const [day, month, year] = itemDate.split('/');
-      const itemDateObj = new Date(year, month - 1, day);
-      const filterDate = new Date(date);
-      if (itemDateObj.toDateString() !== filterDate.toDateString()) {
-        shouldShow = false;
-      }
-    }
-    
-    // Filter by time
-    if (startTime || endTime) {
-      const timeText = item.querySelector('.class-time').textContent;
-      const timeMatch = timeText.match(/(\d{2}:\d{2}) - (\d{2}:\d{2})/);
-      if (timeMatch) {
-        const [_, itemStart, itemEnd] = timeMatch;
-        
-        if (startTime && itemStart < startTime) {
-          shouldShow = false;
-        }
-        
-        if (endTime && itemEnd > endTime) {
+    // Filter items
+    const filteredItems = classItems.filter(item => {
+      let shouldShow = true;
+      
+      // Filter by status
+      if (status) {
+        const itemStatus = item.querySelector('.status-badge').textContent.toLowerCase();
+        if (itemStatus !== status) {
           shouldShow = false;
         }
       }
-    }
-    
-    return shouldShow;
-  });
-
-  // Sort items
-  filteredItems.sort((a, b) => {
-    switch(sort) {
-      case 'date-asc':
-        return new Date(a.querySelector('.date').textContent) - new Date(b.querySelector('.date').textContent);
-      case 'date-desc':
-        return new Date(b.querySelector('.date').textContent) - new Date(a.querySelector('.date').textContent);
-      case 'time-asc':
-        return a.querySelector('.class-time').textContent.localeCompare(b.querySelector('.class-time').textContent);
-      case 'time-desc':
-        return b.querySelector('.class-time').textContent.localeCompare(a.querySelector('.class-time').textContent);
-      case 'subject-asc':
-        return a.querySelector('h5').textContent.localeCompare(b.querySelector('h5').textContent);
-      case 'subject-desc':
-        return b.querySelector('h5').textContent.localeCompare(a.querySelector('h5').textContent);
-      default:
-        return 0;
-    }
-  });
-
-  // Get the container
-  const container = document.querySelector('.schedule-body');
-  
-  // Remove all items
-  classItems.forEach(item => {
-    item.style.opacity = '0';
-    item.style.transform = 'translateY(-10px)';
-    setTimeout(() => {
-      item.style.display = 'none';
-    }, 300);
-  });
-
-  // Add filtered and sorted items back
-  setTimeout(() => {
-    filteredItems.forEach((item, index) => {
-      item.style.display = 'block';
-      setTimeout(() => {
-        item.style.opacity = '1';
-        item.style.transform = 'translateY(0)';
-      }, index * 50);
+      
+      // Filter by subject
+      if (subject) {
+        const itemSubject = item.querySelector('h5').textContent;
+        if (!itemSubject.includes(subject)) {
+          shouldShow = false;
+        }
+      }
+      
+      // Filter by date
+      if (date) {
+        const itemDate = item.querySelector('.date').textContent;
+        const [day, month, year] = itemDate.split('/');
+        const itemDateObj = new Date(year, month - 1, day);
+        const filterDate = new Date(date);
+        if (itemDateObj.toDateString() !== filterDate.toDateString()) {
+          shouldShow = false;
+        }
+      }
+      
+      // Filter by time
+      if (startTime || endTime) {
+        const timeText = item.querySelector('.class-time').textContent;
+        const timeMatch = timeText.match(/(\d{2}:\d{2}) - (\d{2}:\d{2})/);
+        if (timeMatch) {
+          const [_, itemStart, itemEnd] = timeMatch;
+          
+          if (startTime && itemStart < startTime) {
+            shouldShow = false;
+          }
+          
+          if (endTime && itemEnd > endTime) {
+            shouldShow = false;
+          }
+        }
+      }
+      
+      return shouldShow;
     });
-  }, 300);
-}
+
+    // Sort items
+    filteredItems.sort((a, b) => {
+      switch(sort) {
+        case 'date-asc':
+          return new Date(a.querySelector('.date').textContent) - new Date(b.querySelector('.date').textContent);
+        case 'date-desc':
+          return new Date(b.querySelector('.date').textContent) - new Date(a.querySelector('.date').textContent);
+        case 'time-asc':
+          return a.querySelector('.class-time').textContent.localeCompare(b.querySelector('.class-time').textContent);
+        case 'time-desc':
+          return b.querySelector('.class-time').textContent.localeCompare(a.querySelector('.class-time').textContent);
+        case 'subject-asc':
+          return a.querySelector('h5').textContent.localeCompare(b.querySelector('h5').textContent);
+        case 'subject-desc':
+          return b.querySelector('h5').textContent.localeCompare(a.querySelector('h5').textContent);
+        default:
+          return 0;
+      }
+    });
+
+    // Get the container
+    const container = document.querySelector('.schedule-body');
+    
+    // Remove all items
+    classItems.forEach(item => {
+      item.style.opacity = '0';
+      item.style.transform = 'translateY(-10px)';
+      setTimeout(() => {
+        item.style.display = 'none';
+      }, 300);
+    });
+
+    // Add filtered and sorted items back
+    setTimeout(() => {
+      filteredItems.forEach((item, index) => {
+        item.style.display = 'block';
+        setTimeout(() => {
+          item.style.opacity = '1';
+          item.style.transform = 'translateY(0)';
+        }, index * 50);
+      });
+    }, 300);
+  }
   </script>
 </body>
 
