@@ -473,6 +473,12 @@
                     <span id="user-course"></span>
                   </div>
                 </div>
+                <div class="info-item">
+                  <div class="info-label">Số điện thoại:</div>
+                  <div class="info-value d-flex align-items-center">
+                    <span id="user-sdt"></span>
+                  </div>
+                </div>
               </div>
               
               <div class="stats-container">
@@ -624,7 +630,8 @@
       'user-gpa': userData.recentGPA || "0",
       'user-cpa': userData.cpa || "0",
       'user-completedStudy': userData.completedStudySessions || "0",
-      'user-completedTeach': userData.completedTeachingSessions || "0"
+      'user-completedTeach': userData.completedTeachingSessions || "0",
+      'user-sdt': userData.phoneNumber || "Không có số điện thoại"
     };
 
     // Cập nhật từng phần tử một cách an toàn, tạo thành các cặp [id,value]

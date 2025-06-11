@@ -74,11 +74,11 @@
             <input type="password" class="form-control" id="password" required minlength="6" placeholder="Nhập mật khẩu">
             <div id="passwordError" class="error"></div>
           </div>
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <label for="displayName" class="form-label">Tên hiển thị</label>
             <input type="text" class="form-control" id="displayName" required placeholder="Nhập tên hiển thị">
             <div id="displayNameError" class="error"></div>
-          </div>
+          </div> -->
           <button type="submit" class="submit-btn" id="submitBtn">Đăng Ký</button>
 
         </form>
@@ -121,7 +121,7 @@
       //Lấy giá trị từ form 
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      const displayName = document.getElementById('displayName').value;
+      // const displayName = document.getElementById('displayName').value;
       const submitBtn = document.getElementById('submitBtn');
 
       // Validate
@@ -147,7 +147,7 @@
           // Lưu thông tin tạm thời vào Firestore
           await db.collection('pendingUsers').doc(user.uid).set({
             email: email,
-            displayName: displayName,
+            // displayName: displayName,
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
             verified: false // trạng thái xác thực 
           });
@@ -160,7 +160,6 @@
           await user.delete();
           throw new Error('Không thể lưu thông tin người dùng. Vui lòng thử lại sau.');
         }
-
       } catch (error) {
         console.error('Registration error:', error);
         document.getElementById('emailError').textContent = error.message;

@@ -568,6 +568,12 @@
                     <span id="user-course"></span>
                   </div>
                 </div>
+                <div class="info-item">
+                  <div class="info-label">Số điện thoại:</div>
+                  <div class="info-value d-flex align-items-center">
+                    <span id="user-sdt"></span>
+                  </div>
+                </div>
               </div>
               
               <div class="stats-container">
@@ -771,6 +777,7 @@
           document.getElementById('user-cpa').textContent = data.cpa || "0";
           document.getElementById('user-completedStudy').textContent = data.completedStudySessions || "0";
           document.getElementById('user-completedTeach').textContent = data.completedTeachingSessions || "0";
+          document.getElementById('user-sdt').textContent = data.phoneNumber || "0";
 
           // Load reviews after loading user data
           await loadReviews(uid); // tạm hoãn hàm loadReviews cho đến khi dữ liệu người dùng được tải xong

@@ -103,6 +103,10 @@ app.get('/edit', (req, res) => {
   res.sendFile(path.resolve(__dirname, './frontend/Profile editing.html'))
 })
 
+app.get('/register', (req, res) => {
+  res.sendFile(path.resolve(__dirname, './frontend_stranger/Member_register.html'))
+})
+
 // study page
 app.get('/studyregister', (req, res) => {
   const role = req.session.role
